@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="build_tools.utils.main" target="11" />
+      <module name="build_tools.utils.test" target="11" />
+      <module name="buildools.utils.main" target="11" />
+      <module name="buildools.utils.test" target="11" />
+      <module name="buildTools.utils.main" target="11" />
+      <module name="buildTools.utils.test" target="11" />
+      <module name="by.daryazalevskaya.utils.lib.main" target="11" />
+      <module name="by.daryazalevskaya.utils.lib.test" target="11" />
+      <module name="by.daryazalevskaya.utils.utils.main" target="11" />
+      <module name="by.daryazalevskaya.utils.utils.test" target="11" />
+      <module name="utils.lib.main" target="11" />
+      <module name="utils.lib.test" target="11" />
+      <module name="utils.utils.main" target="11" />
+      <module name="utils.utils.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
