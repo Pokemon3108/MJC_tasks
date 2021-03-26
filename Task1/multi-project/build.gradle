@@ -1,8 +1,6 @@
 group 'by.daryazalevskaya'
 version '1.0'
 
-
-
 subprojects { project->
     project.apply plugin: "java"
 
