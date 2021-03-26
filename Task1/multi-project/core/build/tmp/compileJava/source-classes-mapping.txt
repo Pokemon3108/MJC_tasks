@@ -1,2 +1,0 @@
-by/daryazalevskaya/coremodule/Utils.java
- by.daryazalevskaya.coremodule.Utils
