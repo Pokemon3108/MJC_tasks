@@ -1,2 +1,0 @@
-by/daryazalevskaya/apimodule/App.java
- by.daryazalevskaya.apimodule.App
