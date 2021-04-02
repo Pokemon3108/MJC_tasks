@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class GiftCertificate {
     private long id;
@@ -10,6 +11,7 @@ public class GiftCertificate {
     private int duration;
     private LocalDate createDate;
     private LocalDate lastUpdateDate;
+    private List<Tag> tags;
 
     public long getId() {
         return id;
