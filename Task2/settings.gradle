@@ -1,3 +1,4 @@
 rootProject.name = 'Task2'
 include 'web'
+include 'persistence'
 
