@@ -1,8 +1,8 @@
 package com.epam.esm.repos;
 
-import com.epam.esm.dao.Dao;
+import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
 public class GiftCertificateRepository implements Repository<GiftCertificate> {
 
     @Autowired
-    private Dao<GiftCertificate> certificateDao;
+    private GiftCertificateDao certificateDao;
 
     @Autowired
-    private Dao<Tag> tagDao;
+    private TagDao tagDao;
 
     @Override
     public GiftCertificate read(long id) {
@@ -23,9 +23,10 @@ public class GiftCertificateRepository implements Repository<GiftCertificate> {
 
     @Override
     public long add(GiftCertificate obj) {
-        long certificateId =certificateDao.create(obj);
-        obj.getTags().stream().filter(tag-> tagDao.read(tag.getId())==null)
-                .forEach(tag->tagDao.create(tag));
+        long certificateId = certificateDao.insert(obj);
+        obj.getTags().stream().filter(tag -> tagDao.read(tag.getId()) == null)
+                .forEach(tag -> tagDao.insert(tag));
+        certificateDao.insertCertificateTag(obj);
         return certificateId;
     }
 

@@ -3,7 +3,7 @@ package com.epam.esm.dao;
 import java.util.List;
 
 public interface Dao<T> {
-    long create(T obj);
+    Long insert(T obj);
 
     void update(long id);
 
