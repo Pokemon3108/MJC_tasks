@@ -13,4 +13,11 @@ CREATE TABLE tag
 (
     id   INTEGER AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255)
+);
+
+CREATE TABLE gift_certificate_tag
+(
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    certificate_id INTEGER REFERENCES gift_certificate(id),
+    tag_id INTEGER REFERENCES tag(id)
 )

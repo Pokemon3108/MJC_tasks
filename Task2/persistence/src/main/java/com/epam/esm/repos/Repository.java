@@ -5,9 +5,9 @@ import java.util.List;
 public interface Repository<T> {
     T read(long id);
 
-    void add(T obj);
+    long add(T obj);
 
-    void update(T obj);
+    void update(long id);
 
     void remove(T obj);
 

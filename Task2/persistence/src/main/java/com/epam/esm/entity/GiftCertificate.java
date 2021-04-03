@@ -13,6 +13,10 @@ public class GiftCertificate {
     private LocalDate lastUpdateDate;
     private List<Tag> tags;
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
     public long getId() {
         return id;
     }
