@@ -7,17 +7,17 @@ import java.util.List;
 public class TagRepository implements Repository<Tag> {
 
     @Override
-    public Tag read(long id) {
+    public Tag read(Long id) {
         return null;
     }
 
     @Override
-    public long add(Tag obj) {
-        return 0;
+    public Long add(Tag obj) {
+        return null;
     }
 
     @Override
-    public void update(long id) {
+    public void update(Long id) {
 
     }
 

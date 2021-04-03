@@ -3,11 +3,11 @@ package com.epam.esm.repos;
 import java.util.List;
 
 public interface Repository<T> {
-    T read(long id);
+    T read(Long id);
 
-    long add(T obj);
+    Long add(T obj);
 
-    void update(long id);
+    void update(Long id);
 
     void remove(T obj);
 

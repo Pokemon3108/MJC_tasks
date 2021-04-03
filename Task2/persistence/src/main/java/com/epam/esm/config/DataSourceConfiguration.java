@@ -1,5 +1,9 @@
 package com.epam.esm.config;
 
+import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.GiftCertificateDaoImpl;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.TagDaoImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -42,5 +46,15 @@ public class DataSourceConfiguration {
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public GiftCertificateDao giftCertificateDao() {
+        return new GiftCertificateDaoImpl();
+    }
+
+    @Bean
+    public TagDao tagDao() {
+        return new TagDaoImpl();
     }
 }

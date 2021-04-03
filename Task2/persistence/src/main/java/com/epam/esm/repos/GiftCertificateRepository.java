@@ -17,21 +17,26 @@ public class GiftCertificateRepository implements Repository<GiftCertificate> {
     private TagDao tagDao;
 
     @Override
-    public GiftCertificate read(long id) {
+    public GiftCertificate read(Long id) {
         return null;
     }
 
     @Override
-    public long add(GiftCertificate obj) {
-        long certificateId = certificateDao.insert(obj);
+    public Long add(GiftCertificate obj) {
+        Long certificateId = certificateDao.insert(obj);
+        obj.setId(certificateId);
+
         obj.getTags().stream().filter(tag -> tagDao.read(tag.getId()) == null)
-                .forEach(tag -> tagDao.insert(tag));
+                .forEach(tag -> {
+                    Long id=tagDao.insert(tag);
+                    tag.setId(id);
+                });
         certificateDao.insertCertificateTag(obj);
         return certificateId;
     }
 
     @Override
-    public void update(long id) {
+    public void update(Long id) {
 
     }
 
