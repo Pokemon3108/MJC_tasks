@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
@@ -24,17 +22,20 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
             "(certificate_id, tag_id) VALUES(?, ?)";
 
+    private static final String READ_CERTIFICATE_BY_ID = "SELECT (name, description, price, duration, create_date," +
+            " last_update_date, id) FROM gift_certificate WHERE id=?";
+
     @Override
-    public Long insert(GiftCertificate obj) {
+    public Long insert(GiftCertificate certificate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(INSERT_CERTIFICATE, new String[]{"id"});
-            ps.setString(1, obj.getName());
-            ps.setString(2, obj.getDescription());
-            ps.setBigDecimal(3, obj.getPrice());
-            ps.setInt(4, obj.getDuration());
-            ps.setTimestamp(5, Timestamp.valueOf(obj.getCreateDate()));
-            ps.setTimestamp(6, Timestamp.valueOf(obj.getLastUpdateDate()));
+            ps.setString(1, certificate.getName());
+            ps.setString(2, certificate.getDescription());
+            ps.setBigDecimal(3, certificate.getPrice());
+            ps.setInt(4, certificate.getDuration());
+            ps.setTimestamp(5, Timestamp.valueOf(certificate.getCreateDate()));
+            ps.setTimestamp(6, Timestamp.valueOf(certificate.getLastUpdateDate()));
             return ps;
         }, keyHolder);
         return keyHolder.getKey().longValue();
@@ -46,7 +47,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void delete(GiftCertificate obj) {
+    public void delete(GiftCertificate certificate) {
 
     }
 
