@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.TagMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 
@@ -19,14 +21,14 @@ public class TagDaoImpl implements TagDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private static final String INSERT_TAG="INSERT INTO tag (name) VALUES (?)";
-    private static final String FIND_TAG_BY_NAME="SELECT (id) FROM tag WHERE name=?";
+    private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";
+    private static final String FIND_TAG_BY_NAME = "SELECT (id) FROM tag WHERE name=?";
 
     @Override
     public Long insert(Tag obj) {
-        KeyHolder keyHolder=new GeneratedKeyHolder();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            PreparedStatement ps=con.prepareStatement(INSERT_TAG, new String[]{"id"});
+            PreparedStatement ps = con.prepareStatement(INSERT_TAG, new String[]{"id"});
             ps.setString(1, obj.getName());
             return ps;
         }, keyHolder);
@@ -55,6 +57,10 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag findTagByName(String name) {
-        return jdbcTemplate.queryForObject(FIND_TAG_BY_NAME, new TagMapper());
+        try {
+            return jdbcTemplate.queryForObject(FIND_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
+        } catch (EmptyResultDataAccessException ex) {
+            return new Tag(name);
+        }
     }
 }
