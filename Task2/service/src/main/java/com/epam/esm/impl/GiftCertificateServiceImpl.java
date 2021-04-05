@@ -57,8 +57,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void update(GiftCertificate certificate) {
         certificate.setLastUpdateDate(getCurrentTime());
         certificateDao.update(certificate);
-        if (certificate.getTags()!=null) {
+        if (certificate.getTags() != null) {
             setCertificateTagsId(certificate.getTags());
+            certificateDao.deleteCertificateTags(certificate);
+            certificateDao.insertCertificateTags(certificate);
         }
     }
 

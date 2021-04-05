@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -37,6 +36,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name=COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
             "duration=COALESCE(?, duration), last_update_date=? WHERE id=?";
+
+    private static final String DELETE_CERTIFICATE_TAGS = "DELETE FROM gift_certificate_tag WHERE certificate_id=?";
 
     @Override
     public Long insert(GiftCertificate certificate) {
@@ -97,8 +98,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void deleteCertificateTags(List<Tag> tags) {
-        
+    public void deleteCertificateTags(GiftCertificate certificate) {
+        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS, certificate.getId());
     }
 
 
