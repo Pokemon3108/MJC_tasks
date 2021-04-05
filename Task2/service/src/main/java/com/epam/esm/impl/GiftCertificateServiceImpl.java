@@ -47,7 +47,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             List<Long> tagsId = certificateDao.readCertificateTagsIdByCertificateId(id);
             List<Tag> tags = tagsId.stream().map(tagId -> tagService.findTagById(tagId)).collect(Collectors.toList());
             certificate.setTags(tags);
-        } else throw new NoCertificateException();
+        } else throw new NoCertificateException(id);
 
         return certificate;
     }

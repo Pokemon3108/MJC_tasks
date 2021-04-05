@@ -1,6 +1,12 @@
 package com.epam.esm.exception;
 
 public class NoCertificateException extends RuntimeException {
+    private long certificateId;
+
+    public NoCertificateException(long id) {
+        this.certificateId = id;
+    }
+
     public NoCertificateException() {
         super();
     }
@@ -19,5 +25,9 @@ public class NoCertificateException extends RuntimeException {
 
     protected NoCertificateException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public long getCertificateId() {
+        return certificateId;
     }
 }
