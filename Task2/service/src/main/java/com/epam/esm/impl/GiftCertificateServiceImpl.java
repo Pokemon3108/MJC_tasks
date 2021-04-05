@@ -1,29 +1,29 @@
 package com.epam.esm.impl;
 
 import com.epam.esm.GiftCertificateService;
+import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Gift certificate service.
  */
-@Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Autowired
     private GiftCertificateDao certificateDao;
 
     @Autowired
-    private TagServiceImpl tagService;
+    private TagService tagService;
 
     /**
      * Insert certificate to storage
@@ -32,13 +32,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return the id of inserted certificate
      */
     public Long add(GiftCertificate certificate) {
-        certificate.setCreateDate(getCurrentIsoTime());
-        certificate.setLastUpdateDate(getCurrentIsoTime());
+        certificate.setCreateDate(getCurrentTime());
+        certificate.setLastUpdateDate(getCurrentTime());
         Long certificateId = certificateDao.insert(certificate);
         certificate.setId(certificateId);
         setCertificateTagsId(certificate.getTags());
-        certificateDao.insertCertificateTag(certificate);
+        certificateDao.insertCertificateTags(certificate);
         return certificateId;
+    }
+
+    /**
+     * Read gift certificate by its id
+     * @param id certificate id
+     * @return certificate
+     */
+    @Override
+    public GiftCertificate read(long id) {
+        GiftCertificate certificate=certificateDao.read(id);
+        List<Long> tagsId=certificateDao.readCertificateTagsIdByCertificateId(id);
+        List<Tag> tags=tagsId.stream().map(tagId->tagService.findTagById(tagId)).collect(Collectors.toList());
+        certificate.setTags(tags);
+        return certificate;
     }
 
     /**
@@ -59,5 +73,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String isoTimeNow = ZonedDateTime.now(ZoneOffset.UTC).format(formatter);
         return LocalDateTime.parse(isoTimeNow);
+    }
+
+    private LocalDateTime getCurrentTime() {
+        return LocalDateTime.now();
     }
 }

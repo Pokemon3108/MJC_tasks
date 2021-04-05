@@ -17,4 +17,9 @@ public class TagServiceImpl implements TagService {
     public Long insert(Tag tag) {
         return tagDao.insert(tag);
     }
+
+    @Override
+    public Tag findTagById(long id) {
+        return tagDao.read(id);
+    }
 }

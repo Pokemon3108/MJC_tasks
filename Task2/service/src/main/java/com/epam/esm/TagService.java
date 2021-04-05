@@ -8,4 +8,6 @@ public interface TagService {
     Tag findTagByName(Tag tag);
 
     Long insert(Tag tag);
+
+    Tag findTagById(long id);
 }

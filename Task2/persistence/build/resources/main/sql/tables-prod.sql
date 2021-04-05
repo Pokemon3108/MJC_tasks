@@ -17,7 +17,7 @@ CREATE TABLE tag
 
 CREATE TABLE gift_certificate_tag
 (
-    id SERIAL PRIMARY KEY,
-    certificate_id INTEGER REFERENCES gift_certificate(id),
-    tag_id INTEGER REFERENCES tag(id)
+    id             SERIAL PRIMARY KEY,
+    certificate_id INTEGER REFERENCES gift_certificate (id),
+    tag_id         INTEGER REFERENCES tag (id)
 )
