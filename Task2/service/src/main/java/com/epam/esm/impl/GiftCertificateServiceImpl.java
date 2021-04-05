@@ -5,6 +5,7 @@ import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.NoCertificateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -42,9 +43,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificate read(long id) {
         GiftCertificate certificate = certificateDao.read(id);
-        List<Long> tagsId = certificateDao.readCertificateTagsIdByCertificateId(id);
-        List<Tag> tags = tagsId.stream().map(tagId -> tagService.findTagById(tagId)).collect(Collectors.toList());
-        certificate.setTags(tags);
+        if (certificate != null) {
+            List<Long> tagsId = certificateDao.readCertificateTagsIdByCertificateId(id);
+            List<Tag> tags = tagsId.stream().map(tagId -> tagService.findTagById(tagId)).collect(Collectors.toList());
+            certificate.setTags(tags);
+        } else throw new NoCertificateException();
+
         return certificate;
     }
 
