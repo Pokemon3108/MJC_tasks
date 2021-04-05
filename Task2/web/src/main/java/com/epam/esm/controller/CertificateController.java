@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +14,7 @@ public class CertificateController {
     private GiftCertificateService service;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody GiftCertificate certificate) {
         return service.add(certificate);
     }
@@ -22,7 +24,7 @@ public class CertificateController {
         return service.read(id);
     }
 
-    @PutMapping()
+    @PutMapping
     public GiftCertificate update(@RequestBody GiftCertificate certificate) {
         service.update(certificate);
         return service.read(certificate.getId());

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The Gift certificate service.
+ * The Gift certificate service implementation
  */
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
@@ -23,10 +23,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private TagService tagService;
 
     /**
-     * Insert certificate to storage
-     *
-     * @param certificate
-     * @return the id of inserted certificate
+     * {@inheritDoc}
      */
     public Long add(GiftCertificate certificate) {
         certificate.setCreateDate(getCurrentTime());
@@ -38,11 +35,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificateId;
     }
 
+
     /**
-     * Read gift certificate by its id
-     *
-     * @param id certificate id
-     * @return certificate
+     * {@inheritDoc}
      */
     @Override
     public GiftCertificate read(long id) {
@@ -53,6 +48,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificate;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(GiftCertificate certificate) {
         certificate.setLastUpdateDate(getCurrentTime());
