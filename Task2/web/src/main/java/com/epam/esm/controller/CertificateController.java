@@ -22,4 +22,10 @@ public class CertificateController {
         return service.read(id);
     }
 
+    @PutMapping()
+    public GiftCertificate update(@RequestBody GiftCertificate certificate) {
+        service.update(certificate);
+        return service.read(certificate.getId());
+    }
+
 }

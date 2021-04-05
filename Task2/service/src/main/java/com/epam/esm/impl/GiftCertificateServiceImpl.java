@@ -8,9 +8,6 @@ import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,24 +53,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificate;
     }
 
-    /**
-     * Set id for certificate's tags
-     *
-     * @param tags
-     */
-    private void setCertificateTagsId(List<Tag> tags) {
-        tags.forEach(tag -> tag.setId(tagService.findTagByName(tag).getId()));
-        tags.stream().filter(tag -> tag.getId() == null)
-                .forEach(tag -> tag.setId(tagService.insert(tag)));
+    @Override
+    public void update(GiftCertificate certificate) {
+        certificate.setLastUpdateDate(getCurrentTime());
+        certificateDao.update(certificate);
+        if (certificate.getTags()!=null) {
+            setCertificateTagsId(certificate.getTags());
+        }
     }
 
     /**
-     * @return current time
+     * Set id for certificate's tags
+     *
+     * @param tags with names, id from which will be set
      */
-    private LocalDateTime getCurrentIsoTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        String isoTimeNow = ZonedDateTime.now(ZoneOffset.UTC).format(formatter);
-        return LocalDateTime.parse(isoTimeNow);
+    private void setCertificateTagsId(List<Tag> tags) {
+        //set id for tags that already exist
+        tags.forEach(tag -> tag.setId(tagService.findTagByName(tag).getId()));
+
+        //insert tags and set id for them if they not exist yet
+        tags.stream().filter(tag -> tag.getId() == null)
+                .forEach(tag -> tag.setId(tagService.insert(tag)));
     }
 
     private LocalDateTime getCurrentTime() {

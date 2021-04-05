@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -30,8 +31,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_CERTIFICATE_BY_ID = "SELECT id, name, description, price, duration, create_date," +
             " last_update_date FROM gift_certificate WHERE id=?";
 
-    private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id FROM gift_certificate_tag " +
-            "WHERE certificate_id=?";
+    private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id " +
+            "FROM gift_certificate_tag WHERE certificate_id=?";
+
+    private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name=COALESCE(?, name)," +
+            "description=COALESCE(?, description), price=COALESCE(?, price), " +
+            "duration=COALESCE(?, duration), last_update_date=? WHERE id=?";
 
     @Override
     public Long insert(GiftCertificate certificate) {
@@ -50,8 +55,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void update(long id) {
-
+    public void update(GiftCertificate certificate) {
+        jdbcTemplate.update(UPDATE_CERTIFICATE, certificate.getName(), certificate.getDescription(),
+                certificate.getPrice(), certificate.getDuration(),
+                certificate.getLastUpdateDate(), certificate.getId());
     }
 
     @Override
@@ -87,6 +94,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         } catch (EmptyResultDataAccessException ex) {
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public void deleteCertificateTags(List<Tag> tags) {
+        
     }
 
 

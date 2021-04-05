@@ -8,8 +8,6 @@ import java.util.List;
 public interface TagDao {
     Long insert(Tag tag);
 
-    void update(long id);
-
     void delete(Tag tag);
 
     Tag read(long id);

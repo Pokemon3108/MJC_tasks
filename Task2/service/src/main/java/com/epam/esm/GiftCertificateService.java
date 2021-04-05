@@ -8,4 +8,6 @@ public interface GiftCertificateService {
     Long add(GiftCertificate certificate);
 
     GiftCertificate read(long id);
+
+    void update(GiftCertificate certificate);
 }

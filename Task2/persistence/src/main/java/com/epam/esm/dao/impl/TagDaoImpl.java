@@ -20,7 +20,7 @@ public class TagDaoImpl implements TagDao {
     private JdbcTemplate jdbcTemplate;
 
     private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";
-    private static final String FIND_TAG_BY_NAME = "SELECT id FROM tag WHERE name=?";
+    private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
     private static final String FIND_TAG_BY_ID = "SELECT id, name FROM tag WHERE id=?";
 
     @Override
@@ -32,11 +32,6 @@ public class TagDaoImpl implements TagDao {
             return ps;
         }, keyHolder);
         return keyHolder.getKey().longValue();
-    }
-
-    @Override
-    public void update(long id) {
-
     }
 
     @Override
