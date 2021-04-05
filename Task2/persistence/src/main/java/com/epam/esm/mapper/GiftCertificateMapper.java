@@ -9,9 +9,9 @@ import java.sql.SQLException;
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
     @Override
     public GiftCertificate mapRow(ResultSet rs, int rowNum) throws SQLException {
-        GiftCertificate certificate=new GiftCertificate();
+        GiftCertificate certificate = new GiftCertificate();
         certificate.setId(rs.getLong("id"));
-        certificate.setLastUpdateDate( rs.getTimestamp("last_update_date").toLocalDateTime());
+        certificate.setLastUpdateDate(rs.getTimestamp("last_update_date").toLocalDateTime());
         certificate.setCreateDate(rs.getTimestamp("create_date").toLocalDateTime());
         certificate.setDescription(rs.getString("description"));
         certificate.setName(rs.getString("name"));

@@ -10,6 +10,7 @@ public class GiftCertificate {
     private String description;
     private BigDecimal price;
     private int duration;
+    //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Zagreb")
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;

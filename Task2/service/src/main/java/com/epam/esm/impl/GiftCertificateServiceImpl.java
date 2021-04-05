@@ -43,14 +43,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Read gift certificate by its id
+     *
      * @param id certificate id
      * @return certificate
      */
     @Override
     public GiftCertificate read(long id) {
-        GiftCertificate certificate=certificateDao.read(id);
-        List<Long> tagsId=certificateDao.readCertificateTagsIdByCertificateId(id);
-        List<Tag> tags=tagsId.stream().map(tagId->tagService.findTagById(tagId)).collect(Collectors.toList());
+        GiftCertificate certificate = certificateDao.read(id);
+        List<Long> tagsId = certificateDao.readCertificateTagsIdByCertificateId(id);
+        List<Tag> tags = tagsId.stream().map(tagId -> tagService.findTagById(tagId)).collect(Collectors.toList());
         certificate.setTags(tags);
         return certificate;
     }
