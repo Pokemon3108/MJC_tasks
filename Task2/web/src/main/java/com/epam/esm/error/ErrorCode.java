@@ -9,6 +9,7 @@ public enum ErrorCode {
 
     NO_CERTIFICATE(40401),
     NOT_FULL_CERTIFICATE(40402),
+    NO_TAG(40411),
     NO_ID(40421);
 
     private int code;

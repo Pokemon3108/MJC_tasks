@@ -3,6 +3,7 @@ package com.epam.esm.impl;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.NoTagException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -17,14 +18,6 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Tag readTagByName(String name) {
-        return tagDao.readTagByName(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Long insert(Tag tag) {
         return tagDao.insert(tag);
     }
@@ -34,6 +27,18 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public Tag readTagById(long id) {
-        return tagDao.read(id);
+        Tag tag = tagDao.read(id);
+        if (tag == null) {
+            throw new NoTagException(id);
+        }
+        return tag;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Tag readTagByName(String name) {
+        return tagDao.readTagByName(name);
     }
 }
