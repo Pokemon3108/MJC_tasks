@@ -14,5 +14,5 @@ public interface TagDao {
 
     List<Tag> findAll();
 
-    Tag findTagByName(String name);
+    Tag readTagByName(String name);
 }

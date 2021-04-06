@@ -10,14 +10,6 @@ import org.springframework.stereotype.Service;
 public interface TagService {
 
     /**
-     * Find tag by its name.
-     *
-     * @param tag by name of which the search will be implemented
-     * @return the tag from storage
-     */
-    Tag findTagByName(Tag tag);
-
-    /**
      * Insert tag into storage
      *
      * @param tag that will be saved
@@ -31,5 +23,13 @@ public interface TagService {
      * @param id of tag
      * @return the tag from storage
      */
-    Tag findTagById(long id);
+    Tag readTagById(long id);
+
+    /**
+     * Find tag by its name.
+     *
+     * @param name of tag
+     * @return the tag from storage
+     */
+    Tag readTagByName(String name);
 }

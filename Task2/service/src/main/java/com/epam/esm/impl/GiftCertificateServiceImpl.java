@@ -48,7 +48,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate certificate = certificateDao.read(id);
         if (certificate != null) {
             List<Long> tagsId = certificateDao.readCertificateTagsIdByCertificateId(id);
-            List<Tag> tags = tagsId.stream().map(tagId -> tagService.findTagById(tagId)).collect(Collectors.toList());
+            List<Tag> tags = tagsId.stream().map(tagId -> tagService.readTagById(tagId)).collect(Collectors.toList());
             certificate.setTags(tags);
         } else throw new NoCertificateException(id);
 
@@ -94,7 +94,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     private void setCertificateTagsId(List<Tag> tags) {
         //set id for tags that already exist
-        tags.forEach(tag -> tag.setId(tagService.findTagByName(tag).getId()));
+        tags.forEach(tag -> tag.setId(tagService.readTagByName(tag.getName()).getId()));
 
         //insert tags and set id for them if they not exist yet
         tags.stream().filter(tag -> tag.getId() == null)

@@ -17,8 +17,8 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Tag findTagByName(Tag tag) {
-        return tagDao.findTagByName(tag.getName());
+    public Tag readTagByName(String name) {
+        return tagDao.readTagByName(name);
     }
 
     /**
@@ -33,7 +33,7 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Tag findTagById(long id) {
+    public Tag readTagById(long id) {
         return tagDao.read(id);
     }
 }

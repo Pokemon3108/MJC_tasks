@@ -54,7 +54,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag findTagByName(String name) {
+    public Tag readTagByName(String name) {
         try {
             return jdbcTemplate.queryForObject(FIND_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
         } catch (EmptyResultDataAccessException ex) {
