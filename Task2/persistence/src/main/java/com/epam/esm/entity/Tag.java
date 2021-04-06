@@ -11,6 +11,11 @@ public class Tag {
         this.name = name;
     }
 
+    public Tag(String name, Long id){
+        this.name=name;
+        this.id=id;
+    }
+
     public Long getId() {
         return id;
     }

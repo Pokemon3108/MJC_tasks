@@ -1,7 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.mapper.GiftCertificateMapper;
+import com.epam.esm.dao.mapper.GiftCertificateExtractor;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,8 +24,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String INSERT_CERTIFICATE = "INSERT INTO gift_certificate " +
             "(name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String READ_CERTIFICATE_BY_ID = "SELECT id, name, description, price, duration, create_date," +
-            " last_update_date FROM gift_certificate WHERE id=?";
+
+    private static final String READ_CERTIFICATE_BY_ID = "SELECT cert.name AS cert_name, cert.description AS description , " +
+            "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, cert.name, " +
+            "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
+            "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
+            "JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id " +
+            "JOIN tag ON tag.id = cert_tag.tag_id WHERE cert.id = ?";
 
     private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name=COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
@@ -72,11 +77,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public GiftCertificate read(long id) {
-        try {
-            return jdbcTemplate.queryForObject(READ_CERTIFICATE_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, new GiftCertificateMapper());
-        } catch (EmptyResultDataAccessException ex) {
+        List<GiftCertificate> certificates = jdbcTemplate.query(READ_CERTIFICATE_BY_ID, new Object[]{id},
+                new int[]{Types.INTEGER}, new GiftCertificateExtractor());
+        if (certificates == null || certificates.isEmpty()) {
             return null;
+        } else {
+            return certificates.get(0);
         }
+
     }
 
     @Override

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The Gift certificate service implementation
@@ -46,12 +45,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificate read(long id) {
         GiftCertificate certificate = certificateDao.read(id);
-        if (certificate != null) {
-            List<Long> tagsId = certificateDao.readCertificateTagsIdByCertificateId(id);
-            List<Tag> tags = tagsId.stream().map(tagId -> tagService.readTagById(tagId)).collect(Collectors.toList());
-            certificate.setTags(tags);
-        } else throw new NoCertificateException(id);
-
+        if (certificate == null) {
+            throw new NoCertificateException(id);
+        }
         return certificate;
     }
 
@@ -68,7 +64,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         certificate.setLastUpdateDate(getCurrentTime());
         certificateDao.update(certificate);
-        if (certificate.getTags() != null) {
+        if (certificate.getTags().isEmpty()) {
             setCertificateTagsId(certificate.getTags());
             certificateDao.deleteCertificateTagsByCertificateId(certificate.getId());
             certificateDao.insertCertificateTags(certificate);

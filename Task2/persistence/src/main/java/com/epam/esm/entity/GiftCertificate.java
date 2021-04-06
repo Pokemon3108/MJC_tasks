@@ -2,6 +2,7 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GiftCertificate {
@@ -12,7 +13,7 @@ public class GiftCertificate {
     private Integer duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private List<Tag> tags;
+    private List<Tag> tags=new ArrayList<>();
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
@@ -76,5 +77,9 @@ public class GiftCertificate {
 
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
     }
 }
