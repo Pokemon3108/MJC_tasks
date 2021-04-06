@@ -1,5 +1,8 @@
 package com.epam.esm.exception;
 
+/**
+ * NoIdException throws when object doesn't contain id, where it's necessary
+ */
 public class NoIdException extends RuntimeException {
     public NoIdException() {
         super();

@@ -15,7 +15,7 @@ public interface TagService {
      * @param tag that will be saved
      * @return the tag's id
      */
-    Long insert(Tag tag);
+    Long create(Tag tag);
 
     /**
      * Find tag in storage by id

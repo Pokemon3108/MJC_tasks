@@ -1,7 +1,6 @@
 package com.epam.esm.impl;
 
 import com.epam.esm.TagService;
-import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoTagException;
@@ -16,14 +15,11 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private TagDao tagDao;
 
-    @Autowired
-    private GiftCertificateDao certificateDao;
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public Long insert(Tag tag) {
+    public Long create(Tag tag) {
         return tagDao.insert(tag);
     }
 
@@ -53,6 +49,8 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void delete(long id) {
+        Tag tag=tagDao.read(id);
+        if (tag==null) throw new NoTagException(id);
         tagDao.deleteCertificateTagsByTagId(id);
         tagDao.delete(id);
     }

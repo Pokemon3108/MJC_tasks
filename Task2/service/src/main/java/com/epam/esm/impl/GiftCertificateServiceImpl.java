@@ -98,7 +98,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         //insert tags and set id for them if they not exist yet
         tags.stream().filter(tag -> tag.getId() == null)
-                .forEach(tag -> tag.setId(tagService.insert(tag)));
+                .forEach(tag -> tag.setId(tagService.create(tag)));
     }
 
     /**

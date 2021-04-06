@@ -1,7 +1,5 @@
 package com.epam.esm.exception;
 
-import java.util.List;
-
 public class NotFullCertificateException extends RuntimeException {
 
     public NotFullCertificateException() {
