@@ -6,7 +6,9 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoCertificateException;
+import com.epam.esm.exception.NoIdException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     public Long add(GiftCertificate certificate) {
         certificate.setCreateDate(getCurrentTime());
         certificate.setLastUpdateDate(getCurrentTime());
@@ -58,6 +61,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Override
     public void update(GiftCertificate certificate) {
+        Long certificateId = certificate.getId();
+        if (certificateId == null) throw new NoIdException();
+        if (certificateDao.read(certificateId) == null) throw new NoCertificateException(certificateId);
+
         certificate.setLastUpdateDate(getCurrentTime());
         certificateDao.update(certificate);
         if (certificate.getTags() != null) {

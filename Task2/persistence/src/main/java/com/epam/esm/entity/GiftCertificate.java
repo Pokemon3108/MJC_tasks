@@ -5,12 +5,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class GiftCertificate {
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
     private int duration;
-    //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="Europe/Zagreb")
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
@@ -23,11 +22,11 @@ public class GiftCertificate {
         return tags;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

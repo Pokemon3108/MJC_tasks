@@ -31,4 +31,6 @@ public interface GiftCertificateService {
      * @param certificate it is already updated
      */
     void update(GiftCertificate certificate);
+
+
 }
