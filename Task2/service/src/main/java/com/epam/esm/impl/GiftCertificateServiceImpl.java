@@ -70,7 +70,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDao.update(certificate);
         if (certificate.getTags() != null) {
             setCertificateTagsId(certificate.getTags());
-            certificateDao.deleteCertificateTags(certificate);
+            certificateDao.deleteCertificateTagsByCertificateId(certificate.getId());
             certificateDao.insertCertificateTags(certificate);
         }
     }
@@ -83,7 +83,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void delete(long id) {
         GiftCertificate certificate = certificateDao.read(id);
         if (certificate == null) throw new NoCertificateException(id);
-        certificateDao.deleteCertificateTags(certificate);
+        certificateDao.deleteCertificateTagsByCertificateId(certificate.getId());
         certificateDao.delete(id);
     }
 

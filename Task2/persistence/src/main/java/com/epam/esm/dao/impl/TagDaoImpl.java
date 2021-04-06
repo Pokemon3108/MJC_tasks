@@ -20,8 +20,10 @@ public class TagDaoImpl implements TagDao {
     private JdbcTemplate jdbcTemplate;
 
     private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";
-    private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
-    private static final String FIND_TAG_BY_ID = "SELECT id, name FROM tag WHERE id=?";
+    private static final String READ_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
+    private static final String READ_TAG_BY_ID = "SELECT id, name FROM tag WHERE id=?";
+    private static final String DELETE_TAG_BY_ID = "DELETE FROM tag WHERE id=?";
+    private static final String DELETE_CERTIFICATE_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_tag WHERE tag_id=?";
 
     @Override
     public Long insert(Tag tag) {
@@ -35,14 +37,14 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void delete(Tag tag) {
-
+    public void delete(long id) {
+        jdbcTemplate.update(DELETE_TAG_BY_ID, id);
     }
 
     @Override
     public Tag read(long id) {
         try {
-            return jdbcTemplate.queryForObject(FIND_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, new TagMapper());
+            return jdbcTemplate.queryForObject(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, new TagMapper());
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
@@ -56,9 +58,14 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Tag readTagByName(String name) {
         try {
-            return jdbcTemplate.queryForObject(FIND_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
+            return jdbcTemplate.queryForObject(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
         } catch (EmptyResultDataAccessException ex) {
             return new Tag(name);
         }
+    }
+
+    @Override
+    public void deleteCertificateTagsByTagId(long tagId) {
+        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_TAG_ID, tagId);
     }
 }

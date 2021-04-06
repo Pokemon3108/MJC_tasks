@@ -31,7 +31,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
             "duration=COALESCE(?, duration), last_update_date=? WHERE id=?";
 
-    private static final String DELETE_CERTIFICATE="DELETE FROM gift_certificate WHERE id=?";
+    private static final String DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
 
     private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
             "(certificate_id, tag_id) VALUES(?, ?)";
@@ -39,8 +39,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id " +
             "FROM gift_certificate_tag WHERE certificate_id=?";
 
-    private static final String DELETE_CERTIFICATE_TAGS = "DELETE FROM gift_certificate_tag WHERE certificate_id=?";
-
+    private static final String DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag WHERE certificate_id=?";
 
 
     @Override
@@ -102,8 +101,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void deleteCertificateTags(GiftCertificate certificate) {
-        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS, certificate.getId());
+    public void deleteCertificateTagsByCertificateId(long certificateId) {
+        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID, certificateId);
     }
 
 

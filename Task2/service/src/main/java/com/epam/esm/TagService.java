@@ -18,7 +18,7 @@ public interface TagService {
     Long insert(Tag tag);
 
     /**
-     * Find tag by id
+     * Find tag in storage by id
      *
      * @param id of tag
      * @return the tag from storage
@@ -32,4 +32,10 @@ public interface TagService {
      * @return the tag from storage
      */
     Tag readTagByName(String name);
+
+    /**
+     * Delete tag from storage
+     * @param id of tag
+     */
+    void delete(long id);
 }

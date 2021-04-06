@@ -1,10 +1,12 @@
 package com.epam.esm.impl;
 
 import com.epam.esm.TagService;
+import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoTagException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of tag service
@@ -13,6 +15,9 @@ public class TagServiceImpl implements TagService {
 
     @Autowired
     private TagDao tagDao;
+
+    @Autowired
+    private GiftCertificateDao certificateDao;
 
     /**
      * {@inheritDoc}
@@ -40,5 +45,15 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag readTagByName(String name) {
         return tagDao.readTagByName(name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void delete(long id) {
+        tagDao.deleteCertificateTagsByTagId(id);
+        tagDao.delete(id);
     }
 }
