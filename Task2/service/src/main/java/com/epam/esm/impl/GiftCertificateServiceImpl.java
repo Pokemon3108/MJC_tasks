@@ -101,6 +101,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .forEach(tag -> tag.setId(tagService.insert(tag)));
     }
 
+    /**
+     * @return current time
+     */
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }

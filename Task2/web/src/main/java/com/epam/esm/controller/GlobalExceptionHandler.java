@@ -5,6 +5,7 @@ import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.exception.NotFullCertificateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +30,12 @@ public class GlobalExceptionHandler {
     public Error handleIdNotFound(NoIdException ex) {
         return new Error(ErrorCode.NO_ID.getCode(),
                 localeService.getLocaleMessage("no_id"));
+    }
+
+    @ExceptionHandler(NotFullCertificateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleNotFullCertificate(NotFullCertificateException ex) {
+        return new Error(ErrorCode.NOT_FULL_CERTIFICATE.getCode(),
+                localeService.getLocaleMessage(ex.getMessage()));
     }
 }
