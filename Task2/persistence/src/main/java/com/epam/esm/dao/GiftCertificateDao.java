@@ -10,7 +10,7 @@ public interface GiftCertificateDao {
 
     void update(GiftCertificate certificate);
 
-    void delete(GiftCertificate certificate);
+    void delete(long id);
 
     GiftCertificate read(long id);
 

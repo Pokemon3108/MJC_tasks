@@ -75,6 +75,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(long id) {
+        GiftCertificate certificate = certificateDao.read(id);
+        if (certificate == null) throw new NoCertificateException(id);
+        certificateDao.deleteCertificateTags(certificate);
+        certificateDao.delete(id);
+    }
+
+    /**
      * Set id for certificate's tags
      *
      * @param tags with names, id from which will be set

@@ -32,5 +32,10 @@ public interface GiftCertificateService {
      */
     void update(GiftCertificate certificate);
 
-
+    /**
+     * Delete gift certificate from storage by id
+     *
+     * @param id of certificate
+     */
+    void delete(long id);
 }

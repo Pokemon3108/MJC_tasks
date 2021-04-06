@@ -24,20 +24,24 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String INSERT_CERTIFICATE = "INSERT INTO gift_certificate " +
             "(name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
-            "(certificate_id, tag_id) VALUES(?, ?)";
-
     private static final String READ_CERTIFICATE_BY_ID = "SELECT id, name, description, price, duration, create_date," +
             " last_update_date FROM gift_certificate WHERE id=?";
-
-    private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id " +
-            "FROM gift_certificate_tag WHERE certificate_id=?";
 
     private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name=COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
             "duration=COALESCE(?, duration), last_update_date=? WHERE id=?";
 
+    private static final String DELETE_CERTIFICATE="DELETE FROM gift_certificate WHERE id=?";
+
+    private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
+            "(certificate_id, tag_id) VALUES(?, ?)";
+
+    private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id " +
+            "FROM gift_certificate_tag WHERE certificate_id=?";
+
     private static final String DELETE_CERTIFICATE_TAGS = "DELETE FROM gift_certificate_tag WHERE certificate_id=?";
+
+
 
     @Override
     public Long insert(GiftCertificate certificate) {
@@ -63,8 +67,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void delete(GiftCertificate certificate) {
-
+    public void delete(long id) {
+        jdbcTemplate.update(DELETE_CERTIFICATE, id);
     }
 
     @Override

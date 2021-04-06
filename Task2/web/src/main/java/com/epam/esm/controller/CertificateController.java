@@ -30,4 +30,10 @@ public class CertificateController {
         return service.read(certificate.getId());
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id) {
+        service.delete(id);
+    }
+
 }
