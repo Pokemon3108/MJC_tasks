@@ -59,6 +59,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void update(GiftCertificate certificate) {
         Long certificateId = certificate.getId();
@@ -77,6 +78,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void delete(long id) {
         GiftCertificate certificate = certificateDao.read(id);
