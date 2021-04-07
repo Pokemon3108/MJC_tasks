@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The Gift certificate service implementation
@@ -29,8 +30,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Transactional
     public Long add(GiftCertificate certificate) {
-        certificate.setCreateDate(getCurrentTime());
-        certificate.setLastUpdateDate(getCurrentTime());
+        certificate.setCreateDate(LocalDateTime.now());
+        certificate.setLastUpdateDate(LocalDateTime.now());
         Long certificateId = certificateDao.insert(certificate);
         certificate.setId(certificateId);
         setCertificateTagsId(certificate.getTags());
@@ -62,7 +63,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateId == null) throw new NoIdException();
         if (certificateDao.read(certificateId) == null) throw new NoCertificateException(certificateId);
 
-        certificate.setLastUpdateDate(getCurrentTime());
+        certificate.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificate);
         if (certificate.getTags().isEmpty()) {
             setCertificateTagsId(certificate.getTags());
@@ -83,12 +84,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDao.delete(id);
     }
 
+    @Override
+    public List<GiftCertificate> findByParams(GiftCertificate certificate) {
+        return certificateDao.findCertificateByParams(certificate);
+    }
+
     /**
      * Set id for certificate's tags
      *
      * @param tags with names, id from which will be set
      */
-    private void setCertificateTagsId(List<Tag> tags) {
+    private void setCertificateTagsId(Set<Tag> tags) {
         //set id for tags that already exist
         tags.forEach(tag -> tag.setId(tagService.readTagByName(tag.getName()).getId()));
 
@@ -97,10 +103,4 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .forEach(tag -> tag.setId(tagService.create(tag)));
     }
 
-    /**
-     * @return current time
-     */
-    private LocalDateTime getCurrentTime() {
-        return LocalDateTime.now();
-    }
 }

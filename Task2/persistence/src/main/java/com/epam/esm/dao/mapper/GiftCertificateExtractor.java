@@ -20,6 +20,7 @@ public class GiftCertificateExtractor implements ResultSetExtractor<List<GiftCer
         GiftCertificate certificate = null;
         while (rs.next()) {
             Long id = rs.getLong("cert_id");
+            certificate = map.get(id);
             if (certificate == null) {
                 certificate = new GiftCertificate();
                 certificate.setId(id);
@@ -32,8 +33,11 @@ public class GiftCertificateExtractor implements ResultSetExtractor<List<GiftCer
                 map.put(id, certificate);
             }
             Long tagId = rs.getLong("tag_id");
-            Tag tag = new Tag(rs.getString("tag_name"), tagId);
-            certificate.addTag(tag);
+            String tagName = rs.getString("tag_name");
+            if (tagName != null) {
+                Tag tag = new Tag(rs.getString("tag_name"), tagId);
+                certificate.addTag(tag);
+            }
         }
         return new ArrayList<>(map.values());
     }

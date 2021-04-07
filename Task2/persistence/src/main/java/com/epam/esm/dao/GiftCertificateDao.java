@@ -22,5 +22,5 @@ public interface GiftCertificateDao {
 
     void deleteCertificateTagsByCertificateId(long certificateId);
 
-
+    List<GiftCertificate> findCertificateByParams(GiftCertificate certificate);
 }

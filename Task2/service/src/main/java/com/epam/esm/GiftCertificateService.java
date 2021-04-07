@@ -3,6 +3,8 @@ package com.epam.esm;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * The interface for gift certificate CRUD operations
  */
@@ -38,4 +40,6 @@ public interface GiftCertificateService {
      * @param id of certificate
      */
     void delete(long id);
+
+    List<GiftCertificate> findByParams(GiftCertificate certificate);
 }

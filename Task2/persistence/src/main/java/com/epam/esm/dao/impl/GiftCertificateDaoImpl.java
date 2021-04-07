@@ -29,8 +29,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, cert.name, " +
             "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
             "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
-            "JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id " +
-            "JOIN tag ON tag.id = cert_tag.tag_id WHERE cert.id = ?";
+            "LEFT OUTER JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id " +
+            "LEFT OUTER JOIN tag ON tag.id = cert_tag.tag_id WHERE cert.id = ?";
 
     private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name=COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
@@ -45,6 +45,16 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "FROM gift_certificate_tag WHERE certificate_id=?";
 
     private static final String DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag WHERE certificate_id=?";
+
+    private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT cert.name AS cert_name, cert.description AS description , " +
+            "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, " +
+            "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
+            "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
+            "LEFT JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id " +
+            "LEFT JOIN tag ON tag.id = cert_tag.tag_id WHERE cert.id " +
+            "IN (SELECT certificate_id FROM gift_certificate_tag LEFT JOIN tag on tag.id=gift_certificate_tag.tag_id " +
+            "WHERE tag.name=COALESCE(?, tag.name)) " +
+            "AND cert.name=COALESCE(?, cert.name) AND cert.description=COALESCE(?, cert.description)";
 
 
     @Override
@@ -111,6 +121,21 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void deleteCertificateTagsByCertificateId(long certificateId) {
         jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID, certificateId);
+    }
+
+
+    @Override
+    public List<GiftCertificate> findCertificateByParams(GiftCertificate certificate) {
+        return jdbcTemplate.query(READ_CERTIFICATE_BY_PARAMS, ps -> {
+            if (certificate.hasTags()) {
+                ps.setString(1, certificate.getTag(0).getName());
+            } else {
+                ps.setString(1, null);
+            }
+            ps.setString(2, certificate.getName());
+            ps.setString(3, certificate.getDescription());
+        }, new GiftCertificateExtractor());
+
     }
 
 

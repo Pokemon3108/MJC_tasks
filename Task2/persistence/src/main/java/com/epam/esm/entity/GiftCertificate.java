@@ -3,7 +3,8 @@ package com.epam.esm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GiftCertificate {
     private Long id;
@@ -13,13 +14,10 @@ public class GiftCertificate {
     private Integer duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private List<Tag> tags=new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
@@ -81,5 +79,17 @@ public class GiftCertificate {
 
     public void addTag(Tag tag) {
         tags.add(tag);
+    }
+
+    public Tag getTag(int index) {
+        if (index < tags.size()) {
+            return new ArrayList<>(tags).get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasTags() {
+        return !tags.isEmpty();
     }
 }
