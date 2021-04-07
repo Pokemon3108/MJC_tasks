@@ -54,7 +54,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "LEFT JOIN tag ON tag.id = cert_tag.tag_id WHERE cert.id " +
             "IN (SELECT certificate_id FROM gift_certificate_tag LEFT JOIN tag on tag.id=gift_certificate_tag.tag_id " +
             "WHERE tag.name=COALESCE(?, tag.name)) " +
-            "AND cert.name=COALESCE(?, cert.name) AND cert.description=COALESCE(?, cert.description)";
+            "AND cert.name LIKE CONCAT('%', COALESCE(?, cert.name), '%') AND cert.description=COALESCE(?, cert.description)";
 
 
     @Override
