@@ -1,8 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.TagService;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.NotFullCertificateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -18,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.epam.esm.TagService;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.NotFullCertificateException;
+
 @RestController
 @RequestMapping("tag")
 public class TagController {
@@ -32,6 +33,7 @@ public class TagController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody Tag tag, BindingResult bindingResult) {
+
         tagValidator.validate(tag, bindingResult);
         if (bindingResult.hasErrors()) {
             ObjectError error = bindingResult.getAllErrors().get(0);
@@ -42,12 +44,14 @@ public class TagController {
 
     @GetMapping("/{id}")
     public Tag read(@PathVariable long id) {
+
         return tagService.readTagById(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
+
         tagService.delete(id);
     }
 }

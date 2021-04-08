@@ -15,10 +15,12 @@ public enum ErrorCode {
     private int code;
 
     ErrorCode(int code) {
+
         this.code = code;
     }
 
     public int getCode() {
+
         return code;
     }
 }

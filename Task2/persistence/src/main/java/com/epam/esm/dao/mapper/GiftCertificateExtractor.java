@@ -1,9 +1,5 @@
 package com.epam.esm.dao.mapper;
 
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
-import org.springframework.jdbc.core.ResultSetExtractor;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,11 +7,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.jdbc.core.ResultSetExtractor;
+
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
+
 
 public class GiftCertificateExtractor implements ResultSetExtractor<List<GiftCertificate>> {
 
     @Override
     public List<GiftCertificate> extractData(ResultSet rs) throws SQLException {
+
         Map<Long, GiftCertificate> map = new LinkedHashMap<>();
         GiftCertificate certificate = null;
         while (rs.next()) {

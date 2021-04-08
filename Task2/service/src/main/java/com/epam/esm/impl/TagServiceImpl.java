@@ -1,11 +1,12 @@
 package com.epam.esm.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoTagException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of tag service
@@ -20,6 +21,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public Long create(Tag tag) {
+
         return tagDao.insert(tag);
     }
 
@@ -28,6 +30,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public Tag readTagById(long id) {
+
         Tag tag = tagDao.read(id);
         if (tag == null) {
             throw new NoTagException(id);
@@ -40,6 +43,7 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     public Tag readTagByName(String name) {
+
         return tagDao.readTagByName(name);
     }
 
@@ -49,8 +53,11 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void delete(long id) {
-        Tag tag=tagDao.read(id);
-        if (tag==null) throw new NoTagException(id);
+
+        Tag tag = tagDao.read(id);
+        if (tag == null) {
+            throw new NoTagException(id);
+        }
         tagDao.deleteCertificateTagsByTagId(id);
         tagDao.delete(id);
     }

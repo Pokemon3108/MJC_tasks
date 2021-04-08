@@ -1,5 +1,12 @@
 package com.epam.esm.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
 import com.epam.esm.comparator.ComparatorService;
@@ -8,12 +15,6 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The Gift certificate service implementation
@@ -34,6 +35,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Transactional
     public Long add(GiftCertificate certificate) {
+
         certificate.setCreateDate(LocalDateTime.now());
         certificate.setLastUpdateDate(LocalDateTime.now());
         Long certificateId = certificateDao.insert(certificate);
@@ -49,6 +51,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     @Override
     public GiftCertificate read(long id) {
+
         GiftCertificate certificate = certificateDao.read(id);
         if (certificate == null) {
             throw new NoCertificateException(id);
@@ -63,9 +66,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public void update(GiftCertificate certificate) {
+
         Long certificateId = certificate.getId();
-        if (certificateId == null) throw new NoIdException();
-        if (certificateDao.read(certificateId) == null) throw new NoCertificateException(certificateId);
+        if (certificateId == null) {
+            throw new NoIdException();
+        }
+        if (certificateDao.read(certificateId) == null) {
+            throw new NoCertificateException(certificateId);
+        }
 
         certificate.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificate);
@@ -82,20 +90,25 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public void delete(long id) {
+
         GiftCertificate certificate = certificateDao.read(id);
-        if (certificate == null) throw new NoCertificateException(id);
+        if (certificate == null) {
+            throw new NoCertificateException(id);
+        }
         certificateDao.deleteCertificateTagsByCertificateId(certificate.getId());
         certificateDao.delete(id);
     }
 
     @Override
     public List<GiftCertificate> findByParams(GiftCertificate certificate) {
+
         return certificateDao.findCertificateByParams(certificate);
     }
 
     @Override
     public List<GiftCertificate> sortByParams(List<String> params, String direction) {
-        List<GiftCertificate> allCertificates=certificateDao.findAll();
+
+        List<GiftCertificate> allCertificates = certificateDao.findAll();
         return comparatorService.sort(allCertificates, params, direction);
     }
 

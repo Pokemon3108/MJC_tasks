@@ -1,7 +1,8 @@
 package com.epam.esm;
 
-import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Service;
+
+import com.epam.esm.entity.Tag;
 
 /**
  * The interface Tag service for CRD operation
@@ -35,6 +36,7 @@ public interface TagService {
 
     /**
      * Delete tag from storage
+     *
      * @param id of tag
      */
     void delete(long id);

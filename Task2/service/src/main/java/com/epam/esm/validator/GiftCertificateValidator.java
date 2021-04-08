@@ -1,19 +1,24 @@
 package com.epam.esm.validator;
 
-import com.epam.esm.entity.GiftCertificate;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.epam.esm.entity.GiftCertificate;
+import com.sun.istack.internal.NotNull;
+
 @Service("certificateValidator")
 public class GiftCertificateValidator implements Validator {
+
     @Override
     public boolean supports(Class<?> clazz) {
+
         return GiftCertificate.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
+
         GiftCertificate certificate = (GiftCertificate) target;
         if (certificate.getName() == null) {
             errors.reject("empty_name");

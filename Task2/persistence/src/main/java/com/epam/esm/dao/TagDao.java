@@ -1,11 +1,12 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.entity.Tag;
-
 import java.util.List;
+
+import com.epam.esm.entity.Tag;
 
 
 public interface TagDao {
+
     Long insert(Tag tag);
 
     Tag read(long id);

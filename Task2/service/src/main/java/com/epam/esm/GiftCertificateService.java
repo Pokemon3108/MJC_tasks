@@ -1,9 +1,10 @@
 package com.epam.esm;
 
-import com.epam.esm.entity.GiftCertificate;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.epam.esm.entity.GiftCertificate;
 
 /**
  * The interface for gift certificate CRUD operations
@@ -43,6 +44,7 @@ public interface GiftCertificateService {
 
     /**
      * Search certificates by params
+     *
      * @param certificate with params for search
      * @return list of found certificates
      */
@@ -50,6 +52,7 @@ public interface GiftCertificateService {
 
     /**
      * Sort certificates by params
+     *
      * @param params of sorting
      * @return sorted list of certificates
      */

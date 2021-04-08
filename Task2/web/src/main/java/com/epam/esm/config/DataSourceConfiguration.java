@@ -1,9 +1,9 @@
 package com.epam.esm.config;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-import com.epam.esm.dao.impl.TagDaoImpl;
+import java.util.ResourceBundle;
+
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,10 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
-import java.util.ResourceBundle;
+import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.TagDaoImpl;
 
 @Configuration
 @EnableTransactionManagement
@@ -25,6 +27,7 @@ public class DataSourceConfiguration {
     @Bean
     @Profile("dev")
     public DataSource embeddedDataSource() {
+
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:sql/tables-dev.sql")
@@ -34,6 +37,7 @@ public class DataSourceConfiguration {
     @Bean
     @Profile("prod")
     public DataSource dataSource() {
+
         BasicDataSource dataSource = new BasicDataSource();
         ResourceBundle resource = ResourceBundle.getBundle("database");
         String url = resource.getString("db.url");
@@ -50,21 +54,25 @@ public class DataSourceConfiguration {
 
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+
         return new JdbcTemplate(dataSource);
     }
 
     @Bean
     public TransactionManager transactionManager(DataSource dataSource) {
+
         return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean
     public GiftCertificateDao giftCertificateDao() {
+
         return new GiftCertificateDaoImpl();
     }
 
     @Bean
     public TagDao tagDao() {
+
         return new TagDaoImpl();
     }
 }
