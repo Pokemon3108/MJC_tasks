@@ -5,7 +5,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.sun.istack.internal.NotNull;
 
 @Service("certificateValidator")
 public class GiftCertificateValidator implements Validator {
