@@ -18,10 +18,15 @@ import com.epam.esm.entity.Tag;
 public class TagDaoImpl implements TagDao {
 
     private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";
+
     private static final String READ_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
+
     private static final String READ_TAG_BY_ID = "SELECT id, name FROM tag WHERE id=?";
+
     private static final String DELETE_TAG_BY_ID = "DELETE FROM tag WHERE id=?";
+
     private static final String DELETE_CERTIFICATE_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_tag WHERE tag_id=?";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

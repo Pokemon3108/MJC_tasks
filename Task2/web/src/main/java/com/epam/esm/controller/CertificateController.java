@@ -77,22 +77,18 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificate> find(@RequestParam(required = false) String name,
+    public List<GiftCertificate> getCertificates(@RequestParam(required = false) String name,
             @RequestParam(required = false) String tag,
-            @RequestParam(required = false) String description) {
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false, defaultValue = "") String sortParams,
+            @RequestParam(defaultValue = "asc") String direction) {
 
         GiftCertificate certificate = new GiftCertificate();
         certificate.setName(name);
         certificate.setDescription(description);
         certificate.addTag(new Tag(tag));
-        return service.findByParams(certificate);
-    }
-
-    @GetMapping("/sort")
-    public List<GiftCertificate> sort(@RequestParam String sortParams,
-            @RequestParam(defaultValue = "asc") String direction) {
-
+        List<GiftCertificate> certificates = service.findByParams(certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
-        return service.sortByParams(splitParams, direction);
+        return service.sortByParams(certificates, splitParams, direction);
     }
 }

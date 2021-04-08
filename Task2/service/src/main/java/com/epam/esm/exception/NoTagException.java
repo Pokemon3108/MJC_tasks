@@ -4,7 +4,6 @@ public class NoTagException extends RuntimeException {
 
     private long tagId;
 
-
     public NoTagException(long tagId) {
 
         this.tagId = tagId;

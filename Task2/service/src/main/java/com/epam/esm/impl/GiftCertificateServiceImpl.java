@@ -106,10 +106,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> sortByParams(List<String> params, String direction) {
+    public List<GiftCertificate> sortByParams(List<GiftCertificate> certificates,
+            List<String> params, String direction) {
 
-        List<GiftCertificate> allCertificates = certificateDao.findAll();
-        return comparatorService.sort(allCertificates, params, direction);
+        return comparatorService.sort(certificates, params, direction);
     }
 
     /**

@@ -57,6 +57,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             " tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert" +
             "  LEFT OUTER JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id" +
             " LEFT OUTER JOIN tag ON tag.id = cert_tag.tag_id ";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -76,6 +77,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }, keyHolder);
         return keyHolder.getKey().longValue();
     }
+
 
     @Override
     public void update(GiftCertificate certificate) {

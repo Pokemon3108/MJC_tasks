@@ -56,6 +56,7 @@ public interface GiftCertificateService {
      * @param params of sorting
      * @return sorted list of certificates
      */
-    List<GiftCertificate> sortByParams(List<String> params, String direction);
+    List<GiftCertificate> sortByParams(List<GiftCertificate> certificates,
+            List<String> params, String direction);
 
 }

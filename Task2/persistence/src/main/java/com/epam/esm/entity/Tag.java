@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Tag {
 
     private Long id;
+
     private String name;
 
     public Tag() {
