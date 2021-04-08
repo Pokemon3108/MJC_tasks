@@ -16,6 +16,7 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> findAll();
 
+    //TODO to tag dao
     void insertCertificateTags(GiftCertificate certificate);
 
     List<Long> readCertificateTagsIdByCertificateId(long certificateId);

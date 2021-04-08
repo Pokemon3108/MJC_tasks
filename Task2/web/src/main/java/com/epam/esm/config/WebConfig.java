@@ -2,6 +2,8 @@ package com.epam.esm.config;
 
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
+import com.epam.esm.comparator.ComparatorService;
+import com.epam.esm.comparator.ComparatorServiceImpl;
 import com.epam.esm.impl.GiftCertificateServiceImpl;
 import com.epam.esm.impl.TagServiceImpl;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,6 +35,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public GiftCertificateService giftCertificateService() {
         return new GiftCertificateServiceImpl();
+    }
+
+    @Bean
+    public ComparatorService comparatorService() {
+        return new ComparatorServiceImpl();
     }
 
     @Bean

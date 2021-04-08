@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NotFullCertificateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,17 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -68,7 +61,20 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificate> find(@RequestBody GiftCertificate certificate) {
+    public List<GiftCertificate> find(@RequestParam(required = false) String name,
+                                      @RequestParam(required = false) String tag,
+                                      @RequestParam(required = false) String description) {
+        GiftCertificate certificate = new GiftCertificate();
+        certificate.setName(name);
+        certificate.setDescription(description);
+        certificate.addTag(new Tag(tag));
         return service.findByParams(certificate);
+    }
+
+    @GetMapping("/sort")
+    public List<GiftCertificate> sort(@RequestParam String sortParams,
+                                      @RequestParam(defaultValue = "asc") String direction) {
+        List<String> splitParams = Arrays.asList(sortParams.split(","));
+        return service.sortByParams(splitParams, direction);
     }
 }

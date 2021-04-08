@@ -2,6 +2,7 @@ package com.epam.esm.impl;
 
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
+import com.epam.esm.comparator.ComparatorService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -24,6 +25,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private ComparatorService comparatorService;
 
     /**
      * {@inheritDoc}
@@ -87,6 +91,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificate> findByParams(GiftCertificate certificate) {
         return certificateDao.findCertificateByParams(certificate);
+    }
+
+    @Override
+    public List<GiftCertificate> sortByParams(List<String> params, String direction) {
+        List<GiftCertificate> allCertificates=certificateDao.findAll();
+        return comparatorService.sort(allCertificates, params, direction);
     }
 
     /**

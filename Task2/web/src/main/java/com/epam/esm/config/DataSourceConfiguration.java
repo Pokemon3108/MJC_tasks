@@ -5,15 +5,11 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.dbcp.BasicDataSourceFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.embedded.DataSourceFactory;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.TransactionManager;
@@ -38,7 +34,7 @@ public class DataSourceConfiguration {
     @Bean
     @Profile("prod")
     public DataSource dataSource() {
-        BasicDataSource dataSource=new BasicDataSource();
+        BasicDataSource dataSource = new BasicDataSource();
         ResourceBundle resource = ResourceBundle.getBundle("database");
         String url = resource.getString("db.url");
         String user = resource.getString("db.user");
@@ -48,6 +44,7 @@ public class DataSourceConfiguration {
         dataSource.setUsername(user);
         dataSource.setPassword(pass);
         dataSource.setDriverClassName(driver);
+        //TODO add connection pool params
         return dataSource;
     }
 

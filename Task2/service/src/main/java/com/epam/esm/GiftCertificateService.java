@@ -41,5 +41,18 @@ public interface GiftCertificateService {
      */
     void delete(long id);
 
+    /**
+     * Search certificates by params
+     * @param certificate with params for search
+     * @return list of found certificates
+     */
     List<GiftCertificate> findByParams(GiftCertificate certificate);
+
+    /**
+     * Sort certificates by params
+     * @param params of sorting
+     * @return sorted list of certificates
+     */
+    List<GiftCertificate> sortByParams(List<String> params, String direction);
+
 }

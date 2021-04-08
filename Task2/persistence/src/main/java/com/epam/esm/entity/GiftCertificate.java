@@ -16,7 +16,6 @@ public class GiftCertificate {
     private LocalDateTime lastUpdateDate;
     private Set<Tag> tags = new HashSet<>();
 
-
     public Set<Tag> getTags() {
         return tags;
     }

@@ -38,6 +38,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
 
+    //TODO to tag dao
     private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
             "(certificate_id, tag_id) VALUES(?, ?)";
 
@@ -46,15 +47,25 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag WHERE certificate_id=?";
 
-    private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT cert.name AS cert_name, cert.description AS description , " +
+    private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT cert.name AS cert_name, " +
+            "cert.description AS description, " +
             "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, " +
             "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
             "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
             "LEFT JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id " +
-            "LEFT JOIN tag ON tag.id = cert_tag.tag_id WHERE cert.id " +
-            "IN (SELECT certificate_id FROM gift_certificate_tag LEFT JOIN tag on tag.id=gift_certificate_tag.tag_id " +
-            "WHERE tag.name=COALESCE(?, tag.name)) " +
-            "AND cert.name LIKE CONCAT('%', COALESCE(?, cert.name), '%') AND cert.description=COALESCE(?, cert.description)";
+            "LEFT JOIN tag ON tag.id = cert_tag.tag_id " +
+            "WHERE cert.id " +
+            "IN (SELECT gc.id FROM gift_certificate gc LEFT JOIN gift_certificate_tag gct ON gc.id=gct.certificate_id " +
+            "LEFT JOIN tag ON  gct.tag_id = tag.id WHERE tag.name=COALESCE(?, tag.name)) " +
+            "AND cert.name LIKE CONCAT('%', COALESCE(?, cert.name), '%') " +
+            "AND cert.description=COALESCE(?, cert.description)";
+
+    private static final String READ_ALL = "SELECT cert.name AS cert_name, cert.description AS description ," +
+            " cert.duration AS duration , cert.price AS price , cert.id AS cert_id, cert.name, " +
+            " cert.create_date as create_date, cert.last_update_date as last_update_date," +
+            " tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert" +
+            "  LEFT OUTER JOIN gift_certificate_tag AS  cert_tag ON cert.id = cert_tag.certificate_id" +
+            " LEFT OUTER JOIN tag ON tag.id = cert_tag.tag_id ";
 
 
     @Override
@@ -99,7 +110,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findAll() {
-        return null;
+        return jdbcTemplate.query(READ_ALL, new GiftCertificateExtractor());
     }
 
     @Override
