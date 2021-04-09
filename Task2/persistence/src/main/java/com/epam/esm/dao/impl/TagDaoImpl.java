@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.mapper.TagMapper;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 
 
@@ -26,6 +27,9 @@ public class TagDaoImpl implements TagDao {
     private static final String DELETE_TAG_BY_ID = "DELETE FROM tag WHERE id=?";
 
     private static final String DELETE_CERTIFICATE_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_tag WHERE tag_id=?";
+
+    private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
+            "(certificate_id, tag_id) VALUES(?, ?)";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -80,5 +84,12 @@ public class TagDaoImpl implements TagDao {
     public void deleteCertificateTagsByTagId(long tagId) {
 
         jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_TAG_ID, tagId);
+    }
+
+    @Override
+    public void insertCertificateTags(GiftCertificate certificate) {
+
+        certificate.getTags().forEach(tag -> jdbcTemplate
+                .update(INSERT_CERTIFICATE_TAGS, certificate.getId(), tag.getId()));
     }
 }

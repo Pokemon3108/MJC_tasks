@@ -11,6 +11,7 @@ import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
 import com.epam.esm.comparator.ComparatorService;
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoCertificateException;
@@ -23,6 +24,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Autowired
     private GiftCertificateDao certificateDao;
+
+    @Autowired
+    private TagDao tagDao;
 
     @Autowired
     private TagService tagService;
@@ -41,7 +45,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Long certificateId = certificateDao.insert(certificate);
         certificate.setId(certificateId);
         setCertificateTagsId(certificate.getTags());
-        certificateDao.insertCertificateTags(certificate);
+        tagDao.insertCertificateTags(certificate);
         return certificateId;
     }
 
@@ -80,7 +84,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!certificate.getTags().isEmpty()) {
             setCertificateTagsId(certificate.getTags());
             certificateDao.deleteCertificateTagsByCertificateId(certificate.getId());
-            certificateDao.insertCertificateTags(certificate);
+            tagDao.insertCertificateTags(certificate);
         }
     }
 
