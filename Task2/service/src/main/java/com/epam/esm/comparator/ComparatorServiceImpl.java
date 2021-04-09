@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
 
 public class ComparatorServiceImpl implements ComparatorService {
 
-    private Map<String, Comparator<GiftCertificate>> comparatorMap = new HashMap<>();
+    private Map<String, Comparator<GiftCertificateDto>> comparatorMap = new HashMap<>();
 
     public ComparatorServiceImpl() {
 
@@ -20,13 +20,13 @@ public class ComparatorServiceImpl implements ComparatorService {
     }
 
     @Override
-    public List<GiftCertificate> sort(List<GiftCertificate> certificates, List<String> params, String direction) {
+    public List<GiftCertificateDto> sort(List<GiftCertificateDto> certificates, List<String> params, String direction) {
 
-        List<Comparator<GiftCertificate>> comparators = params.stream()
+        List<Comparator<GiftCertificateDto>> comparators = params.stream()
                 .map(param -> comparatorMap.get(param))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        Comparator<GiftCertificate> combined = comparators.stream()
+        Comparator<GiftCertificateDto> combined = comparators.stream()
                 .reduce(Comparator::thenComparing).orElse(null);
         if (combined == null) {
             return certificates;

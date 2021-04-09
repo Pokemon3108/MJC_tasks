@@ -2,7 +2,7 @@ package com.epam.esm.dao;
 
 import java.util.List;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 
 
@@ -20,5 +20,9 @@ public interface TagDao {
 
     void deleteCertificateTagsByTagId(long tagId);
 
-    void insertCertificateTags(GiftCertificate giftCertificate);
+    void insertCertificateTags(GiftCertificateDto giftCertificateDto);
+
+    List<Tag> readCertificateTagsIdByCertificateId(long certificateId);
+
+    void deleteCertificateTagsByCertificateId(long certificateId);
 }

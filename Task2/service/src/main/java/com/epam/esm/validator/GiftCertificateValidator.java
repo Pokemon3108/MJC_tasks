@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
 
 @Service("certificateValidator")
 public class GiftCertificateValidator implements Validator {
@@ -12,13 +12,13 @@ public class GiftCertificateValidator implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
 
-        return GiftCertificate.class.equals(clazz);
+        return GiftCertificateDto.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
 
-        GiftCertificate certificate = (GiftCertificate) target;
+        GiftCertificateDto certificate = (GiftCertificateDto) target;
         if (certificate.getName() == null) {
             errors.reject("empty_name");
         } else if (certificate.getDescription() == null) {

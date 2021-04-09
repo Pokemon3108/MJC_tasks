@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.mapper.TagMapper;
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 
 
@@ -30,6 +31,12 @@ public class TagDaoImpl implements TagDao {
 
     private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
             "(certificate_id, tag_id) VALUES(?, ?)";
+
+    private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id " +
+            "FROM gift_certificate_tag WHERE certificate_id=?";
+
+    private static final String DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag "
+            + "WHERE certificate_id=?";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -87,9 +94,26 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void insertCertificateTags(GiftCertificate certificate) {
+    public void insertCertificateTags(GiftCertificateDto certificate) {
 
         certificate.getTags().forEach(tag -> jdbcTemplate
                 .update(INSERT_CERTIFICATE_TAGS, certificate.getId(), tag.getId()));
+    }
+
+    @Override
+    public List<Tag> readCertificateTagsIdByCertificateId(long certificateId) {
+
+        try {
+            return jdbcTemplate.query(READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID, new Object[]{certificateId},
+                    new int[]{Types.INTEGER}, new TagMapper());
+        } catch (EmptyResultDataAccessException ex) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void deleteCertificateTagsByCertificateId(long certificateId) {
+
+        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID, certificateId);
     }
 }

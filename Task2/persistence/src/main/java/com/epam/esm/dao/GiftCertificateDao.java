@@ -2,14 +2,15 @@ package com.epam.esm.dao;
 
 import java.util.List;
 
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 
 
 public interface GiftCertificateDao {
 
-    Long insert(GiftCertificate certificate);
+    Long insert(GiftCertificateDto certificateDto);
 
-    void update(GiftCertificate certificate);
+    void update(GiftCertificateDto certificateDto);
 
     void delete(long id);
 
@@ -17,9 +18,7 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> findAll();
 
-    List<Long> readCertificateTagsIdByCertificateId(long certificateId);
+    List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto);
 
-    void deleteCertificateTagsByCertificateId(long certificateId);
-
-    List<GiftCertificate> findCertificateByParams(GiftCertificate certificate);
+    List<GiftCertificate> findCertificateByTagName(String tagName);
 }

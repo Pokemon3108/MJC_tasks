@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
 
 /**
  * The interface for gift certificate CRUD operations
@@ -18,7 +18,7 @@ public interface GiftCertificateService {
      * @param certificate that will be saved in storage
      * @return the id of certificate
      */
-    Long add(GiftCertificate certificate);
+    Long add(GiftCertificateDto certificate);
 
     /**
      * Read gift certificate from storage by id
@@ -26,14 +26,14 @@ public interface GiftCertificateService {
      * @param id of certificate
      * @return the gift certificate
      */
-    GiftCertificate read(long id);
+    GiftCertificateDto read(long id);
 
     /**
      * Update certificate in storage
      *
      * @param certificate it is already updated
      */
-    void update(GiftCertificate certificate);
+    void update(GiftCertificateDto certificate);
 
     /**
      * Delete gift certificate from storage by id
@@ -48,7 +48,7 @@ public interface GiftCertificateService {
      * @param certificate with params for search
      * @return list of found certificates
      */
-    List<GiftCertificate> findByParams(GiftCertificate certificate);
+    List<GiftCertificateDto> findByParams(GiftCertificateDto certificate);
 
     /**
      * Sort certificates by params
@@ -56,7 +56,7 @@ public interface GiftCertificateService {
      * @param params of sorting
      * @return sorted list of certificates
      */
-    List<GiftCertificate> sortByParams(List<GiftCertificate> certificates,
+    List<GiftCertificateDto> sortByParams(List<GiftCertificateDto> certificates,
             List<String> params, String direction);
 
 }

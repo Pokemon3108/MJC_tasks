@@ -1,7 +1,7 @@
 CREATE TABLE gift_certificate
 (
     id               SERIAL PRIMARY KEY,
-    name             VARCHAR(255),
+    name             VARCHAR(255) UNIQUE,
     description      TEXT,
     price            DECIMAL,
     duration         INT,
@@ -12,7 +12,7 @@ CREATE TABLE gift_certificate
 CREATE TABLE tag
 (
     id   SERIAL PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE gift_certificate_tag

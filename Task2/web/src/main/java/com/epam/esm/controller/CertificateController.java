@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.GiftCertificateService;
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NotFullCertificateException;
 
@@ -46,7 +46,7 @@ public class CertificateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long create(@RequestBody GiftCertificate certificate, BindingResult bindingResult) {
+    public Long create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
 
         certificateValidator.validate(certificate, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -57,13 +57,13 @@ public class CertificateController {
     }
 
     @GetMapping("/{id}")
-    public GiftCertificate read(@PathVariable long id) {
+    public GiftCertificateDto read(@PathVariable long id) {
 
         return service.read(id);
     }
 
     @PutMapping
-    public GiftCertificate update(@RequestBody GiftCertificate certificate) {
+    public GiftCertificateDto update(@RequestBody GiftCertificateDto certificate) {
 
         service.update(certificate);
         return service.read(certificate.getId());
@@ -77,17 +77,17 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificate> getCertificates(@RequestParam(required = false) String name,
+    public List<GiftCertificateDto> getCertificates(@RequestParam(required = false) String name,
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) String description,
             @RequestParam(required = false, defaultValue = "") String sortParams,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        GiftCertificate certificate = new GiftCertificate();
+        GiftCertificateDto certificate = new GiftCertificateDto();
         certificate.setName(name);
         certificate.setDescription(description);
         certificate.addTag(new Tag(tag));
-        List<GiftCertificate> certificates = service.findByParams(certificate);
+        List<GiftCertificateDto> certificates = service.findByParams(certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
         return service.sortByParams(certificates, splitParams, direction);
     }
