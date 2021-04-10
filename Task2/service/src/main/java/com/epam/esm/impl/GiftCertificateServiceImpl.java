@@ -45,14 +45,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * {@inheritDoc}
      */
     @Transactional
-    public Long add(GiftCertificateDto certificate) {
+    public Long add(GiftCertificateDto certificateDto) {
 
-        certificate.setCreateDate(LocalDateTime.now());
-        certificate.setLastUpdateDate(LocalDateTime.now());
-        Long certificateId = certificateDao.insert(certificate);
-        certificate.setId(certificateId);
-        setCertificateTagsId(certificate.getTags());
-        tagDao.insertCertificateTags(certificate);
+        certificateDto.setCreateDate(LocalDateTime.now());
+        certificateDto.setLastUpdateDate(LocalDateTime.now());
+        Long certificateId = certificateDao.insert(certificateDto);
+        certificateDto.setId(certificateId);
+        setCertificateTagsId(certificateDto.getTags());
+        tagDao.insertCertificateTags(certificateDto);
         return certificateId;
     }
 
@@ -118,7 +118,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> findByParams(GiftCertificateDto certificateDto) {
 
         List<GiftCertificate> certificatesWithParams = certificateDao.findCertificateByParams(certificateDto);
-        
+
         if (certificateDto.hasTags()) {
             List<GiftCertificate> certificatesWithTagParams = certificateDao
                     .findCertificateByTagName(certificateDto.getTag(0).getName());
