@@ -35,6 +35,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, " +
             "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
             "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
+            "FROM gift_certificate AS cert " +
+            "LEFT OUTER JOIN gift_certificate_tag AS cert_tag ON cert.id = cert_tag.certificate_id " +
+            "LEFT OUTER JOIN tag" +
             "WHERE tag.name=COALESCE(?, tag.name)) ";
 
     private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT name , description , duration ,  price , id , " +
@@ -53,7 +56,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public Long insert(GiftCertificateDto certificateDto) {
 
-        GiftCertificate certificate=converter.convertToEntity(certificateDto);
+        GiftCertificate certificate = converter.convertToEntity(certificateDto);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(INSERT_CERTIFICATE, new String[]{"id"});
@@ -72,7 +75,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void update(GiftCertificateDto certificateDto) {
 
-        GiftCertificate certificate=converter.convertToEntity(certificateDto);
+        GiftCertificate certificate = converter.convertToEntity(certificateDto);
         jdbcTemplate.update(UPDATE_CERTIFICATE, certificate.getName(), certificate.getDescription(),
                 certificate.getPrice(), certificate.getDuration(),
                 certificate.getLastUpdateDate(), certificate.getId());
@@ -105,7 +108,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto) {
 
-        GiftCertificate certificate=converter.convertToEntity(certificateDto);
+        GiftCertificate certificate = converter.convertToEntity(certificateDto);
         return jdbcTemplate.query(READ_CERTIFICATE_BY_PARAMS, ps -> {
             ps.setString(1, certificate.getName());
             ps.setString(2, certificate.getDescription());
