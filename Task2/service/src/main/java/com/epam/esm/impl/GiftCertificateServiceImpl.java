@@ -3,6 +3,7 @@ package com.epam.esm.impl;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ import com.epam.esm.comparator.ComparatorService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dtoconverter.GiftCertificateDtoConverter;
+import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoCertificateException;
@@ -51,8 +52,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         Long certificateId = certificateDao.insert(certificateDto);
         certificateDto.setId(certificateId);
+        //TODO: Just like an idea: implement and call here two methods - insertTagsIfNotExist and then bindCertificateWithTags
         setCertificateTagsId(certificateDto.getTags());
-        tagDao.insertCertificateTags(certificateDto);
+        tagDao.bindCertificateTags(certificateDto.getTags(), certificateDto.getId());
         return certificateId;
     }
 
@@ -64,10 +66,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateDto read(long id) {
 
         GiftCertificate certificate = certificateDao.read(id);
-        Set<Tag> tags = new HashSet<>(tagDao.readCertificateTagsIdByCertificateId(certificate.getId()));
         if (certificate == null) {
             throw new NoCertificateException(id);
         }
+        Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
+        Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t)).collect(Collectors.toSet());
         return dtoConverter.convertToDto(certificate, tags);
     }
 
@@ -91,8 +94,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDao.update(certificateDto);
         if (!certificateDto.getTags().isEmpty()) {
             setCertificateTagsId(certificateDto.getTags());
-            tagDao.deleteCertificateTagsByCertificateId(certificateDto.getId());
-            tagDao.insertCertificateTags(certificateDto);
+            tagDao.unbindCertificateTags(certificateDto.getId());
+            tagDao.bindCertificateTags(certificateDto.getTags(),
+                    certificateDto.getId());
         }
     }
 
@@ -107,7 +111,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificate == null) {
             throw new NoCertificateException(id);
         }
-        tagDao.deleteCertificateTagsByCertificateId(certificate.getId());
+        tagDao.unbindCertificateTags(certificate.getId());
         certificateDao.delete(id);
     }
 
@@ -118,8 +122,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> findByParams(GiftCertificateDto certificateDto) {
 
         List<GiftCertificate> certificatesWithParams = certificateDao.findCertificateByParams(certificateDto);
-
-        if (certificateDto.hasTags()) {
+        if (!certificateDto.getTags().isEmpty()) {
             List<GiftCertificate> certificatesWithTagParams = certificateDao
                     .findCertificateByTagName(certificateDto.getTag(0).getName());
             certificatesWithParams.retainAll(certificatesWithTagParams);
@@ -128,7 +131,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         //read tags for certificate and convert it to dto
         return certificatesWithParams.stream()
                 .map(c -> dtoConverter
-                        .convertToDto(c, new HashSet<>(tagDao.readCertificateTagsIdByCertificateId(c.getId()))))
+                        .convertToDto(c, tagDao.readTagsByIds(
+                                tagDao.readCertificateTagsIdsByCertificateId(c.getId()))))
                 .collect(Collectors.toList());
     }
 
@@ -148,11 +152,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @param tags with names, id from which will be set
      */
     private void setCertificateTagsId(Set<Tag> tags) {
-        //set id for tags that already exist
-        tags.forEach(tag -> tag.setId(tagService.readTagByName(tag.getName()).getId()));
+        // set id for tags that already exist
+        tags = tagService.readTagsByNames(tags.stream().map(Tag::getName).collect(Collectors.toSet()));
 
         //insert tags and set id for them if they not exist yet
-        tags.stream().filter(tag -> tag.getId() == null)
+        tags.stream().filter(Objects::isNull)
                 .forEach(tag -> tag.setId(tagService.create(tag)));
     }
 

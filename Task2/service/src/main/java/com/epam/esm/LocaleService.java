@@ -10,16 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class LocaleService {
 
-    @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+
+        this.messageSource = messageSource;
+    }
 
     public Locale getLocale() {
 
         return LocaleContextHolder.getLocale();
     }
 
-    public String getLocaleMessage(String messageName) {
+    public String getLocaleMessage(String messageName, String... args) {
 
-        return messageSource.getMessage(messageName, null, getLocale());
+        return messageSource.getMessage(messageName, null, getLocale()) + String.join(" ", args);
     }
 }

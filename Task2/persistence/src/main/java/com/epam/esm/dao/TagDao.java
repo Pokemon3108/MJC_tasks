@@ -1,8 +1,8 @@
 package com.epam.esm.dao;
 
 import java.util.List;
+import java.util.Set;
 
-import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 
 
@@ -14,15 +14,17 @@ public interface TagDao {
 
     void delete(long id);
 
-    List<Tag> findAll();
-
     Tag readTagByName(String name);
 
     void deleteCertificateTagsByTagId(long tagId);
 
-    void insertCertificateTags(GiftCertificateDto giftCertificateDto);
+    void bindCertificateTags(Set<Tag> tagSet, Long certificateId);
 
-    List<Tag> readCertificateTagsIdByCertificateId(long certificateId);
+    Set<Long> readCertificateTagsIdsByCertificateId(long certificateId);
 
-    void deleteCertificateTagsByCertificateId(long certificateId);
+    void unbindCertificateTags(long certificateId);
+
+    Set<Tag> readTagsByNames(Set<String> tagNames);
+
+    Set<Tag> readTagsByIds(Set<Long> ids);
 }

@@ -1,5 +1,8 @@
 package com.epam.esm;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 import com.epam.esm.entity.Tag;
@@ -40,4 +43,11 @@ public interface TagService {
      * @param id of tag
      */
     void delete(long id);
+
+    /**
+     * Read tag info by its name
+     * @param tagNames names of tags
+     * @return list of tags
+     */
+    Set<Tag> readTagsByNames(Set<String> tagNames);
 }

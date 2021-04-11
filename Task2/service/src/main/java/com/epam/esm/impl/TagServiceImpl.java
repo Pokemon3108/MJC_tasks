@@ -1,5 +1,7 @@
 package com.epam.esm.impl;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,5 +62,14 @@ public class TagServiceImpl implements TagService {
         }
         tagDao.deleteCertificateTagsByTagId(id);
         tagDao.delete(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<Tag> readTagsByNames(Set<String> tagNames) {
+
+        return tagDao.readTagsByNames(tagNames);
     }
 }

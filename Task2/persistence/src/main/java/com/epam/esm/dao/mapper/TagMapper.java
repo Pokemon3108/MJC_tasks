@@ -4,9 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import com.epam.esm.entity.Tag;
 
+@Component
 public class TagMapper implements RowMapper<Tag> {
 
     @Override

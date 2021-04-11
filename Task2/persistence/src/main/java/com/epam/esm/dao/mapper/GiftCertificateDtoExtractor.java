@@ -13,6 +13,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 
 
+//TODO: The class is not used. Do we still need it?
 public class GiftCertificateDtoExtractor implements ResultSetExtractor<List<GiftCertificateDto>> {
 
     @Override

@@ -108,15 +108,6 @@ public class GiftCertificateDto {
 
     public Tag getTag(int index) {
 
-        if (index < tags.size()) {
-            return new ArrayList<>(tags).get(index);
-        } else {
-            return null;
-        }
-    }
-
-    public boolean hasTags() {
-
-        return !tags.isEmpty();
+        return (index < tags.size()) ? new ArrayList<>(tags).get(index) : null;
     }
 }

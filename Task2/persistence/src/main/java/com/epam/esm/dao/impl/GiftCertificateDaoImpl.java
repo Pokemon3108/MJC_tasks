@@ -13,7 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dtoconverter.GiftCertificateDtoConverter;
+import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 
 
@@ -25,9 +25,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_CERTIFICATE_BY_ID =
             "SELECT name , description , duration ,  price , id , name, create_date, last_update_date WHERE id = ?";
 
-    private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name=COALESCE(?, name)," +
+    private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name = COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
             "duration=COALESCE(?, duration), last_update_date=? WHERE id=?";
+
     private static final String DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
 
     private static final String READ_CERTIFICATE_BY_TAG = "SELECT cert.name AS cert_name, " +
@@ -37,21 +38,39 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
             "FROM gift_certificate AS cert " +
             "LEFT OUTER JOIN gift_certificate_tag AS cert_tag ON cert.id = cert_tag.certificate_id " +
-            "LEFT OUTER JOIN tag" +
-            "WHERE tag.name=COALESCE(?, tag.name)) ";
+            "LEFT OUTER JOIN tag WHERE tag.name = COALESCE(?, tag.name)) ";
 
     private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT name , description , duration ,  price , id , " +
             "name, create_date, last_update_date WHERE name LIKE CONCAT('%', COALESCE(?, name), '%') " +
             "AND description=COALESCE(?, description)";
 
     private static final String READ_ALL =
-            "SELECT name , description , duration ,  price , id , name, create_date, last_update_date";
+            "SELECT name , description , duration ,  price , id , name, create_date, last_update_date "
+                    + "FROM gift_certificate";
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
     private GiftCertificateDtoConverter converter;
+
+    private GiftCertificateMapper certificateMapper;
+
+    @Autowired
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Autowired
+    public void setConverter(GiftCertificateDtoConverter converter) {
+
+        this.converter = converter;
+    }
+
+    @Autowired
+    public void setCertificateMapper(GiftCertificateMapper certificateMapper) {
+
+        this.certificateMapper = certificateMapper;
+    }
 
     @Override
     public Long insert(GiftCertificateDto certificateDto) {
@@ -68,6 +87,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             ps.setTimestamp(6, Timestamp.valueOf(certificate.getLastUpdateDate()));
             return ps;
         }, keyHolder);
+        //TODO: Can the keyHolder.getKey() be null?
         return keyHolder.getKey().longValue();
     }
 
@@ -91,12 +111,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public GiftCertificate read(long id) {
 
         List<GiftCertificate> certificates = jdbcTemplate.query(READ_CERTIFICATE_BY_ID, new Object[]{id},
-                new int[]{Types.INTEGER}, new GiftCertificateMapper());
-        if (certificates.isEmpty()) {
-            return null;
-        } else {
-            return certificates.get(0);
-        }
+                new int[]{Types.INTEGER}, certificateMapper);
+        return certificates.isEmpty() ? null : certificates.get(0);
     }
 
     @Override
@@ -113,7 +129,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             ps.setString(1, certificate.getName());
             ps.setString(2, certificate.getDescription());
         }, new GiftCertificateMapper());
-
     }
 
     @Override

@@ -1,5 +1,5 @@
-rootProject.name = 'Task2'
-include 'web'
+rootProject.name = 'certificates'
 include 'persistence'
+include 'web'
 include 'service'
 

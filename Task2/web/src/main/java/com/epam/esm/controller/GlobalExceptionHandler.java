@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error handleTagNotFound(NoTagException ex) {
 
-        return new Error(ErrorCode.NO_TAG.getCode(),
-                localeService.getLocaleMessage("no_certificate") + ex.getTagId());
+        //TODO: use getLocaleMessage with params instead of string concatenation
+        return new Error(ErrorCode.NO_TAG.getCode(), localeService.getLocaleMessage("no_certificate") + ex.getTagId());
     }
 }

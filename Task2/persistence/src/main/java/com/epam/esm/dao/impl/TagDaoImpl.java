@@ -2,8 +2,10 @@ package com.epam.esm.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.Types;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,7 +15,6 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.mapper.TagMapper;
-import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 
 
@@ -38,8 +39,26 @@ public class TagDaoImpl implements TagDao {
     private static final String DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag "
             + "WHERE certificate_id=?";
 
-    @Autowired
+    private static final String READ_TAGS_BY_TAGS_NAMES = "SELECT id, name FROM tag WHERE name IN(%s)";
+
+    private static final String READ_TAGS_BY_TAGS_IDS = "SELECT id, name FROM tag WHERE id IN(%s)";
+
+
     private JdbcTemplate jdbcTemplate;
+
+    private TagMapper tagMapper;
+
+    @Autowired
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Autowired
+    public void setTagMapper(TagMapper tagMapper) {
+
+        this.tagMapper = tagMapper;
+    }
 
     @Override
     public Long insert(Tag tag) {
@@ -64,16 +83,10 @@ public class TagDaoImpl implements TagDao {
 
         try {
             return jdbcTemplate
-                    .queryForObject(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, new TagMapper());
+                    .queryForObject(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, tagMapper);
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
-    }
-
-    @Override
-    public List<Tag> findAll() {
-
-        return null;
     }
 
     @Override
@@ -83,7 +96,7 @@ public class TagDaoImpl implements TagDao {
             return jdbcTemplate
                     .queryForObject(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
         } catch (EmptyResultDataAccessException ex) {
-            return new Tag(name);
+            return null;
         }
     }
 
@@ -94,26 +107,49 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void insertCertificateTags(GiftCertificateDto certificate) {
+    public void bindCertificateTags(Set<Tag> tagSet, Long certificateId) {
 
-        certificate.getTags().forEach(tag -> jdbcTemplate
-                .update(INSERT_CERTIFICATE_TAGS, certificate.getId(), tag.getId()));
+        tagSet.forEach(tag -> jdbcTemplate
+                .update(INSERT_CERTIFICATE_TAGS, certificateId, tag.getId()));
     }
 
     @Override
-    public List<Tag> readCertificateTagsIdByCertificateId(long certificateId) {
+    public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
 
         try {
-            return jdbcTemplate.query(READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID, new Object[]{certificateId},
-                    new int[]{Types.INTEGER}, new TagMapper());
+            return new HashSet<>(
+                    jdbcTemplate.queryForList(READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID, new Object[]{certificateId},
+                            new int[]{Types.INTEGER}, Long.class));
         } catch (EmptyResultDataAccessException ex) {
-            return new ArrayList<>();
+            return new HashSet<>();
         }
     }
 
     @Override
-    public void deleteCertificateTagsByCertificateId(long certificateId) {
+    public void unbindCertificateTags(long certificateId) {
 
         jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID, certificateId);
+    }
+
+    @Override
+    public Set<Tag> readTagsByNames(Set<String> tagNames) {
+
+        String inSql = String.join(",", Collections.nCopies(tagNames.size(), "?"));
+
+        List<Tag> tags = jdbcTemplate.query(String.format(READ_TAGS_BY_TAGS_NAMES, inSql),
+                tagMapper, tagNames.toArray());
+
+        return new HashSet<>(tags);
+    }
+
+    @Override
+    public Set<Tag> readTagsByIds(Set<Long> ids) {
+
+        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+
+        List<Tag> tags = jdbcTemplate.query(String.format(READ_TAGS_BY_TAGS_IDS, inSql),
+                tagMapper, ids.toArray());
+
+        return new HashSet<>(tags);
     }
 }
