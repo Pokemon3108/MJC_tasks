@@ -16,16 +16,21 @@ import com.epam.esm.exception.NotFullCertificateException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    
+    private LocaleService localeService;
 
     @Autowired
-    private LocaleService localeService;
+    public void setLocaleService(LocaleService localeService) {
+
+        this.localeService = localeService;
+    }
 
     @ExceptionHandler(NoCertificateException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error handleCertificateNotFound(NoCertificateException ex) {
 
         return new Error(ErrorCode.NO_CERTIFICATE.getCode(),
-                localeService.getLocaleMessage("no_certificate") + ex.getCertificateId());
+                localeService.getLocaleMessage("no_certificate", ex.getCertificateId()));
     }
 
     @ExceptionHandler(NoIdException.class)
@@ -48,7 +53,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error handleTagNotFound(NoTagException ex) {
 
-        //TODO: use getLocaleMessage with params instead of string concatenation
-        return new Error(ErrorCode.NO_TAG.getCode(), localeService.getLocaleMessage("no_certificate") + ex.getTagId());
+        return new Error(ErrorCode.NO_TAG.getCode(), localeService.getLocaleMessage("no_certificate", ex.getTagId()));
     }
 }

@@ -1,5 +1,6 @@
 package com.epam.esm;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class LocaleService {
         return LocaleContextHolder.getLocale();
     }
 
-    public String getLocaleMessage(String messageName, String... args) {
+    public String getLocaleMessage(String messageName, Object... args) {
 
-        return messageSource.getMessage(messageName, null, getLocale()) + String.join(" ", args);
+        return messageSource.getMessage(messageName, null, getLocale()) + String.join(" ", Arrays.toString(args));
     }
 }
