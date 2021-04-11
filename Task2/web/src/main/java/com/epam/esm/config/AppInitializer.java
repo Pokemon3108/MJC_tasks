@@ -11,7 +11,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 public class AppInitializer implements WebApplicationInitializer {
 
-
     @Override
     public void onStartup(ServletContext servletContext) {
 

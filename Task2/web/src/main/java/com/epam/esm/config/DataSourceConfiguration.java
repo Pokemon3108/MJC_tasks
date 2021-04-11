@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -44,11 +44,14 @@ public class DataSourceConfiguration {
         String user = resource.getString("db.user");
         String pass = resource.getString("db.password");
         String driver = resource.getString("db.driver");
+        int poolMaxSize = Integer.parseInt(resource.getString("db.poolMaxSize"));
+        int poolInitSize = Integer.parseInt(resource.getString("db.initSize"));
         dataSource.setUrl(url);
         dataSource.setUsername(user);
         dataSource.setPassword(pass);
         dataSource.setDriverClassName(driver);
-        //TODO add connection pool params
+        dataSource.setInitialSize(poolInitSize);
+        dataSource.setMaxTotal(poolMaxSize);
         return dataSource;
     }
 

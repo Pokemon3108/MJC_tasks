@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
@@ -23,7 +24,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "(name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String READ_CERTIFICATE_BY_ID =
-            "SELECT name , description , duration ,  price , id , name, create_date, last_update_date WHERE id = ?";
+            "SELECT name , description , duration ,  price , id , create_date, last_update_date "
+                    + "FROM gift_certificate WHERE id = ?";
 
     private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name = COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
@@ -32,16 +34,16 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
 
     private static final String READ_CERTIFICATE_BY_TAG = "SELECT cert.name AS cert_name, " +
-            "cert.description AS description, " +
+            "cert.description AS description, cert.id AS id " +
             "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, " +
             "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
             "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
-            "FROM gift_certificate AS cert " +
             "LEFT OUTER JOIN gift_certificate_tag AS cert_tag ON cert.id = cert_tag.certificate_id " +
-            "LEFT OUTER JOIN tag WHERE tag.name = COALESCE(?, tag.name)) ";
+            "LEFT OUTER JOIN tag ON tag.name = COALESCE(?, tag.name)";
 
-    private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT name , description , duration ,  price , id , " +
-            "name, create_date, last_update_date WHERE name LIKE CONCAT('%', COALESCE(?, name), '%') " +
+    private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT description , duration ,  price , id , " +
+            "name, create_date, last_update_date " +
+            "FROM gift_certificate WHERE name LIKE CONCAT('%', COALESCE(?, name), '%') " +
             "AND description=COALESCE(?, description)";
 
     private static final String READ_ALL =

@@ -32,7 +32,7 @@ import com.epam.esm.exception.NotFullCertificateException;
 public class CertificateController {
 
     @Autowired
-    private GiftCertificateService service;
+    private GiftCertificateService certificateService;
 
     @Autowired
     @Qualifier("certificateValidator")
@@ -53,27 +53,27 @@ public class CertificateController {
             ObjectError error = bindingResult.getAllErrors().get(0);
             throw new NotFullCertificateException(error.getCode());
         }
-        return service.add(certificate);
+        return certificateService.add(certificate);
     }
 
     @GetMapping("/{id}")
     public GiftCertificateDto read(@PathVariable long id) {
 
-        return service.read(id);
+        return certificateService.read(id);
     }
 
     @PutMapping
     public GiftCertificateDto update(@RequestBody GiftCertificateDto certificate) {
 
-        service.update(certificate);
-        return service.read(certificate.getId());
+        certificateService.update(certificate);
+        return certificateService.read(certificate.getId());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
 
-        service.delete(id);
+        certificateService.delete(id);
     }
 
     @GetMapping
@@ -87,8 +87,8 @@ public class CertificateController {
         certificate.setName(name);
         certificate.setDescription(description);
         certificate.addTag(new Tag(tag));
-        List<GiftCertificateDto> certificates = service.findByParams(certificate);
+        List<GiftCertificateDto> certificates = certificateService.findByParams(certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
-        return service.sortByParams(certificates, splitParams, direction);
+        return certificateService.sortByParams(certificates, splitParams, direction);
     }
 }

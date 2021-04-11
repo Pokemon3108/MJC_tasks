@@ -19,6 +19,7 @@ public class GiftCertificateDtoConverter {
         dto.setLastUpdateDate(certificate.getLastUpdateDate());
         dto.setDuration(certificate.getDuration());
         dto.setPrice(certificate.getPrice());
+        dto.setId(certificate.getId());
         tagSet.forEach(dto::addTag);
         return dto;
     }

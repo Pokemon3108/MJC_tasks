@@ -3,7 +3,7 @@ package com.epam.esm.impl;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.GiftCertificateService;
-import com.epam.esm.TagService;
-import com.epam.esm.comparator.ComparatorService;
+import com.epam.esm.comparator.Direction;
+import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
@@ -27,20 +27,37 @@ import com.epam.esm.exception.NoIdException;
  */
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    @Autowired
     private GiftCertificateDao certificateDao;
 
-    @Autowired
     private TagDao tagDao;
 
-    @Autowired
-    private TagService tagService;
+    private GiftCertificateSortService giftCertificateSortService;
 
-    @Autowired
-    private ComparatorService comparatorService;
-
-    @Autowired
     private GiftCertificateDtoConverter dtoConverter;
+
+    @Autowired
+    public void setCertificateDao(GiftCertificateDao certificateDao) {
+
+        this.certificateDao = certificateDao;
+    }
+
+    @Autowired
+    public void setTagDao(TagDao tagDao) {
+
+        this.tagDao = tagDao;
+    }
+
+    @Autowired
+    public void setGiftCertificateSortService(GiftCertificateSortService giftCertificateSortService) {
+
+        this.giftCertificateSortService = giftCertificateSortService;
+    }
+
+    @Autowired
+    public void setDtoConverter(GiftCertificateDtoConverter dtoConverter) {
+
+        this.dtoConverter = dtoConverter;
+    }
 
     /**
      * {@inheritDoc}
@@ -52,12 +69,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         Long certificateId = certificateDao.insert(certificateDto);
         certificateDto.setId(certificateId);
-        //TODO: Just like an idea: implement and call here two methods - insertTagsIfNotExist and then bindCertificateWithTags
-        setCertificateTagsId(certificateDto.getTags());
-        tagDao.bindCertificateTags(certificateDto.getTags(), certificateDto.getId());
+
+        Set<Tag> namedTags = tagDao
+                .readTagsByNames(certificateDto.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+        Map<Boolean, List<Tag>> tagMap = certificateDto.getTags().stream()
+                .collect(Collectors.partitioningBy(namedTags::contains));
+
+        insertTagsIfNotExist(new HashSet<>(tagMap.get(false)));
+        tagDao.bindCertificateTags(namedTags, certificateDto.getId());
         return certificateId;
     }
 
+    /**
+     * Insert tags to storage if they not already exists
+     *
+     * @param tags with names, id from which will be set
+     */
+    private void insertTagsIfNotExist(Set<Tag> tags) {
+
+        tags.stream().filter(tag -> tag.getId() == null)
+                .forEach(tag -> tag.setId(tagDao.insert(tag)));
+    }
 
     /**
      * {@inheritDoc}
@@ -93,7 +125,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificateDto);
         if (!certificateDto.getTags().isEmpty()) {
-            setCertificateTagsId(certificateDto.getTags());
+            insertTagsIfNotExist(certificateDto.getTags());
             tagDao.unbindCertificateTags(certificateDto.getId());
             tagDao.bindCertificateTags(certificateDto.getTags(),
                     certificateDto.getId());
@@ -143,21 +175,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> sortByParams(List<GiftCertificateDto> certificates,
             List<String> params, String direction) {
 
-        return comparatorService.sort(certificates, params, direction);
+        Direction enumDirection = Direction.valueOf(direction.toUpperCase());
+        return giftCertificateSortService.sort(certificates, params, enumDirection);
     }
 
-    /**
-     * Set id for certificate's tags
-     *
-     * @param tags with names, id from which will be set
-     */
-    private void setCertificateTagsId(Set<Tag> tags) {
-        // set id for tags that already exist
-        tags = tagService.readTagsByNames(tags.stream().map(Tag::getName).collect(Collectors.toSet()));
-
-        //insert tags and set id for them if they not exist yet
-        tags.stream().filter(Objects::isNull)
-                .forEach(tag -> tag.setId(tagService.create(tag)));
-    }
 
 }

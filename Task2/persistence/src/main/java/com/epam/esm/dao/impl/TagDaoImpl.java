@@ -96,7 +96,7 @@ public class TagDaoImpl implements TagDao {
             return jdbcTemplate
                     .queryForObject(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
         } catch (EmptyResultDataAccessException ex) {
-            return null;
+            return new Tag(name);
         }
     }
 
