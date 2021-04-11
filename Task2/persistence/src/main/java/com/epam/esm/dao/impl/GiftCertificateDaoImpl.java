@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
@@ -89,7 +88,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             ps.setTimestamp(6, Timestamp.valueOf(certificate.getLastUpdateDate()));
             return ps;
         }, keyHolder);
-        //TODO: Can the keyHolder.getKey() be null?
+        //can't be null, because id is always auto-generated or inserted manually
         return keyHolder.getKey().longValue();
     }
 

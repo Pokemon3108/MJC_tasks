@@ -1,6 +1,7 @@
 package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +71,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Long certificateId = certificateDao.insert(certificateDto);
         certificateDto.setId(certificateId);
 
-        Set<Tag> namedTags = tagDao
+        Set<Tag> tagsWithId = tagDao
                 .readTagsByNames(certificateDto.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
         Map<Boolean, List<Tag>> tagMap = certificateDto.getTags().stream()
-                .collect(Collectors.partitioningBy(namedTags::contains));
+                .collect(Collectors.partitioningBy(tagsWithId::contains));
 
-        insertTagsIfNotExist(new HashSet<>(tagMap.get(false)));
-        tagDao.bindCertificateTags(namedTags, certificateDto.getId());
+        Set<Tag> newTags=new HashSet<>(tagMap.get(false));
+        insertTagsIfNotExist(newTags);
+        tagsWithId.addAll(newTags);
+        tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
         return certificateId;
     }
 
