@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.epam.esm.LocaleService;
 import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
+import com.epam.esm.exception.DuplicateCertificateException;
+import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoTagException;
@@ -54,5 +56,21 @@ public class GlobalExceptionHandler {
     public Error handleTagNotFound(NoTagException ex) {
 
         return new Error(ErrorCode.NO_TAG.getCode(), localeService.getLocaleMessage("no_certificate", ex.getTagId()));
+    }
+
+    @ExceptionHandler(DuplicateCertificateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDuplicateCertificate(DuplicateCertificateException ex) {
+
+        return new Error(ErrorCode.DUPLICATE_CERTIFICATE_NAME.getCode(),
+                localeService.getLocaleMessage("duplicate_certificate", ex.getName()));
+    }
+
+    @ExceptionHandler(DuplicateTagException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDuplicateCertificate(DuplicateTagException ex) {
+
+        return new Error(ErrorCode.DUPLICATE_TAG_NAME.getCode(),
+                localeService.getLocaleMessage("duplicate_tag", ex.getName()));
     }
 }

@@ -1,13 +1,12 @@
 package com.epam.esm.impl;
 
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoTagException;
 
 /**
@@ -15,8 +14,13 @@ import com.epam.esm.exception.NoTagException;
  */
 public class TagServiceImpl implements TagService {
 
-    @Autowired
     private TagDao tagDao;
+
+    @Autowired
+    public void setTagDao(TagDao tagDao) {
+
+        this.tagDao = tagDao;
+    }
 
     /**
      * {@inheritDoc}
@@ -24,6 +28,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public Long create(Tag tag) {
 
+        if (tagDao.readTagByName(tag.getName()).isPresent()) {
+            throw new DuplicateTagException(tag.getName());
+        }
         return tagDao.insert(tag);
     }
 
@@ -33,21 +40,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag readTagById(long id) {
 
-        Tag tag = tagDao.read(id);
-        if (tag == null) {
-            throw new NoTagException(id);
-        }
-        return tag;
+        return tagDao.read(id).orElseThrow(() -> new NoTagException(id));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Tag readTagByName(String name) {
-
-        return tagDao.readTagByName(name);
-    }
 
     /**
      * {@inheritDoc}
@@ -56,20 +51,10 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(long id) {
 
-        Tag tag = tagDao.read(id);
-        if (tag == null) {
+        if (tagDao.read(id).isPresent()) {
             throw new NoTagException(id);
         }
         tagDao.deleteCertificateTagsByTagId(id);
         tagDao.delete(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<Tag> readTagsByNames(Set<String> tagNames) {
-
-        return tagDao.readTagsByNames(tagNames);
     }
 }

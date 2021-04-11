@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.epam.esm.entity.Tag;
@@ -10,11 +10,11 @@ public interface TagDao {
 
     Long insert(Tag tag);
 
-    Tag read(long id);
+    Optional<Tag> read(long id);
 
     void delete(long id);
 
-    Tag readTagByName(String name);
+    Optional<Tag> readTagByName(String name);
 
     void deleteCertificateTagsByTagId(long tagId);
 

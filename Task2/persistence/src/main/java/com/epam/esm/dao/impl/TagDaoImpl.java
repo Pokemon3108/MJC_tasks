@@ -5,6 +5,7 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,25 +80,24 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag read(long id) {
+    public Optional<Tag> read(long id) {
 
-        try {
-            return jdbcTemplate
-                    .queryForObject(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, tagMapper);
-        } catch (EmptyResultDataAccessException ex) {
-            return null;
-        }
+        List<Tag> tagList = jdbcTemplate.query(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, tagMapper);
+        return Optional.ofNullable(tagList.get(0));
     }
 
     @Override
-    public Tag readTagByName(String name) {
+    public Optional<Tag> readTagByName(String name) {
 
-        try {
-            return jdbcTemplate
-                    .queryForObject(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
-        } catch (EmptyResultDataAccessException ex) {
-            return new Tag(name);
-        }
+        List<Tag> tagList = jdbcTemplate
+                .query(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, tagMapper);
+        return Optional.ofNullable(tagList.get(0));
+//        try {
+//            return jdbcTemplate
+//                    .queryForObject(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
+//        } catch (EmptyResultDataAccessException ex) {
+//            return new Tag(name);
+//        }
     }
 
     @Override

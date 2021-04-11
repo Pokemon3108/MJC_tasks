@@ -1,16 +1,13 @@
 package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.ExpressionException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.GiftCertificateService;
@@ -22,6 +19,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
 
@@ -68,7 +66,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public Long add(GiftCertificateDto certificateDto) {
 
-       // if (certificateDao.readCertificateByName(certificateDto.getName()))
+        if (certificateDao.readCertificateByName(certificateDto.getName()).isPresent()) {
+            throw new DuplicateCertificateException(certificateDto.getName());
+        }
 
         certificateDto.setCreateDate(LocalDateTime.now());
         certificateDto.setLastUpdateDate(LocalDateTime.now());
@@ -80,7 +80,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Map<Boolean, List<Tag>> tagMap = certificateDto.getTags().stream()
                 .collect(Collectors.partitioningBy(tagsWithId::contains));
 
-        Set<Tag> newTags=new HashSet<>(tagMap.get(false));
+        Set<Tag> newTags = new HashSet<>(tagMap.get(false));
         insertTagsIfNotExist(newTags);
         tagsWithId.addAll(newTags);
         tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
@@ -104,9 +104,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto read(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id).orElseThrow(()-> new NoCertificateException(id));
+        GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
         Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
-        Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t)).collect(Collectors.toSet());
+        Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t).get()).collect(Collectors.toSet());
         return dtoConverter.convertToDto(certificate, tags);
     }
 
@@ -122,7 +122,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateId == null) {
             throw new NoIdException();
         }
-        if (certificateDao.read(certificateId) == null) {
+        if (!certificateDao.read(certificateId).isPresent()) {
             throw new NoCertificateException(certificateId);
         }
 
@@ -143,7 +143,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void delete(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id).orElseThrow(()-> new NoCertificateException(id));
+        GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
         tagDao.unbindCertificateTags(certificate.getId());
         certificateDao.delete(id);
     }
