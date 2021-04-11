@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ExpressionException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.GiftCertificateService;
@@ -66,6 +68,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public Long add(GiftCertificateDto certificateDto) {
 
+       // if (certificateDao.readCertificateByName(certificateDto.getName()))
+
         certificateDto.setCreateDate(LocalDateTime.now());
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         Long certificateId = certificateDao.insert(certificateDto);
@@ -100,10 +104,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto read(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id);
-        if (certificate == null) {
-            throw new NoCertificateException(id);
-        }
+        GiftCertificate certificate = certificateDao.read(id).orElseThrow(()-> new NoCertificateException(id));
         Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
         Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t)).collect(Collectors.toSet());
         return dtoConverter.convertToDto(certificate, tags);
@@ -142,10 +143,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void delete(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id);
-        if (certificate == null) {
-            throw new NoCertificateException(id);
-        }
+        GiftCertificate certificate = certificateDao.read(id).orElseThrow(()-> new NoCertificateException(id));
         tagDao.unbindCertificateTags(certificate.getId());
         certificateDao.delete(id);
     }

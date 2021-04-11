@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,6 +26,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String READ_CERTIFICATE_BY_ID =
             "SELECT name , description , duration ,  price , id , create_date, last_update_date "
                     + "FROM gift_certificate WHERE id = ?";
+
+    private static final String READ_CERTIFICATE_BY_NAME =
+            "SELECT name , description , duration ,  price , id , create_date, last_update_date "
+                    + "FROM gift_certificate WHERE name = ?";
 
     private static final String UPDATE_CERTIFICATE = "UPDATE gift_certificate SET name = COALESCE(?, name)," +
             "description=COALESCE(?, description), price=COALESCE(?, price), " +
@@ -105,11 +110,19 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate read(long id) {
+    public Optional<GiftCertificate> read(long id) {
 
         List<GiftCertificate> certificates = jdbcTemplate.query(READ_CERTIFICATE_BY_ID, new Object[]{id},
                 new int[]{Types.INTEGER}, certificateMapper);
-        return certificates.isEmpty() ? null : certificates.get(0);
+        return Optional.ofNullable(certificates.get(0));
+    }
+
+    @Override
+    public Optional<GiftCertificate> readCertificateByName(String certificateName) {
+
+        List<GiftCertificate> certificates = jdbcTemplate.query(READ_CERTIFICATE_BY_NAME, new Object[]{certificateName},
+                new int[]{Types.VARCHAR}, certificateMapper);
+        return Optional.ofNullable(certificates.get(0));
     }
 
     @Override

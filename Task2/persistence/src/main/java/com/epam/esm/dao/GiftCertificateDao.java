@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
@@ -14,7 +15,9 @@ public interface GiftCertificateDao {
 
     void delete(long id);
 
-    GiftCertificate read(long id);
+    Optional<GiftCertificate> read(long id);
+
+    Optional<GiftCertificate> readCertificateByName(String certificateName);
 
     List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto);
 
