@@ -45,10 +45,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "FROM gift_certificate WHERE name LIKE CONCAT('%', COALESCE(?, name), '%') " +
             "AND description=COALESCE(?, description)";
 
-    private static final String READ_ALL =
-            "SELECT name , description , duration ,  price , id , name, create_date, last_update_date "
-                    + "FROM gift_certificate";
-
     private JdbcTemplate jdbcTemplate;
 
     private GiftCertificateDtoConverter converter;
@@ -114,12 +110,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         List<GiftCertificate> certificates = jdbcTemplate.query(READ_CERTIFICATE_BY_ID, new Object[]{id},
                 new int[]{Types.INTEGER}, certificateMapper);
         return certificates.isEmpty() ? null : certificates.get(0);
-    }
-
-    @Override
-    public List<GiftCertificate> findAll() {
-
-        return jdbcTemplate.query(READ_ALL, new GiftCertificateMapper());
     }
 
     @Override

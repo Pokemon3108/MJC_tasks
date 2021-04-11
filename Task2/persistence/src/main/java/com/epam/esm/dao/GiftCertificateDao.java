@@ -16,8 +16,6 @@ public interface GiftCertificateDao {
 
     GiftCertificate read(long id);
 
-    List<GiftCertificate> findAll();
-
     List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto);
 
     List<GiftCertificate> findCertificateByTagName(String tagName);

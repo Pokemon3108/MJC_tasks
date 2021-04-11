@@ -33,6 +33,7 @@ public class GiftCertificateDtoConverter {
         certificate.setLastUpdateDate(dto.getLastUpdateDate());
         certificate.setDuration(dto.getDuration());
         certificate.setPrice(dto.getPrice());
+        certificate.setId(dto.getId());
         return certificate;
     }
 }
