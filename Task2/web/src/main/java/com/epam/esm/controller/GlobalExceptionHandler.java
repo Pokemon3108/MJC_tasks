@@ -16,7 +16,7 @@ import com.epam.esm.exception.NotFullCertificateException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     private LocaleService localeService;
 
     @Autowired

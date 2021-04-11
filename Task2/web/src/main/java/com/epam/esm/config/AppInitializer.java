@@ -1,5 +1,7 @@
 package com.epam.esm.config;
 
+import java.util.ResourceBundle;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
@@ -8,6 +10,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.servlet.DispatcherServlet;
 
 public class AppInitializer implements WebApplicationInitializer {
+
 
     @Override
     public void onStartup(ServletContext servletContext) {
@@ -18,9 +21,9 @@ public class AppInitializer implements WebApplicationInitializer {
         ServletRegistration.Dynamic servlet =
                 servletContext.addServlet("mvc", new DispatcherServlet(webApplicationContext));
         servlet.addMapping("/");
-        //TODO: It can be reasonable to have this key-value pair in properties configuration.
-        servletContext.setInitParameter(
-                "spring.profiles.active", "prod");
+        ResourceBundle resource = ResourceBundle.getBundle("application");
+        String activeProfile = "spring.profiles.active";
+        servletContext.setInitParameter(activeProfile, resource.getString(activeProfile));
     }
 }
 
