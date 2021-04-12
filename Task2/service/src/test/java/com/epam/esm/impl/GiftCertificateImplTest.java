@@ -116,11 +116,16 @@ class GiftCertificateImplTest {
     }
 
     @Test
-    void throwsExceptionReadTest() {
+    void throwsNoCertificateExceptionReadTest() {
 
         final long id = 9L;
         Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
         Assertions.assertThrows(NoCertificateException.class, () -> service.read(id));
+    }
+
+    @Test
+    void updateTest() {
+
     }
 
 
