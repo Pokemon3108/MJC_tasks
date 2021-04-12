@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.epam.esm.impl.GiftCertificateImplTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-04-12T11:27:43" hostname="DESKTOP-EUNDFIT" time="0.051">
+<testsuite name="com.epam.esm.impl.GiftCertificateImplTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-04-12T11:32:20" hostname="DESKTOP-EUNDFIT" time="0.045">
   <properties/>
-  <testcase name="readTest()" classname="com.epam.esm.impl.GiftCertificateImplTest" time="0.051"/>
+  <testcase name="throwsExceptionReadTest()" classname="com.epam.esm.impl.GiftCertificateImplTest" time="0.045"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
