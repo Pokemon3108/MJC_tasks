@@ -43,7 +43,7 @@ class GiftCertificateImplTest {
     @Mock
     GiftCertificateSortService giftCertificateSortService = new GiftCertificateSortServiceImpl();
 
-  //  @Mock
+    //  @Mock
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
 
     GiftCertificate certificate;
@@ -155,7 +155,7 @@ class GiftCertificateImplTest {
         Tag tag = new Tag("nature");
         Set<Tag> certificateTags = new HashSet<>(Arrays.asList(new Tag("nature", 1L), new Tag("new", 2L)));
         Set<Long> emptySet = new HashSet<>();
-        long certificateId=1L;
+        long certificateId = 1L;
 
         GiftCertificate certificate1 = new GiftCertificate();
         certificate1.setName(certificateNameToFind);

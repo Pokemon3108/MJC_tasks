@@ -47,9 +47,9 @@ class GiftCertificateSortServiceImplTest {
 
         return new Object[][]{
                 {source, Collections.singletonList("name"), Direction.ASC, nameSortAsc},
-              //  {source, Collections.singletonList("name"), Direction.DESC, reverse(nameSortAsc)},
+                //  {source, Collections.singletonList("name"), Direction.DESC, reverse(nameSortAsc)},
                 {source, Collections.singletonList("date"), Direction.ASC, dateSortAsc},
-             //   {source, Collections.singletonList("date"), Direction.DESC, reverse(dateSortAsc)},
+                //   {source, Collections.singletonList("date"), Direction.DESC, reverse(dateSortAsc)},
                 {source, Arrays.asList("name", "date"), Direction.ASC, nameDateSortAsc},
                 {source, Arrays.asList("name", "date"), Direction.DESC, reverse(nameDateSortAsc)},
                 {source, Arrays.asList("date", "name"), Direction.ASC, dateNameSortAsc},
