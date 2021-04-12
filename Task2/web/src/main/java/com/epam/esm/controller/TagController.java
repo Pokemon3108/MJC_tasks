@@ -23,12 +23,22 @@ import com.epam.esm.exception.NotFullCertificateException;
 @RequestMapping("tag")
 public class TagController {
 
-    @Autowired
     private TagService tagService;
+
+    private Validator tagValidator;
 
     @Autowired
     @Qualifier("tagValidator")
-    private Validator tagValidator;
+    public void setTagService(TagService tagService) {
+
+        this.tagService = tagService;
+    }
+
+    @Autowired
+    public void setTagValidator(Validator tagValidator) {
+
+        this.tagValidator = tagValidator;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
