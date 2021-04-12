@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -28,8 +29,8 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.NoCertificateException;
+import com.epam.esm.exception.NoIdException;
 
-@TestInstance(Lifecycle.PER_CLASS)
 class GiftCertificateImplTest {
 
     GiftCertificateServiceImpl service = new GiftCertificateServiceImpl();
@@ -50,7 +51,7 @@ class GiftCertificateImplTest {
 
     GiftCertificateDto certificateDto;
 
-    @BeforeAll
+    @BeforeEach
     void init() {
 
         MockitoAnnotations.openMocks(this);
@@ -87,7 +88,7 @@ class GiftCertificateImplTest {
 
         Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
         Mockito.when(tagDao.readTagsByNames(tagsNames)).thenReturn(certificateDto.getTags());
-        certificateDto.getTags().forEach(t->Mockito.when(tagDao.insert(t)).thenReturn(t.getId()));
+        certificateDto.getTags().forEach(t -> Mockito.when(tagDao.insert(t)).thenReturn(t.getId()));
         Assertions.assertEquals(id, service.add(certificateDto));
     }
 
@@ -124,8 +125,19 @@ class GiftCertificateImplTest {
     }
 
     @Test
-    void updateTest() {
+    void throwsNoIdExceptionUpdateTest() {
 
+        Assertions.assertThrows(NoIdException.class, () -> service.update(certificateDto));
+
+    }
+
+    @Test
+    void throwsNoCertificateExceptionUpdateTest() {
+
+        final long id = 9L;
+        certificateDto.setId(id);
+        Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
+        Assertions.assertThrows(NoCertificateException.class, () -> service.update(certificateDto));
     }
 
 
