@@ -2,17 +2,16 @@ package com.epam.esm.impl;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -44,7 +43,7 @@ class GiftCertificateImplTest {
     @Mock
     GiftCertificateSortService giftCertificateSortService = new GiftCertificateSortServiceImpl();
 
-    @Mock
+  //  @Mock
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
 
     GiftCertificate certificate;
@@ -140,5 +139,59 @@ class GiftCertificateImplTest {
         Assertions.assertThrows(NoCertificateException.class, () -> service.update(certificateDto));
     }
 
+    @Test
+    void throwsNoCertificateExceptionDeleteTest() {
+
+        final long id = 9L;
+        Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
+        Assertions.assertThrows(NoCertificateException.class, () -> service.delete(id));
+    }
+
+    @Test
+    void findByParamsTest() {
+
+        String certificateNameToFind = "certificate1";
+        String descriptionToFind = "description2";
+        Tag tag = new Tag("nature");
+        Set<Tag> certificateTags = new HashSet<>(Arrays.asList(new Tag("nature", 1L), new Tag("new", 2L)));
+        Set<Long> emptySet = new HashSet<>();
+        long certificateId=1L;
+
+        GiftCertificate certificate1 = new GiftCertificate();
+        certificate1.setName(certificateNameToFind);
+        certificate1.setDescription("description1");
+
+        GiftCertificate certificate2 = new GiftCertificate();
+        certificate2.setName("certificate2");
+        certificate2.setDescription(descriptionToFind);
+
+        GiftCertificate certificate12 = new GiftCertificate();
+        certificate12.setName(certificateNameToFind);
+        certificate12.setDescription(descriptionToFind);
+        certificate12.setId(certificateId);
+
+        certificateDto.setName(certificateNameToFind);
+        certificateDto.setDescription(descriptionToFind);
+        certificateDto.setTags(new HashSet<>(Collections.singletonList(tag)));
+
+        List<GiftCertificate> certificatesWithNameAndDescription = Collections.singletonList(certificate12);
+        Mockito.when(certificateDao.findCertificateByParams(certificateDto))
+                .thenReturn(certificatesWithNameAndDescription);
+        List<GiftCertificate> certificatesWithTags = Arrays.asList(certificate1, certificate2, certificate12);
+        Mockito.when(certificateDao.findCertificateByTagName(certificateDto.getTag(0).getName()))
+                .thenReturn(certificatesWithTags);
+        Mockito.when(tagDao.readCertificateTagsIdsByCertificateId(Mockito.anyInt())).thenReturn(emptySet);
+        Mockito.when(tagDao.readTagsByIds(emptySet)).thenReturn(certificateTags);
+
+        GiftCertificateDto dto12 = new GiftCertificateDto();
+        dto12.setTags(certificateTags);
+        dto12.setName(certificate12.getName());
+        dto12.setDescription(certificate12.getDescription());
+        dto12.setId(certificateId);
+        List<GiftCertificateDto> dtos = Collections.singletonList(dto12);
+
+        List<GiftCertificateDto> k = service.findByParams(certificateDto);
+        Assertions.assertArrayEquals(dtos.toArray(), service.findByParams(certificateDto).toArray());
+    }
 
 }
