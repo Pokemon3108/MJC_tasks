@@ -2,6 +2,7 @@ package com.epam.esm.comparator;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 
 public class GiftCertificateSortServiceImpl implements GiftCertificateSortService {
 
-    private final Map<String, Comparator<GiftCertificateDto>> comparatorMap = new HashMap<>();
+    private final Map<String, Comparator<GiftCertificateDto>> comparatorMap = new LinkedHashMap<>();
 
     public GiftCertificateSortServiceImpl() {
 

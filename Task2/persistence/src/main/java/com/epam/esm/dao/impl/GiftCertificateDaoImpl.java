@@ -38,9 +38,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
 
     private static final String READ_CERTIFICATE_BY_TAG = "SELECT cert.name AS cert_name, " +
-            "cert.description AS description, cert.id AS id " +
+            "cert.description AS description, cert.id AS id, " +
             "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, " +
-            "cert.create_date as create_date, cert.last_update_date as last_update_date, " +
+            "cert.create_date AS create_date, cert.last_update_date AS last_update_date, " +
             "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
             "LEFT OUTER JOIN gift_certificate_tag AS cert_tag ON cert.id = cert_tag.certificate_id " +
             "LEFT OUTER JOIN tag ON tag.name = COALESCE(?, tag.name)";

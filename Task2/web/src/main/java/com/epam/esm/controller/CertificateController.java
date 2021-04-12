@@ -31,12 +31,22 @@ import com.epam.esm.exception.NotFullCertificateException;
 @RequestMapping("certificate")
 public class CertificateController {
 
-    @Autowired
     private GiftCertificateService certificateService;
+
+    private Validator certificateValidator;
+
+    @Autowired
+    public void setCertificateService(GiftCertificateService certificateService) {
+
+        this.certificateService = certificateService;
+    }
 
     @Autowired
     @Qualifier("certificateValidator")
-    private Validator certificateValidator;
+    public void setCertificateValidator(Validator certificateValidator) {
+
+        this.certificateValidator = certificateValidator;
+    }
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {

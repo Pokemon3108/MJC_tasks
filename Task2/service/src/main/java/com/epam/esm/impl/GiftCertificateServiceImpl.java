@@ -155,7 +155,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> findByParams(GiftCertificateDto certificateDto) {
 
         List<GiftCertificate> certificatesWithParams = certificateDao.findCertificateByParams(certificateDto);
-        if (!certificateDto.getTags().isEmpty()) {
+        if (certificateDto.getTag(0).getName()!=null) {
             List<GiftCertificate> certificatesWithTagParams = certificateDao
                     .findCertificateByTagName(certificateDto.getTag(0).getName());
             certificatesWithParams.retainAll(certificatesWithTagParams);
