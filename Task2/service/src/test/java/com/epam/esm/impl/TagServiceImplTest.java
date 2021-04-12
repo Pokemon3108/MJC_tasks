@@ -15,6 +15,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateTagException;
+import com.epam.esm.exception.NoTagException;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class TagServiceImplTest {
@@ -44,10 +45,27 @@ class TagServiceImplTest {
 
     @Test
     void throwsExceptionCreateTest() {
-        
+
         Tag tag = new Tag("nature");
         Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.of(tag));
         Assertions.assertThrows(DuplicateTagException.class, () -> service.create(tag));
+    }
+
+    @Test
+    void readTagByIdTest() {
+
+        long id = 1L;
+        Tag tag = new Tag("nature", id);
+        Mockito.when(tagDao.read(id)).thenReturn(Optional.of(tag));
+        Assertions.assertEquals(tag, service.readTagById(id));
+    }
+
+    @Test
+    void throwsExceptionReadTagByIdTest() {
+
+        long id = 15L;
+        Mockito.when(tagDao.read(id)).thenReturn(Optional.empty());
+        Assertions.assertThrows(NoTagException.class, () -> service.readTagById(id));
     }
 
 
