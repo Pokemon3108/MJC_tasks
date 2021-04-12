@@ -36,7 +36,7 @@ class TagServiceImplTest {
     void createTest() {
 
         Tag tag = new Tag("nature");
-        Long id = 1L;
+        final long id = 1L;
 
         Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.empty());
         Mockito.when(tagDao.insert(tag)).thenReturn(id);
@@ -54,7 +54,7 @@ class TagServiceImplTest {
     @Test
     void readTagByIdTest() {
 
-        long id = 1L;
+        final long id = 1L;
         Tag tag = new Tag("nature", id);
         Mockito.when(tagDao.read(id)).thenReturn(Optional.of(tag));
         Assertions.assertEquals(tag, service.readTagById(id));
@@ -63,7 +63,7 @@ class TagServiceImplTest {
     @Test
     void throwsExceptionReadTagByIdTest() {
 
-        long id = 15L;
+        final long id = 15L;
         Mockito.when(tagDao.read(id)).thenReturn(Optional.empty());
         Assertions.assertThrows(NoTagException.class, () -> service.readTagById(id));
     }
@@ -71,7 +71,7 @@ class TagServiceImplTest {
     @Test
     void throwsExceptionDeleteTest() {
 
-        long id = 99L;
+        final long id = 99L;
         Mockito.when(tagDao.read(id)).thenReturn(Optional.empty());
         Assertions.assertThrows(NoTagException.class, () -> service.delete(id));
     }
