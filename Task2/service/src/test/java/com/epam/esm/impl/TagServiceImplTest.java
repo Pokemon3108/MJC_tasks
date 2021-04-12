@@ -68,5 +68,13 @@ class TagServiceImplTest {
         Assertions.assertThrows(NoTagException.class, () -> service.readTagById(id));
     }
 
+    @Test
+    void throwsExceptionDeleteTest() {
+
+        long id = 99L;
+        Mockito.when(tagDao.read(id)).thenReturn(Optional.empty());
+        Assertions.assertThrows(NoTagException.class, () -> service.delete(id));
+    }
+
 
 }

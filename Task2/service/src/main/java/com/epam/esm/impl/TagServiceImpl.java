@@ -51,7 +51,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(long id) {
 
-        if (tagDao.read(id).isPresent()) {
+        if (!tagDao.read(id).isPresent()) {
             throw new NoTagException(id);
         }
         tagDao.deleteCertificateTagsByTagId(id);
