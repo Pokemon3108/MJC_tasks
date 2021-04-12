@@ -20,10 +20,10 @@ import com.epam.esm.exception.NoTagException;
 @TestInstance(Lifecycle.PER_CLASS)
 class TagServiceImplTest {
 
-    private TagServiceImpl service = new TagServiceImpl();
+    TagServiceImpl service = new TagServiceImpl();
 
     @Mock
-    private TagDao tagDao = new TagDaoImpl();
+    TagDao tagDao = new TagDaoImpl();
 
     @BeforeAll
     void init() {

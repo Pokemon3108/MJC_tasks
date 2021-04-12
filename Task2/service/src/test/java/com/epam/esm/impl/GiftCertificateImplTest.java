@@ -26,12 +26,13 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.NoCertificateException;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class GiftCertificateImplTest {
 
-    private GiftCertificateServiceImpl service = new GiftCertificateServiceImpl();
+    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl();
 
     @Mock
     GiftCertificateDao certificateDao = new GiftCertificateDaoImpl();
@@ -79,6 +80,26 @@ class GiftCertificateImplTest {
     }
 
     @Test
+    void addTest() {
+
+        final long id = 9L;
+        Set<String> tagsNames = certificateDto.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+
+        Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
+        Mockito.when(tagDao.readTagsByNames(tagsNames)).thenReturn(certificateDto.getTags());
+        certificateDto.getTags().forEach(t->Mockito.when(tagDao.insert(t)).thenReturn(t.getId()));
+        Assertions.assertEquals(id, service.add(certificateDto));
+    }
+
+    @Test
+    void throwsDuplicateCertificateExceptionReadTest() {
+
+        final String name = certificate.getName();
+        Mockito.when(certificateDao.readCertificateByName(name)).thenReturn(Optional.of(certificate));
+        Assertions.assertThrows(DuplicateCertificateException.class, () -> service.add(certificateDto));
+    }
+
+    @Test
     void readTest() {
 
         final long id = 9L;
@@ -101,5 +122,6 @@ class GiftCertificateImplTest {
         Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
         Assertions.assertThrows(NoCertificateException.class, () -> service.read(id));
     }
+
 
 }
