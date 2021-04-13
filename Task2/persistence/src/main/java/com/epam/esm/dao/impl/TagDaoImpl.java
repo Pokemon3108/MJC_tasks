@@ -91,13 +91,7 @@ public class TagDaoImpl implements TagDao {
 
         List<Tag> tagList = jdbcTemplate
                 .query(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, tagMapper);
-        return Optional.ofNullable(tagList.get(0));
-//        try {
-//            return jdbcTemplate
-//                    .queryForObject(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new TagMapper());
-//        } catch (EmptyResultDataAccessException ex) {
-//            return new Tag(name);
-//        }
+        return (tagList.isEmpty()) ? Optional.empty() : Optional.ofNullable(tagList.get(0));
     }
 
     @Override
