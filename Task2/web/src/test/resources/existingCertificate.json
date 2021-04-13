@@ -1,0 +1,13 @@
+{
+    "name": "new apple",
+    "description": "fruits sales",
+    "price": 10.124,
+    "duration": 9900,
+    "createDate": "2021-04-11T23:01:31.441",
+    "lastUpdateDate": "2021-04-11T23:18:55.117",
+    "tags": [
+        {
+            "name": "new name tag"
+        }
+    ]
+}

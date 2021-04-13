@@ -1,0 +1,16 @@
+{
+    "name": "flowers",
+    "description": "sample description",
+    "price": 10.124,
+    "duration": 9900,
+    "createDate": "2021-02-28T23:01:31.441",
+    "lastUpdateDate": "2021-04-11T23:18:55.117",
+    "tags": [
+        {
+            "name": "nature"
+        },
+        {
+            "name": "party"
+        }
+    ]
+}

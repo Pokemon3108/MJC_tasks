@@ -1,0 +1,13 @@
+{
+    "id": 4,
+    "name": "new name",
+    "price": 102.222,
+    "tags": [
+        {
+            "name": "new name tag"
+        },
+        {
+            "name": "cars"
+        }
+    ]
+}

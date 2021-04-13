@@ -29,7 +29,7 @@ class TagControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
+    WebApplicationContext webApplicationContext;
 
     @BeforeEach
     public void init() {
@@ -45,7 +45,7 @@ class TagControllerTest {
         final String tagName = "nature";
         mockMvc.perform(get("/tag/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(tagName));
     }
 
@@ -80,10 +80,12 @@ class TagControllerTest {
 
         String fileName = "newTag.json";
         String json = FileReaderHelper.readFile(fileName);
+        long generatedId = 5;
         mockMvc.perform(post("/tag")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().string(String.valueOf(generatedId)));
     }
 
     @Test

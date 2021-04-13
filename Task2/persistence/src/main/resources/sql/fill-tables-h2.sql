@@ -2,7 +2,7 @@ INSERT INTO gift_certificate (id, name, description, price, duration, create_dat
 VALUES (1, 'certificatto', 'description', 12.34, 12, '2021-04-11', '2021-04-11');
 
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date, last_update_date)
-VALUES (2, 'new certificate', 'sales certificate', 1100, 89, '2021-04-11', '2021-04-11');
+VALUES (2, 'new certificate', 'sales certificate', 1100, 89, '2020-04-11', '2021-04-11');
 
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date, last_update_date)
 VALUES (3, 'new apple', 'fruits sales', 1234, 45, '2020-12-11', '2021-01-03');
@@ -30,7 +30,6 @@ INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(2, 4);
 INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(3, 1);
 INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(3, 4);
 INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(4, 2);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(4, 4);
 INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(5, 3);
 INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(5, 4);
 INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(6, 1);
