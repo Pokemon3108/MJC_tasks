@@ -28,13 +28,13 @@ public class TagController {
     private Validator tagValidator;
 
     @Autowired
-    @Qualifier("tagValidator")
     public void setTagService(TagService tagService) {
 
         this.tagService = tagService;
     }
 
     @Autowired
+    @Qualifier("tagValidator")
     public void setTagValidator(Validator tagValidator) {
 
         this.tagValidator = tagValidator;

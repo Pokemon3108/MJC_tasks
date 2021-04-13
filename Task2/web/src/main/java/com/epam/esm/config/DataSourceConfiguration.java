@@ -31,6 +31,7 @@ public class DataSourceConfiguration {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:sql/tables-dev.sql")
+                .addScript("classpath:sql/fill-tables-h2.sql")
                 .build();
     }
 

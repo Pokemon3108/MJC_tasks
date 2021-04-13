@@ -3,6 +3,7 @@ package com.epam.esm.config;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -20,6 +21,7 @@ import com.epam.esm.impl.TagServiceImpl;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
+@ComponentScan(basePackages = "com.epam.esm")
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 

@@ -83,7 +83,7 @@ public class TagDaoImpl implements TagDao {
     public Optional<Tag> read(long id) {
 
         List<Tag> tagList = jdbcTemplate.query(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, tagMapper);
-        return Optional.ofNullable(tagList.get(0));
+        return (tagList.isEmpty()) ? Optional.empty() : Optional.ofNullable(tagList.get(0));
     }
 
     @Override
