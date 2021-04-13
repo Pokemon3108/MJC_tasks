@@ -43,7 +43,6 @@ class GiftCertificateImplTest {
     @Mock
     GiftCertificateSortService giftCertificateSortService = new GiftCertificateSortServiceImpl();
 
-    //  @Mock
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
 
     GiftCertificate certificate;

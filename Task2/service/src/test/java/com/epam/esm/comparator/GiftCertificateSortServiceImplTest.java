@@ -15,9 +15,9 @@ import com.epam.esm.dto.GiftCertificateDto;
 
 class GiftCertificateSortServiceImplTest {
 
-    private GiftCertificateSortServiceImpl service = new GiftCertificateSortServiceImpl();
+    GiftCertificateSortServiceImpl service = new GiftCertificateSortServiceImpl();
 
-    public static Object[][] sortTestData() {
+    static Object[][] sortTestData() {
 
         GiftCertificateDto dto1 = new GiftCertificateDto();
         dto1.setName("Aeroplane");
