@@ -19,6 +19,9 @@ import com.epam.esm.dao.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 
 
+/**
+ * The type Tag dao uses database as storage and works with it
+ */
 public class TagDaoImpl implements TagDao {
 
     private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";
@@ -49,18 +52,31 @@ public class TagDaoImpl implements TagDao {
 
     private TagMapper tagMapper;
 
+    /**
+     * Sets jdbc template.
+     *
+     * @param jdbcTemplate
+     */
     @Autowired
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Sets tag mapper.
+     *
+     * @param tagMapper
+     */
     @Autowired
     public void setTagMapper(TagMapper tagMapper) {
 
         this.tagMapper = tagMapper;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long insert(Tag tag) {
 
@@ -73,12 +89,18 @@ public class TagDaoImpl implements TagDao {
         return keyHolder.getKey().longValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(long id) {
 
         jdbcTemplate.update(DELETE_TAG_BY_ID, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Tag> read(long id) {
 
@@ -86,6 +108,9 @@ public class TagDaoImpl implements TagDao {
         return (tagList.isEmpty()) ? Optional.empty() : Optional.ofNullable(tagList.get(0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Tag> readTagByName(String name) {
 
@@ -94,12 +119,18 @@ public class TagDaoImpl implements TagDao {
         return (tagList.isEmpty()) ? Optional.empty() : Optional.ofNullable(tagList.get(0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteCertificateTagsByTagId(long tagId) {
 
         jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_TAG_ID, tagId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void bindCertificateTags(Set<Tag> tagSet, Long certificateId) {
 
@@ -107,6 +138,9 @@ public class TagDaoImpl implements TagDao {
                 .update(INSERT_CERTIFICATE_TAGS, certificateId, tag.getId()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
 
@@ -119,12 +153,18 @@ public class TagDaoImpl implements TagDao {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void unbindCertificateTags(long certificateId) {
 
         jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID, certificateId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Tag> readTagsByNames(Set<String> tagNames) {
 
@@ -136,6 +176,9 @@ public class TagDaoImpl implements TagDao {
         return new HashSet<>(tags);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Tag> readTagsByIds(Set<Long> ids) {
 

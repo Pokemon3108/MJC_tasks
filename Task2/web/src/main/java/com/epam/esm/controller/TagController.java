@@ -19,6 +19,9 @@ import com.epam.esm.TagService;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NotFullCertificateException;
 
+/**
+ * TagController uses for control operations with tag
+ */
 @RestController
 @RequestMapping("tag")
 public class TagController {
@@ -27,12 +30,22 @@ public class TagController {
 
     private Validator tagValidator;
 
+    /**
+     * Sets tag service.
+     *
+     * @param tagService
+     */
     @Autowired
     public void setTagService(TagService tagService) {
 
         this.tagService = tagService;
     }
 
+    /**
+     * Sets tag validator.
+     *
+     * @param tagValidator
+     */
     @Autowired
     @Qualifier("tagValidator")
     public void setTagValidator(Validator tagValidator) {
@@ -40,6 +53,13 @@ public class TagController {
         this.tagValidator = tagValidator;
     }
 
+    /**
+     * Create tag
+     *
+     * @param tag           that will be created
+     * @param bindingResult registers error
+     * @return the id of tag
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody Tag tag, BindingResult bindingResult) {
@@ -52,12 +72,23 @@ public class TagController {
         return tagService.create(tag);
     }
 
+    /**
+     * Read tag
+     *
+     * @param id of tag
+     * @return the filled tag
+     */
     @GetMapping("/{id}")
     public Tag read(@PathVariable long id) {
 
         return tagService.readTagById(id);
     }
 
+    /**
+     * Delete tag
+     *
+     * @param id of tag
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {

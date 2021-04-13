@@ -18,6 +18,9 @@ import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 
 
+/**
+ * The type Gift certificate dao uses database as storage and works with it
+ */
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String INSERT_CERTIFICATE = "INSERT INTO gift_certificate " +
@@ -56,18 +59,33 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private GiftCertificateMapper certificateMapper;
 
+    /**
+     * Sets jdbc template.
+     *
+     * @param jdbcTemplate
+     */
     @Autowired
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Sets converter.
+     *
+     * @param converter
+     */
     @Autowired
     public void setConverter(GiftCertificateDtoConverter converter) {
 
         this.converter = converter;
     }
 
+    /**
+     * Sets certificate mapper.
+     *
+     * @param certificateMapper
+     */
     @Autowired
     public void setCertificateMapper(GiftCertificateMapper certificateMapper) {
 
@@ -93,7 +111,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return keyHolder.getKey().longValue();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(GiftCertificateDto certificateDto) {
 
@@ -103,12 +123,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 certificate.getLastUpdateDate(), certificate.getId());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(long id) {
 
         jdbcTemplate.update(DELETE_CERTIFICATE, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<GiftCertificate> read(long id) {
 
@@ -117,6 +143,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return (certificates.isEmpty()) ? Optional.empty() : Optional.ofNullable(certificates.get(0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<GiftCertificate> readCertificateByName(String certificateName) {
 
@@ -125,6 +154,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return (certificates.isEmpty()) ? Optional.empty() : Optional.ofNullable(certificates.get(0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto) {
 
@@ -135,6 +167,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }, new GiftCertificateMapper());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<GiftCertificate> findCertificateByTagName(String tagName) {
 

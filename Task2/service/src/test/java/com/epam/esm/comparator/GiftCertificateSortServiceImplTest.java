@@ -47,9 +47,7 @@ class GiftCertificateSortServiceImplTest {
 
         return new Object[][]{
                 {source, Collections.singletonList("name"), Direction.ASC, nameSortAsc},
-                //  {source, Collections.singletonList("name"), Direction.DESC, reverse(nameSortAsc)},
                 {source, Collections.singletonList("date"), Direction.ASC, dateSortAsc},
-                //   {source, Collections.singletonList("date"), Direction.DESC, reverse(dateSortAsc)},
                 {source, Arrays.asList("name", "date"), Direction.ASC, nameDateSortAsc},
                 {source, Arrays.asList("name", "date"), Direction.DESC, reverse(nameDateSortAsc)},
                 {source, Arrays.asList("date", "name"), Direction.ASC, dateNameSortAsc},
@@ -65,16 +63,12 @@ class GiftCertificateSortServiceImplTest {
         return reversedList;
     }
 
-
     @ParameterizedTest
     @MethodSource("sortTestData")
     void sortTest(List<GiftCertificateDto> certificates, List<String> params, Direction direction,
             List<GiftCertificateDto> sortedList) {
 
-        List<GiftCertificateDto> l = service.sort(certificates, params, direction);
-        System.out.println(certificates);
-        System.out.println(sortedList);
+        System.out.println(service.sort(certificates, params, direction));
         Assertions.assertArrayEquals(service.sort(certificates, params, direction).toArray(), sortedList.toArray());
     }
-
 }

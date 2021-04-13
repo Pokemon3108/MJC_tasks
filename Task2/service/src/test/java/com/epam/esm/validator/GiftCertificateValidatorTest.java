@@ -23,7 +23,7 @@ class GiftCertificateValidatorTest {
     @Test
     void validateFilledCertificate() {
 
-        GiftCertificateDto dto=new GiftCertificateDto();
+        GiftCertificateDto dto = new GiftCertificateDto();
         dto.setDescription("description");
         dto.setName("name");
         dto.setDuration(10);

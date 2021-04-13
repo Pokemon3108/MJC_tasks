@@ -189,7 +189,6 @@ class GiftCertificateImplTest {
         dto12.setId(certificateId);
         List<GiftCertificateDto> dtos = Collections.singletonList(dto12);
 
-        List<GiftCertificateDto> k = service.findByParams(certificateDto);
         Assertions.assertArrayEquals(dtos.toArray(), service.findByParams(certificateDto).toArray());
     }
 

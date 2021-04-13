@@ -17,19 +17,33 @@ INSERT INTO gift_certificate (id, name, description, price, duration, create_dat
 VALUES (6, 'happy weekday', 'enjoy yourself', 1, 100, '2015-07-11', '2015-08-31');
 
 
-INSERT INTO tag (id, name) VALUES (1, 'nature');
-INSERT INTO tag (id, name) VALUES (2, 'party');
-INSERT INTO tag (id, name) VALUES (3, 'car');
-INSERT INTO tag (id, name) VALUES (4, 'enjoyable');
+INSERT INTO tag (id, name)
+VALUES (1, 'nature');
+INSERT INTO tag (id, name)
+VALUES (2, 'party');
+INSERT INTO tag (id, name)
+VALUES (3, 'car');
+INSERT INTO tag (id, name)
+VALUES (4, 'enjoyable');
 
 
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(1, 1);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(1, 3);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(2, 2);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(2, 4);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(3, 1);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(3, 4);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(4, 2);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(5, 3);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(5, 4);
-INSERT INTO gift_certificate_tag  (certificate_id, tag_id) VALUES(6, 1);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (1, 1);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (1, 3);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (2, 2);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (2, 4);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (3, 1);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (3, 4);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (4, 2);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (5, 3);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (5, 4);
+INSERT INTO gift_certificate_tag (certificate_id, tag_id)
+VALUES (6, 1);

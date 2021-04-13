@@ -9,6 +9,10 @@ import java.util.Set;
 
 import com.epam.esm.entity.Tag;
 
+
+/**
+ * The type Gift certificate dto uses for transferring certificate between application layers
+ */
 public class GiftCertificateDto {
 
     private Long id;
@@ -27,91 +31,182 @@ public class GiftCertificateDto {
 
     private Set<Tag> tags = new HashSet<>();
 
+    /**
+     * Gets tags.
+     *
+     * @return the tags
+     */
     public Set<Tag> getTags() {
 
         return tags;
     }
 
+    /**
+     * Sets tags.
+     *
+     * @param tags the tags
+     */
     public void setTags(Set<Tag> tags) {
 
         this.tags = tags;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
 
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
 
         this.id = id;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
 
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
 
         this.name = name;
     }
 
+    /**
+     * Gets description.
+     *
+     * @return the description
+     */
     public String getDescription() {
 
         return description;
     }
 
+    /**
+     * Sets description.
+     *
+     * @param description the description
+     */
     public void setDescription(String description) {
 
         this.description = description;
     }
 
+    /**
+     * Gets price.
+     *
+     * @return the price
+     */
     public BigDecimal getPrice() {
 
         return price;
     }
 
+    /**
+     * Sets price.
+     *
+     * @param price the price
+     */
     public void setPrice(BigDecimal price) {
 
         this.price = price;
     }
 
+    /**
+     * Gets duration.
+     *
+     * @return the duration
+     */
     public Integer getDuration() {
 
         return duration;
     }
 
+    /**
+     * Sets duration.
+     *
+     * @param duration the duration
+     */
     public void setDuration(Integer duration) {
 
         this.duration = duration;
     }
 
+    /**
+     * Gets create date.
+     *
+     * @return the create date
+     */
     public LocalDateTime getCreateDate() {
 
         return createDate;
     }
 
+    /**
+     * Sets create date.
+     *
+     * @param createDate the create date
+     */
     public void setCreateDate(LocalDateTime createDate) {
 
         this.createDate = createDate;
     }
 
+    /**
+     * Gets last update date.
+     *
+     * @return the last update date
+     */
     public LocalDateTime getLastUpdateDate() {
 
         return lastUpdateDate;
     }
 
+    /**
+     * Sets last update date.
+     *
+     * @param lastUpdateDate the last update date
+     */
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
 
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    /**
+     * Add tag.
+     *
+     * @param tag the tag
+     */
     public void addTag(Tag tag) {
 
         tags.add(tag);
     }
 
+    /**
+     * Gets tag.
+     *
+     * @param index of tag in tag's storage
+     * @return the tag of certificate
+     */
     public Tag getTag(int index) {
 
         return (index < tags.size()) ? new ArrayList<>(tags).get(index) : null;

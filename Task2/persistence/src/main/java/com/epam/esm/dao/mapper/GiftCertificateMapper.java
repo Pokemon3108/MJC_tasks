@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import com.epam.esm.entity.GiftCertificate;
 
+/**
+ * Builds {@code GiftCertificate} object from {@code ResultSet}
+ */
 @Component
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
 

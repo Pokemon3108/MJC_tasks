@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import com.epam.esm.entity.Tag;
 
+/**
+ * Builds {@code Tag} object from {@code ResultSet}
+ */
 @Component
 public class TagMapper implements RowMapper<Tag> {
 
