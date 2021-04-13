@@ -67,8 +67,7 @@ class GiftCertificateSortServiceImplTest {
     @MethodSource("sortTestData")
     void sortTest(List<GiftCertificateDto> certificates, List<String> params, Direction direction,
             List<GiftCertificateDto> sortedList) {
-
-        System.out.println(service.sort(certificates, params, direction));
+        
         Assertions.assertArrayEquals(service.sort(certificates, params, direction).toArray(), sortedList.toArray());
     }
 }
