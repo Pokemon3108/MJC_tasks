@@ -41,18 +41,25 @@ public class DataSourceConfiguration {
 
         BasicDataSource dataSource = new BasicDataSource();
         ResourceBundle resource = ResourceBundle.getBundle("database");
+
         String url = resource.getString("db.url");
-        String user = resource.getString("db.user");
-        String pass = resource.getString("db.password");
-        String driver = resource.getString("db.driver");
-        int poolMaxSize = Integer.parseInt(resource.getString("db.poolMaxSize"));
-        int poolInitSize = Integer.parseInt(resource.getString("db.initSize"));
         dataSource.setUrl(url);
+
+        String user = resource.getString("db.user");
         dataSource.setUsername(user);
+
+        String pass = resource.getString("db.password");
         dataSource.setPassword(pass);
+
+        String driver = resource.getString("db.driver");
         dataSource.setDriverClassName(driver);
-        dataSource.setInitialSize(poolInitSize);
+
+        int poolMaxSize = Integer.parseInt(resource.getString("db.poolMaxSize"));
         dataSource.setMaxTotal(poolMaxSize);
+
+        int poolInitSize = Integer.parseInt(resource.getString("db.initSize"));
+        dataSource.setInitialSize(poolInitSize);
+
         return dataSource;
     }
 

@@ -11,6 +11,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 public class AppInitializer implements WebApplicationInitializer {
 
+    private static final String activeProfile = "spring.profiles.active";
+
     @Override
     public void onStartup(ServletContext servletContext) {
 
@@ -21,7 +23,6 @@ public class AppInitializer implements WebApplicationInitializer {
                 servletContext.addServlet("mvc", new DispatcherServlet(webApplicationContext));
         servlet.addMapping("/");
         ResourceBundle resource = ResourceBundle.getBundle("application");
-        String activeProfile = "spring.profiles.active";
         servletContext.setInitParameter(activeProfile, resource.getString(activeProfile));
     }
 }

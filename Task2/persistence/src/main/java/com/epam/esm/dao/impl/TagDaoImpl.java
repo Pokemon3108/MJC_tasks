@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -144,13 +143,9 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
 
-        try {
-            return new HashSet<>(
-                    jdbcTemplate.queryForList(READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID, new Object[]{certificateId},
-                            new int[]{Types.INTEGER}, Long.class));
-        } catch (EmptyResultDataAccessException ex) {
-            return new HashSet<>();
-        }
+        return new HashSet<>(
+                jdbcTemplate.queryForList(READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID, new Object[]{certificateId},
+                        new int[]{Types.INTEGER}, Long.class));
     }
 
     /**

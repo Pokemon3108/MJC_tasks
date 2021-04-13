@@ -26,6 +26,6 @@ public class LocaleService {
 
     public String getLocaleMessage(String messageName, Object... args) {
 
-        return messageSource.getMessage(messageName, null, getLocale()) + String.join(" ", Arrays.toString(args));
+        return messageSource.getMessage(messageName, args, getLocale());
     }
 }

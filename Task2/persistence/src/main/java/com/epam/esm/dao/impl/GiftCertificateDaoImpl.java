@@ -140,7 +140,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
         List<GiftCertificate> certificates = jdbcTemplate.query(READ_CERTIFICATE_BY_ID, new Object[]{id},
                 new int[]{Types.INTEGER}, certificateMapper);
-        return (certificates.isEmpty()) ? Optional.empty() : Optional.ofNullable(certificates.get(0));
+        return certificates.isEmpty() ? Optional.empty() : Optional.ofNullable(certificates.get(0));
     }
 
     /**
@@ -164,7 +164,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return jdbcTemplate.query(READ_CERTIFICATE_BY_PARAMS, ps -> {
             ps.setString(1, certificate.getName());
             ps.setString(2, certificate.getDescription());
-        }, new GiftCertificateMapper());
+        }, certificateMapper);
     }
 
     /**
