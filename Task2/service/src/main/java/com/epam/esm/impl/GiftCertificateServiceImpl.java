@@ -106,6 +106,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!certificateDao.read(certificateId).isPresent()) {
             throw new NoCertificateException(certificateId);
         }
+        if (certificateDao.readCertificateByName(certificateDto.getName()).isPresent()) {
+            throw new DuplicateCertificateException(certificateDto.getName());
+        }
 
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificateDto);
