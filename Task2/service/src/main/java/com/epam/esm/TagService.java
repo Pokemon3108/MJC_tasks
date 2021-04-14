@@ -37,6 +37,7 @@ public interface TagService {
 
     /**
      * Set id for named tags
+     *
      * @param tags
      * @return
      */

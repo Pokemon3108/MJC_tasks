@@ -73,4 +73,12 @@ public class GlobalExceptionHandler {
         return new Error(ErrorCode.DUPLICATE_TAG_NAME.getCode(),
                 localeService.getLocaleMessage("duplicate_tag", ex.getName()));
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDuplicateCertificate(Exception ex) {
+
+        return new Error(ErrorCode.BASE_ERROR.getCode(),
+                localeService.getLocaleMessage("base_error"));
+    }
 }

@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
-import com.epam.esm.comparator.Direction;
-import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;

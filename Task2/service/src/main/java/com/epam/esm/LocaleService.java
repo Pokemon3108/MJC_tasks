@@ -1,6 +1,5 @@
 package com.epam.esm;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;

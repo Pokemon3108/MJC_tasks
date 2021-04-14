@@ -12,7 +12,8 @@ public enum ErrorCode {
     DUPLICATE_CERTIFICATE_NAME(40403),
     NO_TAG(40411),
     DUPLICATE_TAG_NAME(40412),
-    NO_ID(40421);
+    NO_ID(40421),
+    BASE_ERROR(40420);
 
     private int code;
 
