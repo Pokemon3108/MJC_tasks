@@ -1,9 +1,7 @@
 package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.GiftCertificateService;
+import com.epam.esm.TagService;
 import com.epam.esm.comparator.Direction;
 import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dao.GiftCertificateDao;
@@ -32,9 +31,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private TagDao tagDao;
 
-    private GiftCertificateSortService giftCertificateSortService;
-
     private GiftCertificateDtoConverter dtoConverter;
+
+    private TagService tagService;
 
     @Autowired
     public void setCertificateDao(GiftCertificateDao certificateDao) {
@@ -49,15 +48,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Autowired
-    public void setGiftCertificateSortService(GiftCertificateSortService giftCertificateSortService) {
-
-        this.giftCertificateSortService = giftCertificateSortService;
-    }
-
-    @Autowired
     public void setDtoConverter(GiftCertificateDtoConverter dtoConverter) {
 
         this.dtoConverter = dtoConverter;
+    }
+
+    @Autowired
+    public void setTagService(TagService tagService) {
+
+        this.tagService = tagService;
     }
 
     /**
@@ -75,27 +74,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Long certificateId = certificateDao.insert(certificateDto);
         certificateDto.setId(certificateId);
 
-        Set<Tag> tagsWithId = tagDao
-                .readTagsByNames(certificateDto.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
-        Map<Boolean, List<Tag>> tagMap = certificateDto.getTags().stream()
-                .collect(Collectors.partitioningBy(tagsWithId::contains));
-
-        Set<Tag> newTags = new HashSet<>(tagMap.get(false));
-        insertTagsIfNotExist(newTags);
-        tagsWithId.addAll(newTags);
+        Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
         tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
         return certificateId;
-    }
-
-    /**
-     * Insert tags to storage if they not already exists
-     *
-     * @param tags with names, id from which will be set
-     */
-    private void insertTagsIfNotExist(Set<Tag> tags) {
-
-        tags.stream().filter(tag -> tag.getId() == null)
-                .forEach(tag -> tag.setId(tagDao.insert(tag)));
     }
 
     /**
@@ -129,9 +110,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificateDto);
         if (!certificateDto.getTags().isEmpty()) {
-            insertTagsIfNotExist(certificateDto.getTags());
+            Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
             tagDao.unbindCertificateTags(certificateDto.getId());
-            tagDao.bindCertificateTags(certificateDto.getTags(),
+            tagDao.bindCertificateTags(tagsWithId,
                     certificateDto.getId());
         }
     }
@@ -168,17 +149,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                                 tagDao.readTagsByIds(tagDao.readCertificateTagsIdsByCertificateId(c.getId()))))
                 .collect(Collectors.toList());
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<GiftCertificateDto> sortByParams(List<GiftCertificateDto> certificates,
-            List<String> params, String direction) {
-
-        Direction enumDirection = Direction.valueOf(direction.toUpperCase());
-        return giftCertificateSortService.sort(certificates, params, enumDirection);
-    }
-
 
 }

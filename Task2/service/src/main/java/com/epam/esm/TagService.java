@@ -1,5 +1,7 @@
 package com.epam.esm;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 import com.epam.esm.entity.Tag;
@@ -32,5 +34,12 @@ public interface TagService {
      * @param id of tag
      */
     void delete(long id);
+
+    /**
+     * Set id for named tags
+     * @param tags
+     * @return
+     */
+    Set<Tag> setTagsId(Set<Tag> tags);
 
 }

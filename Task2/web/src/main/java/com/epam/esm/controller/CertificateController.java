@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.GiftCertificateService;
+import com.epam.esm.comparator.Direction;
+import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NotFullCertificateException;
@@ -35,6 +37,8 @@ public class CertificateController {
 
     private Validator certificateValidator;
 
+    private GiftCertificateSortService sortService;
+
     @Autowired
     public void setCertificateService(GiftCertificateService certificateService) {
 
@@ -46,6 +50,12 @@ public class CertificateController {
     public void setCertificateValidator(Validator certificateValidator) {
 
         this.certificateValidator = certificateValidator;
+    }
+
+    @Autowired
+    public void setSortService(GiftCertificateSortService sortService) {
+
+        this.sortService = sortService;
     }
 
     @InitBinder
@@ -97,8 +107,9 @@ public class CertificateController {
         certificate.setName(name);
         certificate.setDescription(description);
         certificate.addTag(new Tag(tag));
+
         List<GiftCertificateDto> certificates = certificateService.findByParams(certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
-        return certificateService.sortByParams(certificates, splitParams, direction);
+        return sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
     }
 }

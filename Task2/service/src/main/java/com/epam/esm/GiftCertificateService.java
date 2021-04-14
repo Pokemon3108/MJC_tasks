@@ -49,14 +49,4 @@ public interface GiftCertificateService {
      * @return list of found certificates
      */
     List<GiftCertificateDto> findByParams(GiftCertificateDto certificate);
-
-    /**
-     * Sort certificates by params
-     *
-     * @param params of sorting
-     * @return sorted list of certificates
-     */
-    List<GiftCertificateDto> sortByParams(List<GiftCertificateDto> certificates,
-            List<String> params, String direction);
-
 }
