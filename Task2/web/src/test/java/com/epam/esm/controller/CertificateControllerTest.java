@@ -148,9 +148,21 @@ class CertificateControllerTest {
 
         mockMvc.perform(get("/certificate?name=new&sortParams=name"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(ids[0]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[].id").value(ids[0]))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(ids[1]))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[2].id").value(ids[2]));
+    }
+
+    @Test
+    void findByTagTest() throws Exception {
+
+        int[] ids = new int[]{1, 5};
+
+        mockMvc.perform(get("/certificate?tag=car"))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.*", Matchers.hasSize(ids.length)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[*].id", Matchers.hasItem(ids[0])))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[*].id", Matchers.hasItem(ids[1])));
     }
 
     @Test

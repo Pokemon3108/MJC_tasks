@@ -140,7 +140,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateDto.getTag(0).getName() != null) {
             List<GiftCertificate> certificatesWithTagParams = certificateDao
                     .findCertificateByTagName(certificateDto.getTag(0).getName());
-            certificatesWithParams.retainAll(certificatesWithTagParams);
+            certificatesWithParams = certificatesWithParams
+                    .stream()
+                    .filter(certificatesWithTagParams::contains)
+                    .collect(Collectors.toList());
         }
 
         //read tags for certificate and convert it to dto

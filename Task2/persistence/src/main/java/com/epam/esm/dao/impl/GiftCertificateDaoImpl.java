@@ -40,13 +40,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String DELETE_CERTIFICATE = "DELETE FROM gift_certificate WHERE id=?";
 
-    private static final String READ_CERTIFICATE_BY_TAG = "SELECT cert.name AS cert_name, " +
+    private static final String READ_CERTIFICATE_BY_TAG = "SELECT cert.name AS name, " +
             "cert.description AS description, cert.id AS id, " +
-            "cert.duration AS duration , cert.price AS price , cert.id AS cert_id, " +
-            "cert.create_date AS create_date, cert.last_update_date AS last_update_date, " +
-            "tag.name AS tag_name, tag.id  AS tag_id FROM gift_certificate AS cert " +
+            "cert.duration AS duration , cert.price AS price , " +
+            "cert.create_date AS create_date, cert.last_update_date AS last_update_date " +
+            "FROM gift_certificate AS cert " +
             "LEFT OUTER JOIN gift_certificate_tag AS cert_tag ON cert.id = cert_tag.certificate_id " +
-            "LEFT OUTER JOIN tag ON tag.name = COALESCE(?, tag.name)";
+            "LEFT OUTER JOIN tag ON tag.id = cert_tag.tag_id WHERE tag.name = COALESCE(?, tag.name)";
 
     private static final String READ_CERTIFICATE_BY_PARAMS = "SELECT description , duration ,  price , id , " +
             "name, create_date, last_update_date " +
@@ -174,7 +174,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public List<GiftCertificate> findCertificateByTagName(String tagName) {
 
         return jdbcTemplate.query(READ_CERTIFICATE_BY_TAG, ps -> ps.setString(1, tagName),
-                new GiftCertificateMapper());
+                certificateMapper);
     }
 
 
