@@ -2,6 +2,7 @@ package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -104,17 +105,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!certificateDao.read(certificateId).isPresent()) {
             throw new NoCertificateException(certificateId);
         }
-        if (certificateDao.readCertificateByName(certificateDto.getName()).isPresent()) {
+
+        Optional<GiftCertificate> certificate = certificateDao.readCertificateByName(certificateDto.getName());
+        if (certificate.isPresent() && !certificate.get().getId().equals(certificateDto.getId())) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificateDto);
         if (!certificateDto.getTags().isEmpty()) {
-            Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
             tagDao.unbindCertificateTags(certificateDto.getId());
-            tagDao.bindCertificateTags(tagsWithId,
-                    certificateDto.getId());
+
+            long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName()!=null).count();
+            if (namedTagsSize != 0) {
+                Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
+
+                tagDao.bindCertificateTags(tagsWithId,
+                        certificateDto.getId());
+            }
         }
     }
 

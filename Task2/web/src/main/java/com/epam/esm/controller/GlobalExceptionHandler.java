@@ -1,10 +1,15 @@
 package com.epam.esm.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.epam.esm.LocaleService;
 import com.epam.esm.error.Error;
@@ -17,7 +22,7 @@ import com.epam.esm.exception.NoTagException;
 import com.epam.esm.exception.NotFullCertificateException;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private LocaleService localeService;
 
@@ -76,9 +81,10 @@ public class GlobalExceptionHandler {
 
 //    @ExceptionHandler(Exception.class)
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public Error handleDuplicateCertificate(Exception ex) {
+//    public Error handleBaseErrors(Exception ex) {
 //
 //        return new Error(ErrorCode.BASE_ERROR.getCode(),
-//                localeService.getLocaleMessage("base_error"));
+//                localeService.getLocaleMessage("base_error", ex.getMessage()));
 //    }
+
 }

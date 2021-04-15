@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
@@ -26,8 +27,12 @@ import com.epam.esm.GiftCertificateService;
 import com.epam.esm.comparator.Direction;
 import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.IdDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NotFullCertificateException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.io.JsonEOFException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("certificate")
@@ -66,14 +71,14 @@ public class CertificateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
+    public IdDto create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
 
         certificateValidator.validate(certificate, bindingResult);
         if (bindingResult.hasErrors()) {
             ObjectError error = bindingResult.getAllErrors().get(0);
             throw new NotFullCertificateException(error.getCode());
         }
-        return certificateService.add(certificate);
+        return new IdDto(certificateService.add(certificate));
     }
 
     @GetMapping("/{id}")
@@ -82,9 +87,10 @@ public class CertificateController {
         return certificateService.read(id);
     }
 
-    @PatchMapping
-    public GiftCertificateDto update(@RequestBody GiftCertificateDto certificate) {
+    @PatchMapping("/{id}")
+    public GiftCertificateDto update(@PathVariable long id, @RequestBody GiftCertificateDto certificate) {
 
+        certificate.setId(id);
         certificateService.update(certificate);
         return certificateService.read(certificate.getId());
     }
