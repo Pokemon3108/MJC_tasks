@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.epam.esm'
+group 'com.epam.-esm'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -11,14 +11,11 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    springVersion = '5.3.5'
-}
 
 dependencies {
     implementation project(':persistence')
 
-    implementation group: 'org.springframework', name: 'spring-tx', version: "$springVersion"
+    implementation "org.springframework:spring-tx:${springVersion}"
 
 }
 test {

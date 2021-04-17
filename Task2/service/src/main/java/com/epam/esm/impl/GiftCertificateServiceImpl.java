@@ -116,7 +116,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!certificateDto.getTags().isEmpty()) {
             tagDao.unbindCertificateTags(certificateDto.getId());
 
-            long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName()!=null).count();
+            long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName() != null).count();
             if (namedTagsSize != 0) {
                 Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
 

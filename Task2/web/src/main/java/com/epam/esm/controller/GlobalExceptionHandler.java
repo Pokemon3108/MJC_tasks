@@ -4,11 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.epam.esm.LocaleService;
@@ -22,6 +23,7 @@ import com.epam.esm.exception.NoTagException;
 import com.epam.esm.exception.NotFullCertificateException;
 
 @RestControllerAdvice
+//@EnableWebMvc
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private LocaleService localeService;
@@ -79,12 +81,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("duplicate_tag", ex.getName()));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public Error handleBaseErrors(Exception ex) {
-//
-//        return new Error(ErrorCode.BASE_ERROR.getCode(),
-//                localeService.getLocaleMessage("base_error", ex.getMessage()));
-//    }
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        Error error = new Error(ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
+                localeService.getLocaleMessage("media_type", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(error);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        Error error = new Error(ErrorCode.METHOD_NOT_ALLOWED.getCode(),
+                localeService.getLocaleMessage("method_not_allowed", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+
+        Error error = new Error(ErrorCode.BASE_ERROR.getCode(),
+                localeService.getLocaleMessage("base_error", ex.getMessage()));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 }
