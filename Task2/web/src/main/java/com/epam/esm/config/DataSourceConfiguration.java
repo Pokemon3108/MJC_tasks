@@ -15,11 +15,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-import com.epam.esm.dao.impl.TagDaoImpl;
-
 @Configuration
 @EnableTransactionManagement
 public class DataSourceConfiguration {
@@ -73,17 +68,5 @@ public class DataSourceConfiguration {
     public TransactionManager transactionManager(DataSource dataSource) {
 
         return new DataSourceTransactionManager(dataSource);
-    }
-
-    @Bean
-    public GiftCertificateDao giftCertificateDao() {
-
-        return new GiftCertificateDaoImpl();
-    }
-
-    @Bean
-    public TagDao tagDao() {
-
-        return new TagDaoImpl();
     }
 }

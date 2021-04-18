@@ -9,6 +9,7 @@ import com.epam.esm.entity.Tag;
 /**
  * Interface for work with storage for tags.
  */
+
 public interface TagDao {
 
     /**

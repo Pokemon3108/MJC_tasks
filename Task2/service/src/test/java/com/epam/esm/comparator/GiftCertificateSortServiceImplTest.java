@@ -56,18 +56,18 @@ class GiftCertificateSortServiceImplTest {
         };
     }
 
+    private static List<GiftCertificateDto> reverse(List<GiftCertificateDto> list) {
+
+        List<GiftCertificateDto> reversedList = new LinkedList<>();
+        new LinkedList<>(list).descendingIterator().forEachRemaining(reversedList::add);
+        return reversedList;
+    }
+
     @ParameterizedTest
     @MethodSource("sortTestData")
     void sortTest(List<GiftCertificateDto> certificates, List<String> params, Direction direction,
             List<GiftCertificateDto> sortedList) {
 
         Assertions.assertArrayEquals(service.sort(certificates, params, direction).toArray(), sortedList.toArray());
-    }
-
-    private static List<GiftCertificateDto> reverse(List<GiftCertificateDto> list) {
-
-        List<GiftCertificateDto> reversedList = new LinkedList<>();
-        new LinkedList<>(list).descendingIterator().forEachRemaining(reversedList::add);
-        return reversedList;
     }
 }

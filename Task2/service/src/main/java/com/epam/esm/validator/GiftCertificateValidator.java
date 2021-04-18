@@ -37,7 +37,7 @@ public class GiftCertificateValidator implements Validator {
         } else if (certificate.getDuration() <= 0) {
             errors.reject("negative_duration");
         } else if (certificate.getPrice() == null) {
-            errors.reject("price", "empty_price");
+            errors.reject("empty_price");
         } else if (certificate.getPrice().doubleValue() <= 0.0) {
             errors.reject("negative_price");
         }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.mapper.GiftCertificateMapper;
@@ -21,6 +22,7 @@ import com.epam.esm.entity.GiftCertificate;
 /**
  * The type Gift certificate dao uses database as storage and works with it
  */
+@Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String INSERT_CERTIFICATE = "INSERT INTO gift_certificate " +

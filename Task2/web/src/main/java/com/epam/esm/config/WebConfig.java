@@ -12,12 +12,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.epam.esm.GiftCertificateService;
-import com.epam.esm.TagService;
-import com.epam.esm.comparator.GiftCertificateSortService;
-import com.epam.esm.comparator.GiftCertificateSortServiceImpl;
-import com.epam.esm.impl.GiftCertificateServiceImpl;
-import com.epam.esm.impl.TagServiceImpl;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
@@ -29,24 +23,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 
         converters.add(new MappingJackson2HttpMessageConverter(jackson2ObjectMapperBuilder().build()));
-    }
-
-    @Bean
-    public TagService tagService() {
-
-        return new TagServiceImpl();
-    }
-
-    @Bean
-    public GiftCertificateService giftCertificateService() {
-
-        return new GiftCertificateServiceImpl();
-    }
-
-    @Bean
-    public GiftCertificateSortService giftCertificateSortService() {
-
-        return new GiftCertificateSortServiceImpl();
     }
 
     @Bean

@@ -8,4 +8,9 @@ public class IdDto {
 
         this.id = id;
     }
+
+    public Long getId() {
+
+        return id;
+    }
 }

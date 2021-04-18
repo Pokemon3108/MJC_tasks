@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.mapper.TagMapper;
@@ -21,6 +22,7 @@ import com.epam.esm.entity.Tag;
 /**
  * The type Tag dao uses database as storage and works with it
  */
+@Repository
 public class TagDaoImpl implements TagDao {
 
     private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";

@@ -23,7 +23,6 @@ import com.epam.esm.exception.NoTagException;
 import com.epam.esm.exception.NotFullCertificateException;
 
 @RestControllerAdvice
-//@EnableWebMvc
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private LocaleService localeService;
@@ -62,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Error handleTagNotFound(NoTagException ex) {
 
-        return new Error(ErrorCode.NO_TAG.getCode(), localeService.getLocaleMessage("no_certificate", ex.getTagId()));
+        return new Error(ErrorCode.NO_TAG.getCode(), localeService.getLocaleMessage("no_tag", ex.getTagId()));
     }
 
     @ExceptionHandler(DuplicateCertificateException.class)
@@ -99,12 +98,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }
 
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
 
         Error error = new Error(ErrorCode.BASE_ERROR.getCode(),
-                localeService.getLocaleMessage("base_error", ex.getMessage()));
+                localeService.getLocaleMessage("base_error"));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 

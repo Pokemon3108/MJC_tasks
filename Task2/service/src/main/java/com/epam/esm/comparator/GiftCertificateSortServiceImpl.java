@@ -7,12 +7,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import com.epam.esm.dto.GiftCertificateDto;
 
 
 /**
  * The type Gift certificate sort service.
  */
+@Service
 public class GiftCertificateSortServiceImpl implements GiftCertificateSortService {
 
     private final Map<String, Comparator<GiftCertificateDto>> comparatorMap = new LinkedHashMap<>();

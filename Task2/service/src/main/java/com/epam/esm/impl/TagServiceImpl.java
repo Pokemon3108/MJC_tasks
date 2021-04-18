@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.TagService;
@@ -18,6 +19,7 @@ import com.epam.esm.exception.NoTagException;
 /**
  * Implementation of tag service
  */
+@Service
 public class TagServiceImpl implements TagService {
 
     private TagDao tagDao;

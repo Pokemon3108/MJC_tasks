@@ -78,7 +78,7 @@ public class CertificateController {
     }
 
     @GetMapping("/{id}")
-    public GiftCertificateDto read(@PathVariable long id) {
+    public GiftCertificateDto read(@PathVariable Long id) {
 
         return certificateService.read(id);
     }

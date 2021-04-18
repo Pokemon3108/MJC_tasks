@@ -1,12 +1,15 @@
 package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.GiftCertificateService;
@@ -24,6 +27,7 @@ import com.epam.esm.exception.NoIdException;
 /**
  * The Gift certificate service implementation
  */
+@Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao certificateDao;
@@ -73,8 +77,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Long certificateId = certificateDao.insert(certificateDto);
         certificateDto.setId(certificateId);
 
-        Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
-        tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
+        if (!certificateDto.getTags().isEmpty()) {
+            Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
+            tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
+        }
         return certificateId;
     }
 
@@ -154,12 +160,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                     .collect(Collectors.toList());
         }
 
-        //read tags for certificate and convert it to dto
-        return certificatesWithParams.stream()
-                .map(c -> dtoConverter
-                        .convertToDto(c,
-                                tagDao.readTagsByIds(tagDao.readCertificateTagsIdsByCertificateId(c.getId()))))
-                .collect(Collectors.toList());
+        List<GiftCertificateDto> certificateDtos = new ArrayList<>();
+        for (GiftCertificate c : certificatesWithParams) {
+            Set<Tag> tags = new HashSet<>();
+            Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(c.getId());
+            if (!tagsIds.isEmpty()) {
+                tags = tagDao.readTagsByIds(tagsIds);
+            }
+            certificateDtos.add(dtoConverter.convertToDto(c, tags));
+        }
+
+        return certificateDtos;
+
     }
 
 }
