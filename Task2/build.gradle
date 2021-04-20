@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'com.epam.esm'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+subprojects { project ->
+    project.apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation "org.springframework:spring-webmvc:${springVersion}"
+
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+
+        testImplementation "org.springframework:spring-test:${springVersion}"
+        testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}

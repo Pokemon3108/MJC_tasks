@@ -1,0 +1,11 @@
+group 'com.epam.esm'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+
+dependencies {
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: "$springVersion"
+    implementation group: 'com.h2database', name: 'h2', version: "$h2Version"
+    implementation group: 'org.postgresql', name: 'postgresql', version: "$postgresVersion"
+}

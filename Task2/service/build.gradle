@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'com.epam.-esm'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    implementation project(':persistence')
+
+    implementation "org.springframework:spring-tx:${springVersion}"
+
+}
+test {
+    useJUnitPlatform()
+}
