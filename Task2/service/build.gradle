@@ -11,13 +11,10 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
     implementation project(':persistence')
-
-    implementation "org.springframework:spring-tx:${springVersion}"
-
 }
+
 test {
     useJUnitPlatform()
 }

@@ -14,8 +14,4 @@ dependencies {
 
     implementation "javax.servlet:javax.servlet-api:${javaxServletVesion}"
 
-    testImplementation "org.hamcrest:java-hamcrest:${javaHamcrestVersion}"
-    testCompile "com.jayway.jsonpath:json-path:${jsonVersion}"
-
-
 }

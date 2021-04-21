@@ -1,5 +1,7 @@
 package com.epam.esm.impl;
 
+import static org.mockito.ArgumentMatchers.eq;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,8 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.epam.esm.comparator.GiftCertificateSortService;
-import com.epam.esm.comparator.GiftCertificateSortServiceImpl;
+import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
@@ -41,7 +42,7 @@ class GiftCertificateImplTest {
     TagDao tagDao = new TagDaoImpl();
 
     @Mock
-    GiftCertificateSortService giftCertificateSortService = new GiftCertificateSortServiceImpl();
+    TagService tagService = new TagServiceImpl();
 
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
 
@@ -56,7 +57,7 @@ class GiftCertificateImplTest {
         service.setTagDao(tagDao);
         service.setCertificateDao(certificateDao);
         service.setDtoConverter(dtoConverter);
-        service.setGiftCertificateSortService(giftCertificateSortService);
+        service.setTagService(tagService);
 
         BigDecimal price = BigDecimal.ONE;
         int duration = 10;
@@ -87,7 +88,12 @@ class GiftCertificateImplTest {
         Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
         Mockito.when(tagDao.readTagsByNames(tagsNames)).thenReturn(certificateDto.getTags());
         certificateDto.getTags().forEach(t -> Mockito.when(tagDao.insert(t)).thenReturn(t.getId()));
-        Assertions.assertEquals(id, service.add(certificateDto));
+
+        Long generatedId = service.add(certificateDto);
+        Mockito.verify(tagService, Mockito.times(1)).setTagsId(certificateDto.getTags());
+        Mockito.verify(tagDao, Mockito.times(1)).bindCertificateTags(Mockito.any(), eq(id));
+
+        Assertions.assertEquals(id, generatedId);
     }
 
     @Test
@@ -103,13 +109,13 @@ class GiftCertificateImplTest {
 
         final long id = 9L;
         certificate.setId(id);
+        certificateDto.setId(id);
         Set<Long> tagsIds = certificateDto.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
         Set<Tag> tags = certificateDto.getTags();
 
         Mockito.when(certificateDao.read(id)).thenReturn(Optional.of(certificate));
         Mockito.when(tagDao.readCertificateTagsIdsByCertificateId(certificate.getId())).thenReturn(tagsIds);
         tags.forEach(t -> Mockito.when(tagDao.read(t.getId())).thenReturn(Optional.of(t)));
-        Mockito.when(dtoConverter.convertToDto(certificate, tags)).thenReturn(certificateDto);
 
         Assertions.assertEquals(certificateDto, service.read(id));
     }
@@ -152,8 +158,8 @@ class GiftCertificateImplTest {
         String certificateNameToFind = "certificate1";
         String descriptionToFind = "description2";
         Tag tag = new Tag("nature");
+        Set<Long> certificateTagsIds = new HashSet<>(Arrays.asList(1L, 2L));
         Set<Tag> certificateTags = new HashSet<>(Arrays.asList(new Tag("nature", 1L), new Tag("new", 2L)));
-        Set<Long> emptySet = new HashSet<>();
         long certificateId = 1L;
 
         GiftCertificate certificate1 = new GiftCertificate();
@@ -179,8 +185,8 @@ class GiftCertificateImplTest {
         List<GiftCertificate> certificatesWithTags = Arrays.asList(certificate1, certificate2, certificate12);
         Mockito.when(certificateDao.findCertificateByTagName(certificateDto.getTag(0).getName()))
                 .thenReturn(certificatesWithTags);
-        Mockito.when(tagDao.readCertificateTagsIdsByCertificateId(Mockito.anyInt())).thenReturn(emptySet);
-        Mockito.when(tagDao.readTagsByIds(emptySet)).thenReturn(certificateTags);
+        Mockito.when(tagDao.readCertificateTagsIdsByCertificateId(Mockito.anyLong())).thenReturn(certificateTagsIds);
+        Mockito.when(tagDao.readTagsByIds(certificateTagsIds)).thenReturn(certificateTags);
 
         GiftCertificateDto dto12 = new GiftCertificateDto();
         dto12.setTags(certificateTags);

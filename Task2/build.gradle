@@ -18,12 +18,7 @@ subprojects { project ->
         implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
         implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
 
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-
-        testImplementation "org.springframework:spring-test:${springVersion}"
-        testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+        testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     }
 
     test {
