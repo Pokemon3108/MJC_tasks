@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -62,7 +63,7 @@ class CertificateControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tags").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tags", Matchers.hasSize(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tags[*].name", Matchers.hasItem("car")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.tags[*].name", Matchers.hasItem("party")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.tags[*].name", Matchers.hasItem("nature")));
     }
 
     @Test
@@ -101,7 +102,7 @@ class CertificateControllerTest {
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.content().string(String.valueOf(generatedId)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(generatedId));
     }
 
     @Test
@@ -128,7 +129,7 @@ class CertificateControllerTest {
 
         String fileName = "updatedCertificate.json";
         String json = FileReaderHelper.readFile(fileName);
-        mockMvc.perform(patch("/certificate")
+        mockMvc.perform(patch("/certificate/{id}", id)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -148,7 +149,7 @@ class CertificateControllerTest {
 
         mockMvc.perform(get("/certificate?name=new&sortParams=name"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[].id").value(ids[0]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(ids[0]))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(ids[1]))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[2].id").value(ids[2]));
     }
@@ -171,6 +172,7 @@ class CertificateControllerTest {
         int[] ids = new int[]{1, 3, 2, 4, 6, 5};
 
         mockMvc.perform(get("/certificate?sortParams=date&direction=desc"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(ids[0]))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(ids[1]))

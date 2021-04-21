@@ -85,7 +85,7 @@ class TagControllerTest {
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.content().string(String.valueOf(generatedId)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(generatedId));
     }
 
     @Test
