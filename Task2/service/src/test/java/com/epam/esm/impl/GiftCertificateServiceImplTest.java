@@ -31,7 +31,7 @@ import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
 
-class GiftCertificateImplTest {
+class GiftCertificateServiceImplTest {
 
     GiftCertificateServiceImpl service = new GiftCertificateServiceImpl();
 

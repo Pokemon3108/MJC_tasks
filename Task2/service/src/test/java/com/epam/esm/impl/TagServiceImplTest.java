@@ -1,12 +1,15 @@
 package com.epam.esm.impl;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -17,7 +20,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoTagException;
 
-@TestInstance(Lifecycle.PER_CLASS)
+
 class TagServiceImplTest {
 
     TagServiceImpl service = new TagServiceImpl();
@@ -25,7 +28,7 @@ class TagServiceImplTest {
     @Mock
     TagDao tagDao = new TagDaoImpl();
 
-    @BeforeAll
+    @BeforeEach
     void init() {
 
         MockitoAnnotations.openMocks(this);
@@ -74,6 +77,35 @@ class TagServiceImplTest {
         final long id = 99L;
         Mockito.when(tagDao.read(id)).thenReturn(Optional.empty());
         Assertions.assertThrows(NoTagException.class, () -> service.delete(id));
+    }
+
+    @Test
+    void deleteTest() {
+
+        final long id = 1;
+        Mockito.when(tagDao.read(id)).thenReturn(Optional.of(new Tag()));
+
+        service.delete(id);
+        Mockito.verify(tagDao, Mockito.times(1)).deleteCertificateTagsByTagId(id);
+        Mockito.verify(tagDao, Mockito.times(1)).delete(id);
+    }
+
+
+    @Test
+    void setTagsIdTest() {
+
+        Set<String> tagNames = new HashSet<>(Arrays.asList("tag1", "tag2"));
+        Set<Tag> tagsWithId = new HashSet<>(Collections.singletonList(new Tag("tag1", 1L)));
+        Set<Tag> newTags = new HashSet<>(Collections.singletonList(new Tag("tag2", 2L)));
+
+        Mockito.when(tagDao.readTagsByNames(tagNames)).thenReturn(tagsWithId);
+        newTags.forEach(it -> Mockito.when(tagDao.insert(it)).thenReturn(it.getId()));
+
+        tagsWithId.addAll(newTags);
+        Assertions.assertArrayEquals(
+                service.setTagsId(tagNames.stream().map(Tag::new).collect(Collectors.toSet())).toArray(),
+                tagsWithId.toArray());
+
     }
 
 
