@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,11 @@ public class TagServiceImpl implements TagService {
     private TagDao tagDao;
 
     @Autowired
-    public void setTagDao(TagDao tagDao) {
+    public TagServiceImpl(@Qualifier("tagJpaDao") TagDao tagDao) {
 
         this.tagDao = tagDao;
     }
+
 
     /**
      * {@inheritDoc}
