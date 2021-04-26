@@ -9,7 +9,6 @@ import com.epam.esm.dto.GiftCertificateDto;
 /**
  * The interface for gift certificate CRUD operations
  */
-@Service
 public interface GiftCertificateService {
 
     /**

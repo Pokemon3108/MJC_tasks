@@ -1,7 +1,7 @@
 package com.epam.esm.entity;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Tag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -29,15 +29,15 @@ public class Tag {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
     @JsonIgnore
-    private List<GiftCertificate> certificates;
+    private Set<GiftCertificate> certificates;
 
 
-    public List<GiftCertificate> getCertificates() {
+    public Set<GiftCertificate> getCertificates() {
 
         return certificates;
     }
 
-    public void setCertificates(List<GiftCertificate> certificates) {
+    public void setCertificates(Set<GiftCertificate> certificates) {
 
         this.certificates = certificates;
     }

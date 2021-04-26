@@ -51,6 +51,7 @@ public class GiftCertificateDtoConverter {
         certificate.setDuration(dto.getDuration());
         certificate.setPrice(dto.getPrice());
         certificate.setId(dto.getId());
+        certificate.setTags(dto.getTags());
         return certificate;
     }
 }

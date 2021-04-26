@@ -3,6 +3,7 @@ package com.epam.esm.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,11 +62,12 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(long id) {
 
-        if (!tagDao.read(id).isPresent()) {
+        Optional<Tag> tag = tagDao.read(id);
+        if (!tag.isPresent()) {
             throw new NoTagException(id);
         }
         tagDao.deleteCertificateTagsByTagId(id);
-        tagDao.delete(id);
+        tagDao.delete(tag.get());
     }
 
     /**

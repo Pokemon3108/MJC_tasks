@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,28 +39,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private TagService tagService;
 
     @Autowired
-    public void setCertificateDao(GiftCertificateDao certificateDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagDao tagDao,
+            GiftCertificateDtoConverter dtoConverter, TagService tagService) {
 
         this.certificateDao = certificateDao;
-    }
-
-    @Autowired
-    public void setTagDao(@Qualifier("tagDaoImpl") TagDao tagDao) {
-
         this.tagDao = tagDao;
-    }
-
-    @Autowired
-    public void setDtoConverter(GiftCertificateDtoConverter dtoConverter) {
-
         this.dtoConverter = dtoConverter;
-    }
-
-    @Autowired
-    public void setTagService(TagService tagService) {
-
         this.tagService = tagService;
     }
+
 
     /**
      * {@inheritDoc}
@@ -121,7 +107,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDto.setLastUpdateDate(LocalDateTime.now());
         certificateDao.update(certificateDto);
         if (!certificateDto.getTags().isEmpty()) {
-            tagDao.unbindCertificateTags(certificateDto.getId());
+            tagDao.unbindCertificateTags(dtoConverter.convertToEntity(certificateDto));
 
             long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName() != null).count();
             if (namedTagsSize != 0) {
@@ -141,8 +127,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void delete(long id) {
 
         GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
-        tagDao.unbindCertificateTags(certificate.getId());
-        certificateDao.delete(id);
+        tagDao.unbindCertificateTags(certificate);
+        certificateDao.delete(certificate);
     }
 
     /**

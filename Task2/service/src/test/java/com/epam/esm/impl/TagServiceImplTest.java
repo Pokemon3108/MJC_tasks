@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoTagException;

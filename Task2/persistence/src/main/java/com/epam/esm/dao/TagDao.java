@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import java.util.Optional;
 import java.util.Set;
 
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 
 
@@ -29,11 +30,11 @@ public interface TagDao {
     Optional<Tag> read(long id);
 
     /**
-     * Delete tag from storage by id.
+     * Delete tag from storage
      *
-     * @param id
+     * @param tag to be deleted
      */
-    void delete(long id);
+    void delete(Tag tag);
 
     /**
      * Read tag by name.
@@ -69,9 +70,9 @@ public interface TagDao {
     /**
      * Unbind all certificate tags.
      *
-     * @param certificateId
+     * @param certificate, that tags will be unbinded
      */
-    void unbindCertificateTags(long certificateId);
+    void unbindCertificateTags(GiftCertificate certificate);
 
     /**
      * Read tags by their names

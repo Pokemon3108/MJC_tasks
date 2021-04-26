@@ -21,8 +21,6 @@ import org.mockito.MockitoAnnotations;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;

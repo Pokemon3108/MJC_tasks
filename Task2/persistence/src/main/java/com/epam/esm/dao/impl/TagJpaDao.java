@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 
 @Repository
@@ -42,14 +44,12 @@ public class TagJpaDao implements TagDao {
     public Optional<Tag> read(long id) {
 
         Tag tag = em.find(Tag.class, id);
-        em.detach(tag);
-        return Optional.of(tag);
+        return Optional.ofNullable(tag);
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Tag tag) {
 
-        Tag tag = em.find(Tag.class, id);
         em.remove(tag);
     }
 
@@ -68,25 +68,28 @@ public class TagJpaDao implements TagDao {
     @Override
     public void deleteCertificateTagsByTagId(long tagId) {
 
-
+        Tag tag = em.find(Tag.class, tagId);
+        tag.setCertificates(new HashSet<>());
     }
 
     @Override
     public void bindCertificateTags(Set<Tag> tagSet, Long certificateId) {
 
-        
+        GiftCertificate certificate = em.find(GiftCertificate.class, certificateId);
+        certificate.setTags(tagSet);
     }
 
     @Override
     public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
 
-        return null;
+        GiftCertificate certificate = em.find(GiftCertificate.class, certificateId);
+        return certificate.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
     }
 
     @Override
-    public void unbindCertificateTags(long certificateId) {
+    public void unbindCertificateTags(GiftCertificate certificate) {
 
-
+        certificate.setTags(new HashSet<>());
     }
 
     @Override

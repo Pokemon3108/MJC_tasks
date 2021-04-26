@@ -25,11 +25,11 @@ public interface GiftCertificateDao {
     void update(GiftCertificateDto certificateDto);
 
     /**
-     * Delete certificate  by id
+     * Delete certificate
      *
-     * @param id
+     * @param certificate to be deleted
      */
-    void delete(long id);
+    void delete(GiftCertificate certificate);
 
     /**
      * Read certificate by id
