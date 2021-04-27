@@ -52,4 +52,9 @@ public interface GiftCertificateDao {
      * @return list of found certificates
      */
     List<GiftCertificate> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto);
+
+    /**
+     * @return amount of certificates in storage
+     */
+    long size();
 }

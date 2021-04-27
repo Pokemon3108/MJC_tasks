@@ -106,6 +106,12 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         return q.getResultList();
     }
 
+    @Override
+    public long size() {
+
+        return (long) em.createQuery("select count(c) from GiftCertificate c").getSingleResult();
+    }
+
     private List<Predicate> findCertificateByTags(Root<GiftCertificate> cr, GiftCertificateDto dto,
             CriteriaQuery<GiftCertificate> cq, CriteriaBuilder cb) {
 

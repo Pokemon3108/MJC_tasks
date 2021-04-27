@@ -21,6 +21,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.exception.NoPageException;
 import com.epam.esm.utils.BeanNullProperty;
 
 /**
@@ -154,6 +155,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto) {
 
+        if (certificateDao.size() < (page - 1) * size) {
+            throw new NoPageException(page, size);
+        }
         List<GiftCertificate> certificatesWithParams = certificateDao
                 .findCertificateByParams(page, size, certificateDto);
         return certificatesWithParams.stream().map(c -> dtoConverter.convertToDto(c, c.getTags()))

@@ -19,6 +19,7 @@ import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.NoTagException;
 import com.epam.esm.exception.NotFullCertificateException;
 
@@ -78,6 +79,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.DUPLICATE_TAG_NAME.getCode(),
                 localeService.getLocaleMessage("duplicate_tag", ex.getName()));
+    }
+
+    @ExceptionHandler(NoPageException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleNoPage(NoPageException ex) {
+
+        return new Error(ErrorCode.NO_PAGE.getCode(),
+                localeService.getLocaleMessage("no_page", ex.getPage(), ex.getSize()));
     }
 
     @Override
