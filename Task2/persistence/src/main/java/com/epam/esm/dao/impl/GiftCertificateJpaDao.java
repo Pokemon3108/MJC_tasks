@@ -84,7 +84,7 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto) {
+    public List<GiftCertificate> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto) {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
@@ -101,6 +101,8 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
 
         TypedQuery<GiftCertificate> q = em.createQuery(query);
+        q.setFirstResult((page - 1) * size);
+        q.setMaxResults(size);
         return q.getResultList();
     }
 

@@ -92,7 +92,9 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificateDto> getCertificates(@RequestParam(required = false) String name,
+    public List<GiftCertificateDto> getCertificates(@RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String tags,
             @RequestParam(required = false) String description,
             @RequestParam(required = false, defaultValue = "") String sortParams,
@@ -100,7 +102,7 @@ public class CertificateController {
 
         GiftCertificateDto certificate = searchParamsService.buildDto(name, description, tags);
 
-        List<GiftCertificateDto> certificates = certificateService.findByParams(certificate);
+        List<GiftCertificateDto> certificates = certificateService.findByParams(page, size, certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
         return sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
     }

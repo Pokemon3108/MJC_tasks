@@ -11,6 +11,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,8 @@ import org.mockito.MockitoAnnotations;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.impl.GiftCertificateJpaDao;
+import com.epam.esm.dao.impl.TagJpaDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
@@ -31,18 +36,21 @@ import com.epam.esm.exception.NoIdException;
 
 class GiftCertificateServiceImplTest {
 
-    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl();
-
-    @Mock
-    GiftCertificateDao certificateDao = new GiftCertificateDaoImpl();
-
-    @Mock
-    TagDao tagDao = new TagDaoImpl();
-
-    @Mock
-    TagService tagService = new TagServiceImpl();
-
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Mock
+    GiftCertificateDao certificateDao = new GiftCertificateJpaDao(em, dtoConverter);
+
+    @Mock
+    TagDao tagDao = new TagJpaDao(em);
+
+    @Mock
+    TagService tagService = new TagServiceImpl(tagDao);
+
+    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter, tagService);
 
     GiftCertificate certificate;
 
@@ -52,10 +60,6 @@ class GiftCertificateServiceImplTest {
     void init() {
 
         MockitoAnnotations.openMocks(this);
-        service.setTagDao(tagDao);
-        service.setCertificateDao(certificateDao);
-        service.setDtoConverter(dtoConverter);
-        service.setTagService(tagService);
 
         BigDecimal price = BigDecimal.ONE;
         int duration = 10;

@@ -2,8 +2,6 @@ package com.epam.esm;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.epam.esm.dto.GiftCertificateDto;
 
 /**
@@ -47,5 +45,5 @@ public interface GiftCertificateService {
      * @param certificate with params for search
      * @return list of found certificates
      */
-    List<GiftCertificateDto> findByParams(GiftCertificateDto certificate);
+    List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificate);
 }

@@ -51,5 +51,5 @@ public interface GiftCertificateDao {
      * @param certificateDto with filled params, for which the search will be performed
      * @return list of found certificates
      */
-    List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto);
+    List<GiftCertificate> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto);
 }

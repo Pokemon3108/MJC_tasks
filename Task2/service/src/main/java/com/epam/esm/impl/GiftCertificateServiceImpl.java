@@ -1,8 +1,6 @@
 package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -125,7 +123,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      * Copy properties from dto to certificate
-     * @param dto the source object
+     *
+     * @param dto         the source object
      * @param certificate the target object
      */
     private void copyProperties(GiftCertificateDto dto, GiftCertificate certificate) {
@@ -153,10 +152,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * {@inheritDoc}
      */
     @Override
-    public List<GiftCertificateDto> findByParams(GiftCertificateDto certificateDto) {
+    public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto) {
 
-        List<GiftCertificate> certificatesWithParams = certificateDao.findCertificateByParams(certificateDto);
-        return certificatesWithParams.stream().map(c-> dtoConverter.convertToDto(c, c.getTags())).collect(Collectors.toList());
+        List<GiftCertificate> certificatesWithParams = certificateDao
+                .findCertificateByParams(page, size, certificateDto);
+        return certificatesWithParams.stream().map(c -> dtoConverter.convertToDto(c, c.getTags()))
+                .collect(Collectors.toList());
     }
 
 }

@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.impl.TagJpaDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoTagException;
@@ -22,16 +26,18 @@ import com.epam.esm.exception.NoTagException;
 
 class TagServiceImplTest {
 
-    TagServiceImpl service = new TagServiceImpl();
+    @PersistenceContext
+    private EntityManager em;
 
     @Mock
-    TagDao tagDao = new TagDaoImpl();
+    TagDao tagDao = new TagJpaDao(em);
+
+    TagServiceImpl service = new TagServiceImpl(tagDao);
 
     @BeforeEach
     void init() {
 
         MockitoAnnotations.openMocks(this);
-        service.setTagDao(tagDao);
     }
 
     @Test
@@ -86,7 +92,7 @@ class TagServiceImplTest {
 
         service.delete(id);
         Mockito.verify(tagDao, Mockito.times(1)).deleteCertificateTagsByTagId(id);
-        Mockito.verify(tagDao, Mockito.times(1)).delete(id);
+        Mockito.verify(tagDao, Mockito.times(1)).delete(Mockito.any());
     }
 
 
