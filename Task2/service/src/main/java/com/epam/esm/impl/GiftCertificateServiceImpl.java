@@ -23,6 +23,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.utils.BeanNullProperty;
 
 /**
  * The Gift certificate service implementation
@@ -95,17 +96,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateId == null) {
             throw new NoIdException();
         }
-        if (!certificateDao.read(certificateId).isPresent()) {
-            throw new NoCertificateException(certificateId);
-        }
 
-        Optional<GiftCertificate> certificate = certificateDao.readCertificateByName(certificateDto.getName());
-        if (certificate.isPresent() && !certificate.get().getId().equals(certificateDto.getId())) {
+        GiftCertificate certificateWithId = certificateDao.read(certificateId)
+                .orElseThrow(() -> new NoCertificateException(certificateId));
+
+        Optional<GiftCertificate> certificateWithName = certificateDao.readCertificateByName(certificateDto.getName());
+        if (certificateWithName.isPresent() && !certificateWithName.get().getId().equals(certificateDto.getId())) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
         certificateDto.setLastUpdateDate(LocalDateTime.now());
+
+        copyProperties(certificateDto, certificateWithId);
         certificateDao.update(certificateDto);
+
         if (!certificateDto.getTags().isEmpty()) {
             tagDao.unbindCertificateTags(dtoConverter.convertToEntity(certificateDto));
 
@@ -116,6 +120,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 tagDao.bindCertificateTags(tagsWithId,
                         certificateDto.getId());
             }
+        }
+    }
+
+    /**
+     * Copy properties from dto to certificate
+     * @param dto the source object
+     * @param certificate the target object
+     */
+    private void copyProperties(GiftCertificateDto dto, GiftCertificate certificate) {
+
+        Set<Tag> tags = dto.getTags();
+        BeanNullProperty.copyNonNullProperties(certificate, dto);
+        if (!tags.isEmpty()) {
+            dto.setTags(tags);
         }
     }
 

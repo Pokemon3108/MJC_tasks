@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.query.DaoQuery;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
@@ -67,9 +70,10 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> criteriaQuery = criteriaBuilder.createQuery(GiftCertificate.class);
-        Root<GiftCertificate> root = criteriaQuery.from(GiftCertificate.class);
+        Root<GiftCertificate> certificateRoot = criteriaQuery.from(GiftCertificate.class);
 
-        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("name"), certificateName));
+        criteriaQuery.select(certificateRoot)
+                .where(criteriaBuilder.equal(certificateRoot.get("name"), certificateName));
         TypedQuery<GiftCertificate> query = em.createQuery(criteriaQuery);
         return query.getResultStream().findFirst();
     }
@@ -79,13 +83,16 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
-        Root<GiftCertificate> root = query.from(GiftCertificate.class);
+        Root<GiftCertificate> certificateRoot = query.from(GiftCertificate.class);
 
-        CriteriaBuilder.Coalesce<GiftCertificate> coalesceExp = builder.coalesce();
-        coalesceExp.value(root.get("name"));
-        coalesceExp.value(root.get("description"));
-        query.select(coalesceExp);
+        List<Predicate> predicateList = new ArrayList<>();
+        DaoQuery.applyIfNotNull(certificateDto.getName(),
+                name -> predicateList.add(builder.like(certificateRoot.get("name"), "%" + name + "%")));
+        DaoQuery.applyIfNotNull(certificateDto.getDescription(),
+                description -> predicateList.add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
+        query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
+        
         TypedQuery<GiftCertificate> q = em.createQuery(query);
         return q.getResultList();
     }

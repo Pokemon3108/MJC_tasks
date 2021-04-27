@@ -41,21 +41,11 @@ public class CertificateController {
     private GiftCertificateSortService sortService;
 
     @Autowired
-    public void setCertificateService(GiftCertificateService certificateService) {
+    public CertificateController(GiftCertificateService certificateService,
+            Validator certificateValidator, GiftCertificateSortService sortService) {
 
         this.certificateService = certificateService;
-    }
-
-    @Autowired
-    @Qualifier("certificateValidator")
-    public void setCertificateValidator(Validator certificateValidator) {
-
         this.certificateValidator = certificateValidator;
-    }
-
-    @Autowired
-    public void setSortService(GiftCertificateSortService sortService) {
-
         this.sortService = sortService;
     }
 
