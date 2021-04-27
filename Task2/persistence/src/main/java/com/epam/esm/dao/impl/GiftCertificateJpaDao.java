@@ -3,12 +3,16 @@ package com.epam.esm.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -21,6 +25,7 @@ import com.epam.esm.dao.query.DaoQuery;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 
 @Repository
 @Qualifier("certificateJpaDao")
@@ -89,17 +94,27 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         DaoQuery.applyIfNotNull(certificateDto.getName(),
                 name -> predicateList.add(builder.like(certificateRoot.get("name"), "%" + name + "%")));
         DaoQuery.applyIfNotNull(certificateDto.getDescription(),
-                description -> predicateList.add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
+                description -> predicateList
+                        .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
+        predicateList.addAll(findCertificateByTags(certificateRoot, certificateDto, query, builder));
         query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
-        
+
         TypedQuery<GiftCertificate> q = em.createQuery(query);
         return q.getResultList();
     }
 
-    @Override
-    public List<GiftCertificate> findCertificateByTagName(String tagName) {
+    private List<Predicate> findCertificateByTags(Root<GiftCertificate> cr, GiftCertificateDto dto,
+            CriteriaQuery<GiftCertificate> cq, CriteriaBuilder cb) {
 
-        return null;
+        List<Predicate> predicateList = new ArrayList<>();
+        if (!dto.getTags().isEmpty()) {
+            Set<String> tagNames = dto.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+            Join<GiftCertificate, Tag> join = cr.join("tags", JoinType.LEFT);
+            predicateList.add(join.get("name").in(tagNames));
+            cq.groupBy(cr.get("id"));
+            cq.having(cb.count(cr).in(dto.getTags().size()));
+        }
+        return predicateList;
     }
 }

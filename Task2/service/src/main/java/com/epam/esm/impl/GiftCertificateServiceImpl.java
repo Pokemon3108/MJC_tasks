@@ -156,27 +156,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> findByParams(GiftCertificateDto certificateDto) {
 
         List<GiftCertificate> certificatesWithParams = certificateDao.findCertificateByParams(certificateDto);
-        if (certificateDto.getTag(0).getName() != null) {
-            List<GiftCertificate> certificatesWithTagParams = certificateDao
-                    .findCertificateByTagName(certificateDto.getTag(0).getName());
-            certificatesWithParams = certificatesWithParams
-                    .stream()
-                    .filter(certificatesWithTagParams::contains)
-                    .collect(Collectors.toList());
-        }
-
-        List<GiftCertificateDto> certificateDtos = new ArrayList<>();
-        for (GiftCertificate c : certificatesWithParams) {
-            Set<Tag> tags = new HashSet<>();
-            Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(c.getId());
-            if (!tagsIds.isEmpty()) {
-                tags = tagDao.readTagsByIds(tagsIds);
-            }
-            certificateDtos.add(dtoConverter.convertToDto(c, tags));
-        }
-
-        return certificateDtos;
-
+        return certificatesWithParams.stream().map(c-> dtoConverter.convertToDto(c, c.getTags())).collect(Collectors.toList());
     }
 
 }

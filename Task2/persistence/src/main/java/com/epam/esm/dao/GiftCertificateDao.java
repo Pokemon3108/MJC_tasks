@@ -52,12 +52,4 @@ public interface GiftCertificateDao {
      * @return list of found certificates
      */
     List<GiftCertificate> findCertificateByParams(GiftCertificateDto certificateDto);
-
-    /**
-     * Find certificate, that have tag with {@code tagName}
-     *
-     * @param tagName
-     * @return list of found certificates
-     */
-    List<GiftCertificate> findCertificateByTagName(String tagName);
 }
