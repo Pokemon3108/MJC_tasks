@@ -15,12 +15,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.epam.esm.LocaleService;
 import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
+import com.epam.esm.exception.CreationOrderException;
 import com.epam.esm.exception.DuplicateCertificateException;
 import com.epam.esm.exception.DuplicateTagException;
 import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.NoTagException;
+import com.epam.esm.exception.NoUserException;
 import com.epam.esm.exception.NotFullCertificateException;
 
 @RestControllerAdvice
@@ -87,6 +89,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.NO_PAGE.getCode(),
                 localeService.getLocaleMessage("no_page", ex.getPage(), ex.getSize()));
+    }
+
+    @ExceptionHandler(CreationOrderException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleCreationOrder(CreationOrderException ex) {
+
+        return new Error(ErrorCode.CREATION_ORDER.getCode(),
+                localeService.getLocaleMessage("creation_order_error"));
+    }
+
+    @ExceptionHandler(NoUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleNoUser(NoUserException ex) {
+
+        return new Error(ErrorCode.NO_USER.getCode(),
+                localeService.getLocaleMessage("no_user", ex.getId()));
     }
 
     @Override

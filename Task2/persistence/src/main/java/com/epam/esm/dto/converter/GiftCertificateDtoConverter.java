@@ -1,9 +1,10 @@
-package com.epam.esm.dto;
+package com.epam.esm.dto.converter;
 
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 

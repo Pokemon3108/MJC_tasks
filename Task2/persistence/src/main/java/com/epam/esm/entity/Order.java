@@ -1,6 +1,6 @@
 package com.epam.esm.entity;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,13 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
- * Orders are user's certificates
+ * Orders contain user's certificates
  */
+@Table(name = "ordr")
 @Entity
 public class Order {
 
@@ -23,15 +23,54 @@ public class Order {
     private Long id;
 
     @Column
-    private int cost;
+    private BigDecimal cost;
 
-    @ManyToMany
-    @JoinTable(
-            name = "gift_certificate_order",
-            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"))
-    private List<GiftCertificate> certificate;
+    @ManyToOne
+    @JoinColumn(name = "certificate_id")
+    private GiftCertificate certificate;
 
-    @OneToOne(mappedBy = "order")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+
+    public Long getId() {
+
+        return id;
+    }
+
+    public void setId(Long id) {
+
+        this.id = id;
+    }
+
+    public BigDecimal getCost() {
+
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+
+        this.cost = cost;
+    }
+
+    public GiftCertificate getCertificate() {
+
+        return certificate;
+    }
+
+    public void setCertificate(GiftCertificate certificate) {
+
+        this.certificate = certificate;
+    }
+
+    public User getUser() {
+
+        return user;
+    }
+
+    public void setUser(User user) {
+
+        this.user = user;
+    }
 }

@@ -27,7 +27,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateJpaDao;
 import com.epam.esm.dao.impl.TagJpaDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateDtoConverter;
+import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateCertificateException;
@@ -37,24 +37,18 @@ import com.epam.esm.exception.NoIdException;
 class GiftCertificateServiceImplTest {
 
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
-
-    @PersistenceContext
-    private EntityManager em;
-
-    @Mock
-    GiftCertificateDao certificateDao = new GiftCertificateJpaDao(em, dtoConverter);
-
-    @Mock
-    TagDao tagDao = new TagJpaDao(em);
-
     @Mock
     TagService tagService = new TagServiceImpl(tagDao);
-
-    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter, tagService);
-
+    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
+            tagService);
     GiftCertificate certificate;
-
     GiftCertificateDto certificateDto;
+    @PersistenceContext
+    private EntityManager em;
+    @Mock
+    GiftCertificateDao certificateDao = new GiftCertificateJpaDao(em, dtoConverter);
+    @Mock
+    TagDao tagDao = new TagJpaDao(em);
 
     @BeforeEach
     void init() {

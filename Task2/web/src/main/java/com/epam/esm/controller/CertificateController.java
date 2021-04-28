@@ -22,15 +22,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.GiftCertificateService;
+import com.epam.esm.SearchParamsService;
 import com.epam.esm.comparator.Direction;
 import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.IdDto;
 import com.epam.esm.exception.NotFullCertificateException;
-import com.epam.esm.impl.SearchParamsService;
 
+
+/**
+ * CertificateController - REST controller for operations with certificates
+ */
 @RestController
-@RequestMapping("certificate")
+@RequestMapping("certificates")
 public class CertificateController {
 
     private GiftCertificateService certificateService;
@@ -58,6 +62,13 @@ public class CertificateController {
         binder.setValidator(certificateValidator);
     }
 
+    /**
+     * Create certificate
+     *
+     * @param certificate   dto object with certificate properties
+     * @param bindingResult uses for validation
+     * @return dto object with generated id
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public IdDto create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
@@ -70,12 +81,25 @@ public class CertificateController {
         return new IdDto(certificateService.add(certificate));
     }
 
+    /**
+     * Read certificate
+     *
+     * @param id the certificate id
+     * @return filled certificate
+     */
     @GetMapping("/{id}")
     public GiftCertificateDto read(@PathVariable Long id) {
 
         return certificateService.read(id);
     }
 
+    /**
+     * Update certificate
+     *
+     * @param id          of updated certificate
+     * @param certificate with properties for update
+     * @return updated certificate
+     */
     @PatchMapping("/{id}")
     public GiftCertificateDto update(@PathVariable long id, @RequestBody GiftCertificateDto certificate) {
 
@@ -84,6 +108,11 @@ public class CertificateController {
         return certificateService.read(certificate.getId());
     }
 
+    /**
+     * Delete certificate
+     *
+     * @param id of deleted certificate
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
@@ -91,6 +120,18 @@ public class CertificateController {
         certificateService.delete(id);
     }
 
+    /**
+     * Search and sort certificate
+     *
+     * @param page        number of certificate group
+     * @param size        maximum amount of certificates in response
+     * @param name        certificate name
+     * @param tags        names of certificate tags, separated by commas
+     * @param description certificate description
+     * @param sortParams  parameters of sorting, separated by commas
+     * @param direction   of sorting
+     * @return list of searchable certificates
+     */
     @GetMapping
     public List<GiftCertificateDto> getCertificates(@RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "5") int size,

@@ -1,4 +1,4 @@
-package com.epam.esm.impl;
+package com.epam.esm;
 
 import java.util.Arrays;
 import java.util.Set;

@@ -32,16 +32,6 @@ public class Tag {
     private Set<GiftCertificate> certificates;
 
 
-    public Set<GiftCertificate> getCertificates() {
-
-        return certificates;
-    }
-
-    public void setCertificates(Set<GiftCertificate> certificates) {
-
-        this.certificates = certificates;
-    }
-
     /**
      * Instantiates a new Tag.
      */
@@ -69,6 +59,16 @@ public class Tag {
 
         this.name = name;
         this.id = id;
+    }
+
+    public Set<GiftCertificate> getCertificates() {
+
+        return certificates;
+    }
+
+    public void setCertificates(Set<GiftCertificate> certificates) {
+
+        this.certificates = certificates;
     }
 
     /**

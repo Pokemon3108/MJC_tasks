@@ -1,16 +1,19 @@
 package com.epam.esm.entity;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * User entity
  */
+@Table(name = "usr")
 @Entity
 public class User {
 
@@ -21,9 +24,8 @@ public class User {
     @Column
     private String name;
 
-    @OneToOne
-    @JoinColumn(name="order_id")
-    private Order order;
+    @OneToMany(mappedBy = "user")
+    private Set<Order> orders;
 
     public Long getId() {
 

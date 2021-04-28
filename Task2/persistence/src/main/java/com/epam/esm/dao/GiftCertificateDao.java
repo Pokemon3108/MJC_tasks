@@ -10,7 +10,6 @@ import com.epam.esm.entity.GiftCertificate;
 /**
  * Interface for work with storage for certificate
  */
-
 public interface GiftCertificateDao {
 
     /**

@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 
 /**
@@ -51,11 +52,8 @@ public class GiftCertificate {
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "gift_certificate_order",
-            joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"))
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "certificate_id")
     private Set<Order> orders;
 
     public Set<Order> getOrders() {

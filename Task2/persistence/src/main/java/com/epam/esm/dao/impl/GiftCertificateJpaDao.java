@@ -23,10 +23,13 @@ import org.springframework.stereotype.Repository;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.query.DaoQuery;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateDtoConverter;
+import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 
+/**
+ * Jpa implementation of certificate dao
+ */
 @Repository
 @Qualifier("certificateJpaDao")
 public class GiftCertificateJpaDao implements GiftCertificateDao {
@@ -43,6 +46,9 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         this.converter = converter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long insert(GiftCertificateDto certificateDto) {
 
@@ -51,6 +57,9 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         return certificate.getId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(GiftCertificateDto certificateDto) {
 
@@ -58,18 +67,27 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         em.merge(certificateToBeUpdated);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(GiftCertificate certificate) {
 
         em.remove(certificate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<GiftCertificate> read(long id) {
 
         return Optional.ofNullable(em.find(GiftCertificate.class, id));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<GiftCertificate> readCertificateByName(String certificateName) {
 
@@ -83,6 +101,9 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         return query.getResultStream().findFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<GiftCertificate> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto) {
 
@@ -106,6 +127,9 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         return q.getResultList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long size() {
 

@@ -21,10 +21,10 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NotFullCertificateException;
 
 /**
- * TagController uses for control operations with tag
+ * TagController - REST controller for operations with tags
  */
 @RestController
-@RequestMapping("tag")
+@RequestMapping("tags")
 public class TagController {
 
     private TagService tagService;

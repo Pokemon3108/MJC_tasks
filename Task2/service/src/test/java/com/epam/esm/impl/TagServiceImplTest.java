@@ -26,13 +26,11 @@ import com.epam.esm.exception.NoTagException;
 
 class TagServiceImplTest {
 
+    TagServiceImpl service = new TagServiceImpl(tagDao);
     @PersistenceContext
     private EntityManager em;
-
     @Mock
     TagDao tagDao = new TagJpaDao(em);
-
-    TagServiceImpl service = new TagServiceImpl(tagDao);
 
     @BeforeEach
     void init() {
