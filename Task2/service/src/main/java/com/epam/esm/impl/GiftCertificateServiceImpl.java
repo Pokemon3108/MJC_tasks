@@ -105,9 +105,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
 
         certificateDto.setLastUpdateDate(LocalDateTime.now());
+        GiftCertificate convertedCertificate = dtoConverter.convertToEntity(certificateDto);
 
-        copyProperties(certificateDto, certificateWithId);
-        certificateDao.update(certificateDto);
+        copyProperties(convertedCertificate, certificateWithId);
+        certificateDao.update(dtoConverter.convertToDto(certificateWithId, certificateWithId.getTags()));
 
         if (!certificateDto.getTags().isEmpty()) {
             tagDao.unbindCertificateTags(dtoConverter.convertToEntity(certificateDto));
@@ -125,15 +126,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Copy properties from dto to certificate
      *
-     * @param dto         the source object
-     * @param certificate the target object
+     * @param src         the source object
+     * @param target the target object
      */
-    private void copyProperties(GiftCertificateDto dto, GiftCertificate certificate) {
+    private void copyProperties(GiftCertificate src, GiftCertificate target) {
 
-        Set<Tag> tags = dto.getTags();
-        BeanNullProperty.copyNonNullProperties(certificate, dto);
+        Set<Tag> tags = src.getTags();
+        BeanNullProperty.copyNonNullProperties(src, target);
         if (!tags.isEmpty()) {
-            dto.setTags(tags);
+            src.setTags(tags);
         }
     }
 

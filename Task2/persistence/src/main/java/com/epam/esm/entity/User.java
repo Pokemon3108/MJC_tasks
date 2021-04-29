@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * User entity
  */
@@ -45,5 +47,15 @@ public class User {
     public void setName(String name) {
 
         this.name = name;
+    }
+
+    public Set<Order> getOrders() {
+
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+
+        this.orders = orders;
     }
 }

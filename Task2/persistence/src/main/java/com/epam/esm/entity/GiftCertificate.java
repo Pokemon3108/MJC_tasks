@@ -16,6 +16,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * The type Gift certificate is an entity of certificate
@@ -54,6 +56,7 @@ public class GiftCertificate {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "certificate_id")
+    @JsonIgnore
     private Set<Order> orders;
 
     public Set<Order> getOrders() {

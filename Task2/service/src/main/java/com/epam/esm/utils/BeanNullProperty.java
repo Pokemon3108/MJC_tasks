@@ -20,6 +20,7 @@ public class BeanNullProperty {
      */
     public static void copyNonNullProperties(Object src, Object target) {
 
+        String[] d = getNullProperties(src);
         BeanUtils.copyProperties(src, target, getNullProperties(src));
     }
 
