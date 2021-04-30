@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.epam.esm.TagService;
 import com.epam.esm.dto.IdDto;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.NotFullCertificateException;
+import com.epam.esm.exception.certificate.NotFullCertificateException;
 
 /**
  * TagController - REST controller for operations with tags

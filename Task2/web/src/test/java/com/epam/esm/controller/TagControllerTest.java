@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.epam.esm.exception.DuplicateTagException;
-import com.epam.esm.exception.NoTagException;
+import com.epam.esm.exception.tag.DuplicateTagException;
+import com.epam.esm.exception.tag.NoTagException;
 
 @SpringBootTest
 @ActiveProfiles(value = "dev")

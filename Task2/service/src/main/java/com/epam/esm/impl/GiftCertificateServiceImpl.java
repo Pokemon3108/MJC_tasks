@@ -18,10 +18,10 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateCertificateException;
-import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.certificate.DuplicateCertificateException;
+import com.epam.esm.exception.certificate.NoCertificateException;
 import com.epam.esm.utils.BeanNullProperty;
 
 /**
@@ -126,7 +126,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     /**
      * Copy properties from dto to certificate
      *
-     * @param src         the source object
+     * @param src    the source object
      * @param target the target object
      */
     private void copyProperties(GiftCertificate src, GiftCertificate target) {

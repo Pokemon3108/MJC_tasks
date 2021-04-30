@@ -31,7 +31,8 @@ CREATE TABLE usr
 CREATE TABLE order
 (
     id             SERIAL PRIMARY KEY,
-    user_id        BIGINT  NOT NULL REFERENCES usr (id),
-    certificate_id BIGINT  NOT NULL REFERENCES gift_certificate (id),
-    cost           DECIMAL NOT NULL
+    user_id        BIGINT    NOT NULL REFERENCES usr (id),
+    certificate_id BIGINT    NOT NULL REFERENCES gift_certificate (id),
+    cost           DECIMAL   NOT NULL,
+    purchase_date  TIMESTAMP NOT NULL
 )

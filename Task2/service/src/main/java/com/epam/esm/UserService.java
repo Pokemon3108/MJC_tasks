@@ -15,4 +15,11 @@ public interface UserService {
      */
     User read(Long id);
 
+    /**
+     * Read user with the highest cost of order
+     *
+     * @return user from storage
+     */
+    User readRichest();
+
 }

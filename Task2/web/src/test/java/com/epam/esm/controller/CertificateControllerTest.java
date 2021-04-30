@@ -21,8 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.epam.esm.exception.DuplicateCertificateException;
-import com.epam.esm.exception.NoCertificateException;
+import com.epam.esm.exception.certificate.DuplicateCertificateException;
+import com.epam.esm.exception.certificate.NoCertificateException;
 
 
 @SpringBootTest

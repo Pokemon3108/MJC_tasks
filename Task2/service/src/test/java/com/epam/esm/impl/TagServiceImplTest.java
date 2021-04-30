@@ -20,17 +20,17 @@ import org.mockito.MockitoAnnotations;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.TagJpaDao;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateTagException;
-import com.epam.esm.exception.NoTagException;
+import com.epam.esm.exception.tag.DuplicateTagException;
+import com.epam.esm.exception.tag.NoTagException;
 
 
 class TagServiceImplTest {
 
-    TagServiceImpl service = new TagServiceImpl(tagDao);
     @PersistenceContext
     private EntityManager em;
     @Mock
     TagDao tagDao = new TagJpaDao(em);
+    TagServiceImpl service = new TagServiceImpl(tagDao);
 
     @BeforeEach
     void init() {

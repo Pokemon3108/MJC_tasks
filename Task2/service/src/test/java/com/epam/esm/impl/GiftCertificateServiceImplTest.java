@@ -30,17 +30,13 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateCertificateException;
-import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.exception.certificate.DuplicateCertificateException;
+import com.epam.esm.exception.certificate.NoCertificateException;
 
 class GiftCertificateServiceImplTest {
 
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
-    @Mock
-    TagService tagService = new TagServiceImpl(tagDao);
-    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
-            tagService);
     GiftCertificate certificate;
     GiftCertificateDto certificateDto;
     @PersistenceContext
@@ -49,6 +45,10 @@ class GiftCertificateServiceImplTest {
     GiftCertificateDao certificateDao = new GiftCertificateJpaDao(em, dtoConverter);
     @Mock
     TagDao tagDao = new TagJpaDao(em);
+    @Mock
+    TagService tagService = new TagServiceImpl(tagDao);
+    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
+            tagService);
 
     @BeforeEach
     void init() {

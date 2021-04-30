@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateTagException;
-import com.epam.esm.exception.NoTagException;
+import com.epam.esm.entity.User;
+import com.epam.esm.exception.tag.DuplicateTagException;
+import com.epam.esm.exception.tag.NoTagException;
+import com.epam.esm.exception.user.UsersOrderHasNoTags;
 
 /**
  * Implementation of tag service
@@ -84,6 +86,15 @@ public class TagServiceImpl implements TagService {
         insertTagsIfNotExist(newTags);
         tagsWithId.addAll(newTags);
         return tagsWithId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Tag readMostPopularTag(User user) {
+
+        return tagDao.readTheMostPopularTag(user).orElseThrow(() -> new UsersOrderHasNoTags(user.getId()));
     }
 
     /**

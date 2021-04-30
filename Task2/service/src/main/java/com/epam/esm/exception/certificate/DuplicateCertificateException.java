@@ -1,4 +1,4 @@
-package com.epam.esm.exception;
+package com.epam.esm.exception.certificate;
 
 /**
  * DuplicateCertificateException when inserted certificate with already present name

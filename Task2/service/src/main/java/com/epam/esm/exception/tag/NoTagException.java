@@ -1,4 +1,4 @@
-package com.epam.esm.exception;
+package com.epam.esm.exception.tag;
 
 /**
  * NoTagException is thrown when required tag doesn't exist

@@ -27,7 +27,7 @@ import com.epam.esm.comparator.Direction;
 import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.IdDto;
-import com.epam.esm.exception.NotFullCertificateException;
+import com.epam.esm.exception.certificate.NotFullCertificateException;
 
 
 /**

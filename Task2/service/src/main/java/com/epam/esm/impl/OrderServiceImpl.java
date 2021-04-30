@@ -14,7 +14,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.CreationOrderException;
+import com.epam.esm.exception.order.CreationOrderException;
 
 /**
  * Implementation of order service

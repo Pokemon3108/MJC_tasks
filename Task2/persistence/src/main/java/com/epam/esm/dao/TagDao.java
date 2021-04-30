@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 
 
 /**
@@ -89,4 +90,12 @@ public interface TagDao {
      * @return the set of filled tags
      */
     Set<Tag> readTagsByIds(Set<Long> ids);
+
+    /**
+     * Read the most popular tag in user's order
+     *
+     * @param user - the user with order
+     * @return tag from storage, or {@code Optional.empty()} if it is not found
+     */
+    Optional<Tag> readTheMostPopularTag(User user);
 }

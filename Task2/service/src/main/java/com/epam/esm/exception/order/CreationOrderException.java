@@ -1,4 +1,4 @@
-package com.epam.esm.exception;
+package com.epam.esm.exception.order;
 
 public class CreationOrderException extends RuntimeException {
 

@@ -11,4 +11,6 @@ public interface UserDao {
 
     Optional<User> read(long id);
 
+    Optional<User> readRichest();
+
 }

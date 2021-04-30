@@ -22,7 +22,9 @@ public enum ErrorCode {
 
     CREATION_ORDER(40031),
 
-    NO_USER(40441);
+    NO_USER_WITH_ID(40441),
+    NO_USERS_IN_STORAGE(40442),
+    NO_TAGS_IN_USER_ORDER(40443);
 
     private int code;
 

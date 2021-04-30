@@ -1,4 +1,4 @@
-package com.epam.esm.exception;
+package com.epam.esm.exception.tag;
 
 /**
  * DuplicateTagException when inserted tag with already present name

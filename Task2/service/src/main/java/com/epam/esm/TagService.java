@@ -5,6 +5,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 
 /**
  * The interface Tag service for CRD operation
@@ -42,5 +43,13 @@ public interface TagService {
      * @return
      */
     Set<Tag> setTagsId(Set<Tag> tags);
+
+    /**
+     * Read most popular tag in user's order
+     *
+     * @param user - the user with order
+     * @return most popular tag
+     */
+    Tag readMostPopularTag(User user);
 
 }

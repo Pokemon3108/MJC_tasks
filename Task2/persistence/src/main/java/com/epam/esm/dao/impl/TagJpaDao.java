@@ -10,6 +10,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 
 @Repository
 @Qualifier("tagJpaDao")
@@ -114,5 +118,22 @@ public class TagJpaDao implements TagDao {
         criteriaQuery.select(root).where(root.get("id").in(ids));
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
         return query.getResultStream().collect(Collectors.toSet());
+    }
+
+    @Override
+    public Optional<Tag> readTheMostPopularTag(User user) {
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
+        Root<User> root = criteriaQuery.from(User.class);
+
+        Join<User, Order> orderJoin = root.join("orders", JoinType.LEFT);
+        Join<Order, GiftCertificate> certificateJoin = orderJoin.join("certificate", JoinType.LEFT);
+        Join<GiftCertificate, Tag> tagJoin = certificateJoin.join("tags", JoinType.LEFT);
+
+        criteriaQuery.select(tagJoin).groupBy(tagJoin.get("id"))
+                .orderBy(criteriaBuilder.desc(criteriaBuilder.count(tagJoin)));
+        TypedQuery<Tag> query = em.createQuery(criteriaQuery);
+        return query.getResultStream().findFirst();
     }
 }

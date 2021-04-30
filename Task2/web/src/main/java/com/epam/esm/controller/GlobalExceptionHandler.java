@@ -15,15 +15,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.epam.esm.LocaleService;
 import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
-import com.epam.esm.exception.CreationOrderException;
-import com.epam.esm.exception.DuplicateCertificateException;
-import com.epam.esm.exception.DuplicateTagException;
-import com.epam.esm.exception.NoCertificateException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
-import com.epam.esm.exception.NoTagException;
-import com.epam.esm.exception.NoUserException;
-import com.epam.esm.exception.NotFullCertificateException;
+import com.epam.esm.exception.certificate.DuplicateCertificateException;
+import com.epam.esm.exception.certificate.NoCertificateException;
+import com.epam.esm.exception.certificate.NotFullCertificateException;
+import com.epam.esm.exception.order.CreationOrderException;
+import com.epam.esm.exception.tag.DuplicateTagException;
+import com.epam.esm.exception.tag.NoTagException;
+import com.epam.esm.exception.user.NoUserWithIdException;
+import com.epam.esm.exception.user.NoUsersException;
+import com.epam.esm.exception.user.UsersOrderHasNoTags;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -99,12 +101,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("creation_order_error"));
     }
 
-    @ExceptionHandler(NoUserException.class)
+    @ExceptionHandler(NoUserWithIdException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error handleNoUser(NoUserException ex) {
+    public Error handleNoUser(NoUserWithIdException ex) {
 
-        return new Error(ErrorCode.NO_USER.getCode(),
+        return new Error(ErrorCode.NO_USER_WITH_ID.getCode(),
                 localeService.getLocaleMessage("no_user", ex.getId()));
+    }
+
+    @ExceptionHandler(NoUsersException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleNoUser(NoUsersException ex) {
+
+        return new Error(ErrorCode.NO_USERS_IN_STORAGE.getCode(),
+                localeService.getLocaleMessage("no_users_in_storage"));
+    }
+
+    @ExceptionHandler(UsersOrderHasNoTags.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleNoUser(UsersOrderHasNoTags ex) {
+
+        return new Error(ErrorCode.NO_TAGS_IN_USER_ORDER.getCode(),
+                localeService.getLocaleMessage("user_order_has_no_tags", ex.getId()));
     }
 
     @Override
