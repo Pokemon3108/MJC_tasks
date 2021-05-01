@@ -26,11 +26,23 @@ public class OrderJpaDao implements OrderDao {
         this.em = em;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Order> create(Order order) {
 
         em.persist(order);
         return Optional.ofNullable(order);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Order> read(Long id) {
+
+        return Optional.ofNullable(em.find(Order.class, id));
     }
 
 

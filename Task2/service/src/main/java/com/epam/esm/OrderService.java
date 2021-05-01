@@ -15,4 +15,11 @@ public interface OrderService {
      * @return dto object of created order
      */
     Order makeOrder(Long userId, Long certificateId);
+
+    /**
+     * Read order by id
+     * @param orderId - the id of order
+     * @return order from storage
+     */
+    Order read(Long orderId);
 }

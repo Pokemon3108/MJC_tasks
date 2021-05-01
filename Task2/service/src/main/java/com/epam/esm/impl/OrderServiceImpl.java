@@ -15,6 +15,7 @@ import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.order.CreationOrderException;
+import com.epam.esm.exception.order.NoOrderException;
 
 /**
  * Implementation of order service
@@ -56,5 +57,11 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         Optional<Order> createdOrder = orderDao.create(order);
         return createdOrder.orElseThrow(CreationOrderException::new);
+    }
+
+    @Override
+    public Order read(Long orderId) {
+
+        return orderDao.read(orderId).orElseThrow(() -> new NoOrderException(orderId));
     }
 }

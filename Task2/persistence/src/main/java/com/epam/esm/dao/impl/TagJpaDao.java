@@ -24,6 +24,9 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 
+/**
+ * Jpa implementation for access to database for work with tags
+ */
 @Repository
 @Qualifier("tagJpaDao")
 public class TagJpaDao implements TagDao {
@@ -37,6 +40,9 @@ public class TagJpaDao implements TagDao {
         this.em = em;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long insert(Tag tag) {
 
@@ -44,6 +50,9 @@ public class TagJpaDao implements TagDao {
         return tag.getId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Tag> read(long id) {
 
@@ -51,12 +60,18 @@ public class TagJpaDao implements TagDao {
         return Optional.ofNullable(tag);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(Tag tag) {
 
         em.remove(tag);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Tag> readTagByName(String name) {
 
@@ -69,6 +84,9 @@ public class TagJpaDao implements TagDao {
         return Optional.ofNullable(query.getSingleResult());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteCertificateTagsByTagId(long tagId) {
 
@@ -76,6 +94,9 @@ public class TagJpaDao implements TagDao {
         tag.setCertificates(new HashSet<>());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void bindCertificateTags(Set<Tag> tagSet, Long certificateId) {
 
@@ -83,6 +104,9 @@ public class TagJpaDao implements TagDao {
         certificate.setTags(tagSet);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
 
@@ -90,12 +114,18 @@ public class TagJpaDao implements TagDao {
         return certificate.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void unbindCertificateTags(GiftCertificate certificate) {
 
         certificate.setTags(new HashSet<>());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Tag> readTagsByNames(Set<String> tagNames) {
 
@@ -108,6 +138,9 @@ public class TagJpaDao implements TagDao {
         return query.getResultStream().collect(Collectors.toSet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<Tag> readTagsByIds(Set<Long> ids) {
 
@@ -120,6 +153,9 @@ public class TagJpaDao implements TagDao {
         return query.getResultStream().collect(Collectors.toSet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Tag> readTheMostPopularTag(User user) {
 

@@ -21,6 +21,7 @@ import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.exception.order.CreationOrderException;
+import com.epam.esm.exception.order.NoOrderException;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
 import com.epam.esm.exception.user.NoUserWithIdException;
@@ -119,10 +120,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UsersOrderHasNoTags.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error handleNoUser(UsersOrderHasNoTags ex) {
+    public Error handleNoUserOrderTags(UsersOrderHasNoTags ex) {
 
         return new Error(ErrorCode.NO_TAGS_IN_USER_ORDER.getCode(),
                 localeService.getLocaleMessage("user_order_has_no_tags", ex.getId()));
+    }
+
+    @ExceptionHandler(NoOrderException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleNoOrder(NoOrderException ex) {
+
+        return new Error(ErrorCode.NO_ORDER.getCode(),
+                localeService.getLocaleMessage("no_order", ex.getOrderId()));
     }
 
     @Override
