@@ -6,26 +6,26 @@ import org.springframework.stereotype.Component;
 
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.model.GiftCertificateDtoModel;
+import com.epam.esm.model.GiftCertificateModel;
 
 @Component
 public class GiftCertificateModelAssembler extends
-        RepresentationModelAssemblerSupport<GiftCertificateDto, GiftCertificateDtoModel> {
+        RepresentationModelAssemblerSupport<GiftCertificateDto, GiftCertificateModel> {
 
 
     public GiftCertificateModelAssembler() {
 
-        super(CertificateController.class, GiftCertificateDtoModel.class);
+        super(CertificateController.class, GiftCertificateModel.class);
     }
 
     @Override
-    public GiftCertificateDtoModel toModel(GiftCertificateDto entity) {
+    public GiftCertificateModel toModel(GiftCertificateDto entity) {
 
         return null;
     }
 
     @Override
-    public CollectionModel<GiftCertificateDtoModel> toCollectionModel(Iterable<? extends GiftCertificateDto> entities) {
+    public CollectionModel<GiftCertificateModel> toCollectionModel(Iterable<? extends GiftCertificateDto> entities) {
 
         return super.toCollectionModel(entities);
     }

@@ -1,37 +1,33 @@
 package com.epam.esm.model.assembler;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import com.epam.esm.controller.OrderController;
-import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
-import com.epam.esm.entity.Order;
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.model.OrderModel;
-import com.epam.esm.model.UserModel;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Order, OrderModel> {
+public class OrderModelAssembler extends RepresentationModelAssemblerSupport<OrderDto, OrderModel> {
 
     private GiftCertificateModelAssembler certificateModelAssembler;
 
-    private GiftCertificateDtoConverter dtoConverter;
 
     @Autowired
-    public OrderModelAssembler(GiftCertificateModelAssembler assembler, GiftCertificateDtoConverter converter) {
+    public OrderModelAssembler(GiftCertificateModelAssembler assembler) {
 
         super(OrderController.class, OrderModel.class);
 
         this.certificateModelAssembler = assembler;
-        this.dtoConverter = converter;
     }
 
     @Override
-    public OrderModel toModel(Order entity) {
+    public OrderModel toModel(OrderDto entity) {
 
         OrderModel orderModel = instantiateModel(entity);
 
@@ -42,16 +38,13 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
         orderModel.setCost(entity.getCost());
         orderModel.setId(entity.getId());
         orderModel.setPurchaseDate(entity.getPurchaseDate());
-        orderModel.setCertificateDtoModel(
-                certificateModelAssembler.toModel(
-                        dtoConverter
-                                .convertToDto(entity.getCertificate())));
+        orderModel.setCertificateDtoModel(certificateModelAssembler.toModel(entity.getCertificate()));
 
         return orderModel;
     }
 
     @Override
-    public CollectionModel<OrderModel> toCollectionModel(Iterable<? extends Order> entities) {
+    public CollectionModel<OrderModel> toCollectionModel(Iterable<? extends OrderDto> entities) {
 
         CollectionModel<OrderModel> orderModels = super.toCollectionModel(entities);
         return orderModels;

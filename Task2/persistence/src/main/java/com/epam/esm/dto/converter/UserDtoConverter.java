@@ -1,6 +1,5 @@
 package com.epam.esm.dto.converter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.epam.esm.dto.UserDto;
@@ -12,31 +11,27 @@ import com.epam.esm.entity.User;
 @Component
 public class UserDtoConverter extends Converter<User, UserDto> {
 
-    private OrderDtoConverter orderDtoConverter;
-
-    @Autowired
-    public UserDtoConverter(OrderDtoConverter orderDtoConverter) {
-
-        this.orderDtoConverter = orderDtoConverter;
-    }
-
     @Override
     public UserDto convertToDto(User user) {
 
+        if (user == null) {
+            return null;
+        }
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setName(user.getName());
-        userDto.setOrders(orderDtoConverter.convertToDtos(user.getOrders()));
         return userDto;
     }
 
     @Override
     public User convertToEntity(UserDto dto) {
 
+        if (dto == null) {
+            return null;
+        }
         User user = new User();
         user.setId(dto.getId());
         user.setName(dto.getName());
-        user.setOrders(orderDtoConverter.convertToEntities(dto.getOrders()));
         return user;
     }
 

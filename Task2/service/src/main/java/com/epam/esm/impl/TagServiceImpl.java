@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
 import com.epam.esm.exception.user.UsersOrderHasNoTags;
@@ -29,7 +29,7 @@ public class TagServiceImpl implements TagService {
     private TagDao tagDao;
 
     @Autowired
-    public TagServiceImpl(@Qualifier("tagJpaDao") TagDao tagDao) {
+    public TagServiceImpl(@Qualifier("tagDaoImpl") TagDao tagDao) {
 
         this.tagDao = tagDao;
     }
@@ -39,7 +39,7 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Long create(Tag tag) {
+    public Long create(TagDto tag) {
 
         if (tagDao.readTagByName(tag.getName()).isPresent()) {
             throw new DuplicateTagException(tag.getName());
@@ -51,7 +51,7 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Tag readTagById(long id) {
+    public TagDto readTagById(long id) {
 
         return tagDao.read(id).orElseThrow(() -> new NoTagException(id));
     }
@@ -64,7 +64,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(long id) {
 
-        Optional<Tag> tag = tagDao.read(id);
+        Optional<TagDto> tag = tagDao.read(id);
         if (!tag.isPresent()) {
             throw new NoTagException(id);
         }
@@ -76,13 +76,13 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Set<Tag> setTagsId(Set<Tag> tags) {
+    public Set<TagDto> setTagsId(Set<TagDto> tags) {
 
-        Set<Tag> tagsWithId = tagDao
-                .readTagsByNames(tags.stream().map(Tag::getName).collect(Collectors.toSet()));
-        Map<Boolean, List<Tag>> tagMap = tags.stream()
+        Set<TagDto> tagsWithId = tagDao
+                .readTagsByNames(tags.stream().map(TagDto::getName).collect(Collectors.toSet()));
+        Map<Boolean, List<TagDto>> tagMap = tags.stream()
                 .collect(Collectors.partitioningBy(tagsWithId::contains));
-        Set<Tag> newTags = new HashSet<>(tagMap.get(false));
+        Set<TagDto> newTags = new HashSet<>(tagMap.get(false));
         insertTagsIfNotExist(newTags);
         tagsWithId.addAll(newTags);
         return tagsWithId;
@@ -92,7 +92,7 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Tag readMostPopularTag(User user) {
+    public TagDto readMostPopularTag(UserDto user) {
 
         return tagDao.readTheMostPopularTag(user).orElseThrow(() -> new UsersOrderHasNoTags(user.getId()));
     }
@@ -102,7 +102,7 @@ public class TagServiceImpl implements TagService {
      *
      * @param tags with names, id from which will be set
      */
-    private void insertTagsIfNotExist(Set<Tag> tags) {
+    private void insertTagsIfNotExist(Set<TagDto> tags) {
 
         tags.stream().filter(tag -> tag.getId() == null)
                 .forEach(tag -> tag.setId(tagDao.insert(tag)));

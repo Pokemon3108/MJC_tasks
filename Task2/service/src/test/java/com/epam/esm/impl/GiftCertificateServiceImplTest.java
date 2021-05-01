@@ -24,8 +24,8 @@ import org.mockito.MockitoAnnotations;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateJpaDao;
-import com.epam.esm.dao.impl.TagJpaDao;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
@@ -39,16 +39,16 @@ class GiftCertificateServiceImplTest {
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
     GiftCertificate certificate;
     GiftCertificateDto certificateDto;
-    @PersistenceContext
-    private EntityManager em;
-    @Mock
-    GiftCertificateDao certificateDao = new GiftCertificateJpaDao(em, dtoConverter);
-    @Mock
-    TagDao tagDao = new TagJpaDao(em);
     @Mock
     TagService tagService = new TagServiceImpl(tagDao);
     GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
             tagService);
+    @PersistenceContext
+    private EntityManager em;
+    @Mock
+    GiftCertificateDao certificateDao = new GiftCertificateDaoImpl(em, dtoConverter);
+    @Mock
+    TagDao tagDao = new TagDaoImpl(em);
 
     @BeforeEach
     void init() {

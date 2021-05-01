@@ -28,6 +28,9 @@ public class OrderDtoConverter extends Converter<Order, OrderDto> {
     @Override
     public OrderDto convertToDto(Order order) {
 
+        if (order == null) {
+            return null;
+        }
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
         orderDto.setCost(order.getCost());
@@ -39,6 +42,9 @@ public class OrderDtoConverter extends Converter<Order, OrderDto> {
     @Override
     public Order convertToEntity(OrderDto dto) {
 
+        if (dto == null) {
+            return null;
+        }
         Order order = new Order();
         order.setId(dto.getId());
         order.setCost(dto.getCost());

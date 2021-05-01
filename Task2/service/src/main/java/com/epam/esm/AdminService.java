@@ -1,8 +1,14 @@
 package com.epam.esm;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
+/**
+ * Service for admin operations
+ */
 public interface AdminService {
 
-    Tag getMostPopularTagOfRichestUser();
+    /**
+     * @return the most popular tag in orders of the highest cost of some user
+     */
+    TagDto getMostPopularTagOfRichestUser();
 }

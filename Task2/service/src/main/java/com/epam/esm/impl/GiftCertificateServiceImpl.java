@@ -1,6 +1,7 @@
 package com.epam.esm.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,9 +16,7 @@ import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
@@ -34,17 +33,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private TagDao tagDao;
 
-    private GiftCertificateDtoConverter dtoConverter;
-
     private TagService tagService;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagDao tagDao,
-            GiftCertificateDtoConverter dtoConverter, TagService tagService) {
+    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagDao tagDao, TagService tagService) {
 
         this.certificateDao = certificateDao;
         this.tagDao = tagDao;
-        this.dtoConverter = dtoConverter;
         this.tagService = tagService;
     }
 
@@ -65,7 +60,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         certificateDto.setId(certificateId);
 
         if (!certificateDto.getTags().isEmpty()) {
-            Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
+            Set<TagDto> tagsWithId = tagService.setTagsId(certificateDto.getTags());
             tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
         }
         return certificateId;
@@ -77,11 +72,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto read(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
+        GiftCertificateDto certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
         Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
-        Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t).get()).collect(Collectors.toSet());
+        Set<TagDto> tags = tagsIds.stream().map(t -> tagDao.read(t).get()).collect(Collectors.toSet());
         certificate.setTags(tags);
-        return dtoConverter.convertToDto(certificate);
+        return certificate;
     }
 
 
@@ -97,26 +92,26 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new NoIdException();
         }
 
-        GiftCertificate certificateWithId = certificateDao.read(certificateId)
+        GiftCertificateDto certificateWithId = certificateDao.read(certificateId)
                 .orElseThrow(() -> new NoCertificateException(certificateId));
 
-        Optional<GiftCertificate> certificateWithName = certificateDao.readCertificateByName(certificateDto.getName());
+        Optional<GiftCertificateDto> certificateWithName = certificateDao
+                .readCertificateByName(certificateDto.getName());
         if (certificateWithName.isPresent() && !certificateWithName.get().getId().equals(certificateDto.getId())) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
         certificateDto.setLastUpdateDate(LocalDateTime.now());
-        GiftCertificate convertedCertificate = dtoConverter.convertToEntity(certificateDto);
 
-        copyProperties(convertedCertificate, certificateWithId);
-        certificateDao.update(dtoConverter.convertToDto(certificateWithId));
+        copyProperties(certificateDto, certificateWithId);
+        certificateDao.update(certificateWithId);
 
         if (!certificateDto.getTags().isEmpty()) {
-            tagDao.unbindCertificateTags(dtoConverter.convertToEntity(certificateDto));
+            tagDao.unbindCertificateTags(certificateDto);
 
             long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName() != null).count();
             if (namedTagsSize != 0) {
-                Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
+                Set<TagDto> tagsWithId = tagService.setTagsId(certificateDto.getTags());
 
                 tagDao.bindCertificateTags(tagsWithId,
                         certificateDto.getId());
@@ -130,9 +125,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @param src    the source object
      * @param target the target object
      */
-    private void copyProperties(GiftCertificate src, GiftCertificate target) {
+    private void copyProperties(GiftCertificateDto src, GiftCertificateDto target) {
 
-        Set<Tag> tags = src.getTags();
+        Set<TagDto> tags = src.getTags();
         BeanNullProperty.copyNonNullProperties(src, target);
         if (!tags.isEmpty()) {
             src.setTags(tags);
@@ -146,7 +141,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void delete(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
+        GiftCertificateDto certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
         tagDao.unbindCertificateTags(certificate);
         certificateDao.delete(certificate);
     }
@@ -160,10 +155,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateDao.size() < (page - 1) * size) {
             throw new NoPageException(page, size);
         }
-        List<GiftCertificate> certificatesWithParams = certificateDao
+        List<GiftCertificateDto> certificatesWithParams = certificateDao
                 .findCertificateByParams(page, size, certificateDto);
-        return certificatesWithParams.stream().map(c -> dtoConverter.convertToDto(c))
-                .collect(Collectors.toList());
+        return new ArrayList<>(certificatesWithParams);
     }
 
 }

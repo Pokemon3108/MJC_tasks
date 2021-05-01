@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 
 /**
@@ -19,7 +19,7 @@ public class TagValidator implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
 
-        return Tag.class.equals(clazz);
+        return TagDto.class.equals(clazz);
     }
 
     /**
@@ -28,7 +28,7 @@ public class TagValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 
-        Tag tag = (Tag) target;
+        TagDto tag = (TagDto) target;
         if (tag.getName() == null) {
             errors.reject("empty_name");
         }

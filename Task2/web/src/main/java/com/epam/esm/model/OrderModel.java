@@ -20,7 +20,7 @@ public class OrderModel extends RepresentationModel<OrderModel> {
 
     private LocalDateTime purchaseDate;
 
-    private GiftCertificateDtoModel certificateDtoModel;
+    private GiftCertificateModel certificateDtoModel;
 
     public Long getId() {
 
@@ -52,12 +52,12 @@ public class OrderModel extends RepresentationModel<OrderModel> {
         this.purchaseDate = purchaseDate;
     }
 
-    public GiftCertificateDtoModel getCertificateDtoModel() {
+    public GiftCertificateModel getCertificateDtoModel() {
 
         return certificateDtoModel;
     }
 
-    public void setCertificateDtoModel(GiftCertificateDtoModel certificateDtoModel) {
+    public void setCertificateDtoModel(GiftCertificateModel certificateDtoModel) {
 
         this.certificateDtoModel = certificateDtoModel;
     }

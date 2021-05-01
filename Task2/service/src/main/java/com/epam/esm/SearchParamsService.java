@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 @Service
 public class SearchParamsService {
@@ -23,9 +23,9 @@ public class SearchParamsService {
         return certificate;
     }
 
-    private Set<Tag> parseTagNames(String[] tagNames) {
+    private Set<TagDto> parseTagNames(String[] tagNames) {
 
-        return Arrays.stream(tagNames).map(Tag::new).collect(Collectors.toSet());
+        return Arrays.stream(tagNames).map(TagDto::new).collect(Collectors.toSet());
     }
 
 }

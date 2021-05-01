@@ -1,14 +1,21 @@
 package com.epam.esm.dto;
 
-import java.util.Set;
-
 public class TagDto {
 
     private Long id;
 
     private String name;
 
-    private Set<GiftCertificateDto> certificates;
+    //   private Set<GiftCertificateDto> certificates;
+
+    public TagDto() {
+
+    }
+
+    public TagDto(String name) {
+
+        this.name = name;
+    }
 
     public Long getId() {
 
@@ -30,13 +37,13 @@ public class TagDto {
         this.name = name;
     }
 
-    public Set<GiftCertificateDto> getCertificates() {
-
-        return certificates;
-    }
-
-    public void setCertificates(Set<GiftCertificateDto> certificates) {
-
-        this.certificates = certificates;
-    }
+//    public Set<GiftCertificateDto> getCertificates() {
+//
+//        return certificates;
+//    }
+//
+//    public void setCertificates(Set<GiftCertificateDto> certificates) {
+//
+//        this.certificates = certificates;
+//    }
 }

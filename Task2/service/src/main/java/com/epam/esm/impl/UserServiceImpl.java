@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.epam.esm.UserService;
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.entity.User;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.exception.user.NoUserWithIdException;
 import com.epam.esm.exception.user.NoUsersException;
 
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public User read(Long id) {
+    public UserDto read(Long id) {
 
         return userDao.read(id).orElseThrow(() -> new NoUserWithIdException(id));
     }
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public User readRichest() {
+    public UserDto readRichest() {
 
         return userDao.readRichest().orElseThrow(NoUsersException::new);
     }

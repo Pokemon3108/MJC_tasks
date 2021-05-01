@@ -1,6 +1,6 @@
 package com.epam.esm;
 
-import com.epam.esm.entity.User;
+import com.epam.esm.dto.UserDto;
 
 /**
  * Service defines operations of user
@@ -10,16 +10,16 @@ public interface UserService {
     /**
      * Read user by id
      *
-     * @param id   - the user id
+     * @param id - the user id
      * @return filled user
      */
-    User read(Long id);
+    UserDto read(Long id);
 
     /**
      * Read user with the highest cost of order
      *
      * @return user from storage
      */
-    User readRichest();
+    UserDto readRichest();
 
 }

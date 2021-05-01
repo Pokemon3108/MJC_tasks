@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.converter.TagDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
@@ -29,23 +33,27 @@ import com.epam.esm.entity.User;
  */
 @Repository
 @Qualifier("tagJpaDao")
-public class TagJpaDao implements TagDao {
+public class TagDaoImpl implements TagDao {
+
+    private TagDtoConverter tagDtoConverter;
 
     @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    public TagJpaDao(EntityManager em) {
+    public TagDaoImpl(EntityManager em, TagDtoConverter tagDtoConverter) {
 
         this.em = em;
+        this.tagDtoConverter = tagDtoConverter;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Long insert(Tag tag) {
+    public Long insert(TagDto dto) {
 
+        Tag tag = tagDtoConverter.convertToEntity(dto);
         em.persist(tag);
         return tag.getId();
     }
@@ -54,18 +62,19 @@ public class TagJpaDao implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tag> read(long id) {
+    public Optional<TagDto> read(long id) {
 
         Tag tag = em.find(Tag.class, id);
-        return Optional.ofNullable(tag);
+        return Optional.ofNullable(tagDtoConverter.convertToDto(tag));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void delete(Tag tag) {
+    public void delete(TagDto dto) {
 
+        Tag tag = tagDtoConverter.convertToEntity(dto);
         em.remove(tag);
     }
 
@@ -73,7 +82,7 @@ public class TagJpaDao implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tag> readTagByName(String name) {
+    public Optional<TagDto> readTagByName(String name) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
@@ -81,7 +90,7 @@ public class TagJpaDao implements TagDao {
         criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("name"), name));
 
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return Optional.ofNullable(query.getSingleResult());
+        return Optional.ofNullable(tagDtoConverter.convertToDto(query.getSingleResult()));
     }
 
     /**
@@ -98,10 +107,10 @@ public class TagJpaDao implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public void bindCertificateTags(Set<Tag> tagSet, Long certificateId) {
+    public void bindCertificateTags(Set<TagDto> tagSet, Long certificateId) {
 
         GiftCertificate certificate = em.find(GiftCertificate.class, certificateId);
-        certificate.setTags(tagSet);
+        certificate.setTags(tagDtoConverter.convertToEntities(tagSet));
     }
 
     /**
@@ -118,8 +127,9 @@ public class TagJpaDao implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public void unbindCertificateTags(GiftCertificate certificate) {
+    public void unbindCertificateTags(GiftCertificateDto certificateDto) {
 
+        GiftCertificate certificate = em.find(GiftCertificate.class, certificateDto.getId());
         certificate.setTags(new HashSet<>());
     }
 
@@ -127,7 +137,7 @@ public class TagJpaDao implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Set<Tag> readTagsByNames(Set<String> tagNames) {
+    public Set<TagDto> readTagsByNames(Set<String> tagNames) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
@@ -135,14 +145,14 @@ public class TagJpaDao implements TagDao {
 
         criteriaQuery.select(root).where(root.get("name").in(tagNames));
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().collect(Collectors.toSet());
+        return tagDtoConverter.convertToDtos(query.getResultStream().collect(Collectors.toSet()));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<Tag> readTagsByIds(Set<Long> ids) {
+    public Set<TagDto> readTagsByIds(Set<Long> ids) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
@@ -150,14 +160,14 @@ public class TagJpaDao implements TagDao {
 
         criteriaQuery.select(root).where(root.get("id").in(ids));
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().collect(Collectors.toSet());
+        return tagDtoConverter.convertToDtos(query.getResultStream().collect(Collectors.toSet()));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tag> readTheMostPopularTag(User user) {
+    public Optional<TagDto> readTheMostPopularTag(UserDto user) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
@@ -167,9 +177,9 @@ public class TagJpaDao implements TagDao {
         Join<Order, GiftCertificate> certificateJoin = orderJoin.join("certificate", JoinType.LEFT);
         Join<GiftCertificate, Tag> tagJoin = certificateJoin.join("tags", JoinType.LEFT);
 
-        criteriaQuery.select(tagJoin).groupBy(tagJoin.get("id"))
+        criteriaQuery.select(tagJoin).where(root.get("id").in(user.getId())).groupBy(tagJoin.get("id"))
                 .orderBy(criteriaBuilder.desc(criteriaBuilder.count(tagJoin)));
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().findFirst();
+        return query.getResultStream().findFirst().map(t -> tagDtoConverter.convertToDto(t));
     }
 }

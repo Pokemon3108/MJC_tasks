@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.query.DaoQuery;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -32,7 +34,7 @@ import com.epam.esm.entity.Tag;
  */
 @Repository
 @Qualifier("certificateJpaDao")
-public class GiftCertificateJpaDao implements GiftCertificateDao {
+public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private GiftCertificateDtoConverter converter;
 
@@ -40,7 +42,7 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
     private EntityManager em;
 
     @Autowired
-    public GiftCertificateJpaDao(EntityManager em, GiftCertificateDtoConverter converter) {
+    public GiftCertificateDaoImpl(EntityManager em, GiftCertificateDtoConverter converter) {
 
         this.em = em;
         this.converter = converter;
@@ -71,25 +73,26 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
      * {@inheritDoc}
      */
     @Override
-    public void delete(GiftCertificate certificate) {
+    public void delete(GiftCertificateDto certificateDto) {
 
-        em.remove(certificate);
+        GiftCertificate certificateToBeDeleted = converter.convertToEntity(certificateDto);
+        em.remove(certificateToBeDeleted);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<GiftCertificate> read(long id) {
+    public Optional<GiftCertificateDto> read(long id) {
 
-        return Optional.ofNullable(em.find(GiftCertificate.class, id));
+        return Optional.ofNullable(converter.convertToDto(em.find(GiftCertificate.class, id)));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<GiftCertificate> readCertificateByName(String certificateName) {
+    public Optional<GiftCertificateDto> readCertificateByName(String certificateName) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> criteriaQuery = criteriaBuilder.createQuery(GiftCertificate.class);
@@ -98,14 +101,14 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         criteriaQuery.select(certificateRoot)
                 .where(criteriaBuilder.equal(certificateRoot.get("name"), certificateName));
         TypedQuery<GiftCertificate> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().findFirst();
+        return query.getResultStream().findFirst().map(c -> converter.convertToDto(c));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<GiftCertificate> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto) {
+    public List<GiftCertificateDto> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto) {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
@@ -124,7 +127,7 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
         TypedQuery<GiftCertificate> q = em.createQuery(query);
         q.setFirstResult((page - 1) * size);
         q.setMaxResults(size);
-        return q.getResultList();
+        return new ArrayList<>(converter.convertToDtos(new HashSet<>(q.getResultList())));
     }
 
     /**
@@ -141,7 +144,7 @@ public class GiftCertificateJpaDao implements GiftCertificateDao {
 
         List<Predicate> predicateList = new ArrayList<>();
         if (!dto.getTags().isEmpty()) {
-            Set<String> tagNames = dto.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+            Set<String> tagNames = dto.getTags().stream().map(TagDto::getName).collect(Collectors.toSet());
             Join<GiftCertificate, Tag> join = cr.join("tags", JoinType.LEFT);
             predicateList.add(join.get("name").in(tagNames));
             cq.groupBy(cr.get("id"));

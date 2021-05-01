@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 import com.epam.esm.AdminService;
 import com.epam.esm.TagService;
 import com.epam.esm.UserService;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
 
+/**
+ * Implementation of admin service
+ */
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -24,9 +27,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Tag getMostPopularTagOfRichestUser() {
+    public TagDto getMostPopularTagOfRichestUser() {
 
-        User user = userService.readRichest();
+        UserDto user = userService.readRichest();
         return tagService.readMostPopularTag(user);
     }
 }

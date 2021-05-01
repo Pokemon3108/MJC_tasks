@@ -3,6 +3,7 @@ package com.epam.esm.dto.converter;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.epam.esm.dto.GiftCertificateDto;
@@ -15,6 +16,14 @@ import com.epam.esm.entity.GiftCertificate;
 @Component
 public class GiftCertificateDtoConverter {
 
+    private TagDtoConverter tagDtoConverter;
+
+    @Autowired
+    public GiftCertificateDtoConverter(TagDtoConverter tagDtoConverter) {
+
+        this.tagDtoConverter = tagDtoConverter;
+    }
+
     /**
      * Convert to dto gift certificate dto.
      *
@@ -23,6 +32,9 @@ public class GiftCertificateDtoConverter {
      */
     public GiftCertificateDto convertToDto(GiftCertificate certificate) {
 
+        if (certificate == null) {
+            return null;
+        }
         GiftCertificateDto dto = new GiftCertificateDto();
         dto.setDescription(certificate.getDescription());
         dto.setName(certificate.getName());
@@ -31,7 +43,7 @@ public class GiftCertificateDtoConverter {
         dto.setDuration(certificate.getDuration());
         dto.setPrice(certificate.getPrice());
         dto.setId(certificate.getId());
-        dto.setTags(certificate.getTags());
+        dto.setTags(tagDtoConverter.convertToDtos(certificate.getTags()));
         return dto;
     }
 
@@ -43,6 +55,9 @@ public class GiftCertificateDtoConverter {
      */
     public GiftCertificate convertToEntity(GiftCertificateDto dto) {
 
+        if (dto == null) {
+            return null;
+        }
         GiftCertificate certificate = new GiftCertificate();
         certificate.setDescription(dto.getDescription());
         certificate.setName(dto.getName());
@@ -51,7 +66,7 @@ public class GiftCertificateDtoConverter {
         certificate.setDuration(dto.getDuration());
         certificate.setPrice(dto.getPrice());
         certificate.setId(dto.getId());
-        certificate.setTags(dto.getTags());
+        certificate.setTags(tagDtoConverter.convertToEntities(dto.getTags()));
         return certificate;
     }
 

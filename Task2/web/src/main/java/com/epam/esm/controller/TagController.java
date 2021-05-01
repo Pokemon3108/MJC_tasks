@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dto.IdDto;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
 
 /**
@@ -63,7 +63,7 @@ public class TagController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public IdDto create(@RequestBody Tag tag, BindingResult bindingResult) {
+    public IdDto create(@RequestBody TagDto tag, BindingResult bindingResult) {
 
         tagValidator.validate(tag, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -80,7 +80,7 @@ public class TagController {
      * @return the filled tag
      */
     @GetMapping("/{id}")
-    public Tag read(@PathVariable long id) {
+    public TagDto read(@PathVariable long id) {
 
         return tagService.readTagById(id);
     }

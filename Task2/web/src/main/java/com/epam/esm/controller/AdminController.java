@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.AdminService;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 @RestController
 @RequestMapping("/admin")
@@ -21,7 +21,7 @@ public class AdminController {
     }
 
     @GetMapping("/tags/mostPopular")
-    public Tag getMostPopularTag() {
+    public TagDto getMostPopularTag() {
 
         return adminService.getMostPopularTagOfRichestUser();
     }

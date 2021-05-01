@@ -1,6 +1,6 @@
 package com.epam.esm;
 
-import com.epam.esm.entity.Order;
+import com.epam.esm.dto.OrderDto;
 
 /**
  * Interface for work with orders
@@ -14,12 +14,13 @@ public interface OrderService {
      * @param certificateId - the id of certificate
      * @return dto object of created order
      */
-    Order makeOrder(Long userId, Long certificateId);
+    OrderDto makeOrder(Long userId, Long certificateId);
 
     /**
      * Read order by id
+     *
      * @param orderId - the id of order
      * @return order from storage
      */
-    Order read(Long orderId);
+    OrderDto read(Long orderId);
 }
