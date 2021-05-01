@@ -28,9 +28,7 @@ public class Tag {
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
-    @JsonIgnore
     private Set<GiftCertificate> certificates;
-
 
     /**
      * Instantiates a new Tag.

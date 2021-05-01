@@ -2,13 +2,13 @@ package com.epam.esm.dto;
 
 import java.util.Set;
 
-public class UserDto {
+public class TagDto {
 
     private Long id;
 
     private String name;
 
-    private Set<OrderDto> orders;
+    private Set<GiftCertificateDto> certificates;
 
     public Long getId() {
 
@@ -30,13 +30,13 @@ public class UserDto {
         this.name = name;
     }
 
-    public Set<OrderDto> getOrders() {
+    public Set<GiftCertificateDto> getCertificates() {
 
-        return orders;
+        return certificates;
     }
 
-    public void setOrders(Set<OrderDto> orders) {
+    public void setCertificates(Set<GiftCertificateDto> certificates) {
 
-        this.orders = orders;
+        this.certificates = certificates;
     }
 }

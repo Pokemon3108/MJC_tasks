@@ -45,7 +45,7 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
         orderModel.setCertificateDtoModel(
                 certificateModelAssembler.toModel(
                         dtoConverter
-                                .convertToDto(entity.getCertificate(), entity.getCertificate().getTags())));
+                                .convertToDto(entity.getCertificate())));
 
         return orderModel;
     }

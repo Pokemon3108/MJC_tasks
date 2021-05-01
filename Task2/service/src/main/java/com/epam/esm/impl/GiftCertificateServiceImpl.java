@@ -80,7 +80,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
         Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
         Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t).get()).collect(Collectors.toSet());
-        return dtoConverter.convertToDto(certificate, tags);
+        certificate.setTags(tags);
+        return dtoConverter.convertToDto(certificate);
     }
 
 
@@ -108,7 +109,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate convertedCertificate = dtoConverter.convertToEntity(certificateDto);
 
         copyProperties(convertedCertificate, certificateWithId);
-        certificateDao.update(dtoConverter.convertToDto(certificateWithId, certificateWithId.getTags()));
+        certificateDao.update(dtoConverter.convertToDto(certificateWithId));
 
         if (!certificateDto.getTags().isEmpty()) {
             tagDao.unbindCertificateTags(dtoConverter.convertToEntity(certificateDto));
@@ -161,7 +162,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         List<GiftCertificate> certificatesWithParams = certificateDao
                 .findCertificateByParams(page, size, certificateDto);
-        return certificatesWithParams.stream().map(c -> dtoConverter.convertToDto(c, c.getTags()))
+        return certificatesWithParams.stream().map(c -> dtoConverter.convertToDto(c))
                 .collect(Collectors.toList());
     }
 

@@ -1,12 +1,12 @@
 package com.epam.esm.dto.converter;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 
 
 /**
@@ -19,10 +19,9 @@ public class GiftCertificateDtoConverter {
      * Convert to dto gift certificate dto.
      *
      * @param certificate the certificate entity
-     * @param tagSet      set of certificate tags
      * @return the dto object, that created from certificate and tagSet
      */
-    public GiftCertificateDto convertToDto(GiftCertificate certificate, Set<Tag> tagSet) {
+    public GiftCertificateDto convertToDto(GiftCertificate certificate) {
 
         GiftCertificateDto dto = new GiftCertificateDto();
         dto.setDescription(certificate.getDescription());
@@ -32,7 +31,7 @@ public class GiftCertificateDtoConverter {
         dto.setDuration(certificate.getDuration());
         dto.setPrice(certificate.getPrice());
         dto.setId(certificate.getId());
-        tagSet.forEach(dto::addTag);
+        dto.setTags(certificate.getTags());
         return dto;
     }
 
@@ -54,5 +53,16 @@ public class GiftCertificateDtoConverter {
         certificate.setId(dto.getId());
         certificate.setTags(dto.getTags());
         return certificate;
+    }
+
+
+    public Set<GiftCertificateDto> convertToDtos(Set<GiftCertificate> orderSet) {
+
+        return orderSet.stream().map(this::convertToDto).collect(Collectors.toSet());
+    }
+
+    public Set<GiftCertificate> convertToEntities(Set<GiftCertificateDto> orderSet) {
+
+        return orderSet.stream().map(this::convertToEntity).collect(Collectors.toSet());
     }
 }
