@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.UserService;
-import com.epam.esm.entity.User;
+import com.epam.esm.model.UserModel;
+import com.epam.esm.model.assembler.UserModelAssembler;
 
 @RestController
 @RequestMapping("/users")
@@ -15,15 +16,18 @@ public class UserController {
 
     private UserService userService;
 
+    private UserModelAssembler userModelAssembler;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserModelAssembler userModelAssembler) {
 
         this.userService = userService;
+        this.userModelAssembler = userModelAssembler;
     }
 
     @GetMapping("/{id}")
-    public User read(@PathVariable long id) {
+    public UserModel read(@PathVariable long id) {
 
-        return userService.read(id);
+        return userModelAssembler.toModel(userService.read(id));
     }
 }

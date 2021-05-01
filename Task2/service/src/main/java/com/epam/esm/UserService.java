@@ -10,8 +10,8 @@ public interface UserService {
     /**
      * Read user by id
      *
-     * @param id - the user id
-     * @return filled user dto
+     * @param id   - the user id
+     * @return filled user
      */
     User read(Long id);
 

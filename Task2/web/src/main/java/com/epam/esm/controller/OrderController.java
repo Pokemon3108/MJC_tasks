@@ -34,7 +34,7 @@ public class OrderController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Order create(@RequestParam long userId, @RequestParam long certificateId) {
+    public Order create(@RequestParam Long userId, @RequestParam Long certificateId) {
 
         return orderService.makeOrder(userId, certificateId);
     }
