@@ -1,6 +1,5 @@
 package com.epam.esm.model.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -35,13 +34,12 @@ public class GiftCertificateModelAssembler extends
 
         CertificateController controller = methodOn(CertificateController.class);
 
-        giftCertificateModel.add(linkTo(controller.read(entity.getId())).withSelfRel()
-                        .andAffordance(afford(controller.update(entity.getId(), null)))
-                        .andAffordance(afford(controller.create(null, null))),
+        giftCertificateModel.add(linkTo(controller.read(entity.getId())).withSelfRel(),
+                //    .andAffordance(afford(controller.update(entity.getId(), null)))
+                //  .andAffordance(afford(controller.create(null, null))),
                 linkTo(controller.getCertificates(1, 5, null, null, null, null, null))
                         .withRel("searchAndSort")
         );
-
 
         giftCertificateModel.setCreateDate(entity.getCreateDate());
         giftCertificateModel.setDescription(entity.getDescription());
@@ -59,6 +57,9 @@ public class GiftCertificateModelAssembler extends
     @Override
     public CollectionModel<GiftCertificateModel> toCollectionModel(Iterable<? extends GiftCertificateDto> entities) {
 
-        return super.toCollectionModel(entities);
+        CollectionModel<GiftCertificateModel> collectionModel = super.toCollectionModel(entities);
+        collectionModel.add(linkTo(methodOn(CertificateController.class).create(null, null))
+                .withRel("create"));
+        return collectionModel;
     }
 }

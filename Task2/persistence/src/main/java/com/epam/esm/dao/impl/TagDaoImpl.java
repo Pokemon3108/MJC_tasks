@@ -89,7 +89,7 @@ public class TagDaoImpl implements TagDao {
         criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("name"), name));
 
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return Optional.ofNullable(tagDtoConverter.convertToDto(query.getSingleResult()));
+        return query.getResultList().stream().findFirst().map(t -> tagDtoConverter.convertToDto(t));
     }
 
     /**

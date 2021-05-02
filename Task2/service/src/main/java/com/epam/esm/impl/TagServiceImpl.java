@@ -38,6 +38,7 @@ public class TagServiceImpl implements TagService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public Long create(TagDto tag) {
 

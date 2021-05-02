@@ -153,13 +153,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-
-        Error error = new Error(ErrorCode.BASE_ERROR.getCode(),
-                localeService.getLocaleMessage("base_error"));
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+//            HttpStatus status, WebRequest request) {
+//
+//        Error error = new Error(ErrorCode.BASE_ERROR.getCode(),
+//                localeService.getLocaleMessage("base_error"));
+//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//    }
 
 }

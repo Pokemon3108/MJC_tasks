@@ -40,6 +40,9 @@ public class TagModelAssembler extends RepresentationModelAssemblerSupport<TagDt
     @Override
     public CollectionModel<TagModel> toCollectionModel(Iterable<? extends TagDto> entities) {
 
-        return super.toCollectionModel(entities);
+        CollectionModel<TagModel> collectionModel = super.toCollectionModel(entities);
+        collectionModel.add(linkTo(methodOn(TagController.class).create(null, null))
+                .withRel("create"));
+        return collectionModel;
     }
 }

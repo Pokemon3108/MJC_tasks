@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -53,13 +52,13 @@ public class CertificateController {
     @Autowired
     public CertificateController(GiftCertificateService certificateService,
             Validator certificateValidator, GiftCertificateSortService sortService,
-            SearchParamsService searchParamsService, GiftCertificateModelAssembler certificateModelAssembler) {
+            SearchParamsService searchParamsService, GiftCertificateModelAssembler assembler) {
 
         this.certificateService = certificateService;
         this.certificateValidator = certificateValidator;
         this.sortService = sortService;
         this.searchParamsService = searchParamsService;
-        this.certificateModelAssembler = certificateModelAssembler;
+        this.certificateModelAssembler = assembler;
     }
 
     @InitBinder
@@ -107,11 +106,11 @@ public class CertificateController {
      * @return updated certificate
      */
     @PatchMapping("/{id}")
-    public GiftCertificateModel update(@PathVariable Long id, @RequestBody GiftCertificateDto certificate) {
+    public GiftCertificateDto update(@PathVariable Long id, @RequestBody GiftCertificateDto certificate) {
 
         certificate.setId(id);
         certificateService.update(certificate);
-        return certificateModelAssembler.toModel(certificateService.read(certificate.getId()));
+        return certificateService.read(certificate.getId());
     }
 
     /**
@@ -139,7 +138,7 @@ public class CertificateController {
      * @return list of searchable certificates with hateoas links
      */
     @GetMapping
-    public CollectionModel<GiftCertificateModel> getCertificates(
+    public List<GiftCertificateDto> getCertificates(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false) String name,
@@ -152,7 +151,7 @@ public class CertificateController {
 
         List<GiftCertificateDto> certificates = certificateService.findByParams(page, size, certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
-        return certificateModelAssembler.toCollectionModel(
-                sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase())));
+        return
+                sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
     }
 }

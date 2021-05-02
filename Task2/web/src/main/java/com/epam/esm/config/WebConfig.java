@@ -34,7 +34,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        builder.featuresToEnable(DeserializationFeature.UNWRAP_ROOT_VALUE, SerializationFeature.WRAP_ROOT_VALUE);
         return builder;
     }
 
