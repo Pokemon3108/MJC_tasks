@@ -1,6 +1,7 @@
 package com.epam.esm.impl;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,12 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto read(Long orderId) {
 
         return orderDao.read(orderId).orElseThrow(() -> new NoOrderException(orderId));
+    }
+
+    @Override
+    public Set<OrderDto> readUserOrders(long userId, int page, int size) {
+
+        UserDto userDto = userService.read(userId);
+        return orderDao.readUserOrder(userDto, page, size);
     }
 }

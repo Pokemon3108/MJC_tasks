@@ -21,7 +21,6 @@ import org.springframework.stereotype.Repository;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.TagDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
@@ -167,7 +166,7 @@ public class TagDaoImpl implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TagDto> readTheMostPopularTag(UserDto user) {
+    public Optional<TagDto> readTheMostPopularTag(com.epam.esm.dto.UserDto user) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);

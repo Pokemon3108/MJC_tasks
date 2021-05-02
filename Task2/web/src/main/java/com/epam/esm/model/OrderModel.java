@@ -20,7 +20,7 @@ public class OrderModel extends RepresentationModel<OrderModel> {
 
     private LocalDateTime purchaseDate;
 
-    private GiftCertificateModel certificateDtoModel;
+    private GiftCertificateModel certificateModel;
 
     public Long getId() {
 
@@ -52,14 +52,14 @@ public class OrderModel extends RepresentationModel<OrderModel> {
         this.purchaseDate = purchaseDate;
     }
 
-    public GiftCertificateModel getCertificateDtoModel() {
+    public GiftCertificateModel getCertificateModel() {
 
-        return certificateDtoModel;
+        return certificateModel;
     }
 
-    public void setCertificateDtoModel(GiftCertificateModel certificateDtoModel) {
+    public void setCertificateModel(GiftCertificateModel certificateModel) {
 
-        this.certificateDtoModel = certificateDtoModel;
+        this.certificateModel = certificateModel;
     }
 
     @Override
@@ -78,12 +78,12 @@ public class OrderModel extends RepresentationModel<OrderModel> {
         return Objects.equals(id, that.id) &&
                 Objects.equals(cost, that.cost) &&
                 Objects.equals(purchaseDate, that.purchaseDate) &&
-                Objects.equals(certificateDtoModel, that.certificateDtoModel);
+                Objects.equals(certificateModel, that.certificateModel);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), id, cost, purchaseDate, certificateDtoModel);
+        return Objects.hash(super.hashCode(), id, cost, purchaseDate, certificateModel);
     }
 }

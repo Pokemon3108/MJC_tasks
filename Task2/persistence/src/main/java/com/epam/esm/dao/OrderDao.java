@@ -1,8 +1,11 @@
 package com.epam.esm.dao;
 
 import java.util.Optional;
+import java.util.Set;
 
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.User;
 
 /**
  * Interface for access to database for working with orders
@@ -24,4 +27,13 @@ public interface OrderDao {
      * @return read order from storage, or {@code Optional.empty()} if it doesn't exist
      */
     Optional<OrderDto> read(Long id);
+
+    /**
+     * Read user's orders
+     * @param user
+     * @param page number of page starting from 1
+     * @param size amount of orders in one page
+     * @return set of user's orders
+     */
+    Set<OrderDto> readUserOrder(UserDto user, int page, int size);
 }

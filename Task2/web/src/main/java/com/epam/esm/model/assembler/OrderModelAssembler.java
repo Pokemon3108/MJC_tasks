@@ -38,7 +38,7 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
         orderModel.setCost(entity.getCost());
         orderModel.setId(entity.getId());
         orderModel.setPurchaseDate(entity.getPurchaseDate());
-        orderModel.setCertificateDtoModel(certificateModelAssembler.toModel(entity.getCertificate()));
+        orderModel.setCertificateModel(certificateModelAssembler.toModel(entity.getCertificate()));
 
         return orderModel;
     }
