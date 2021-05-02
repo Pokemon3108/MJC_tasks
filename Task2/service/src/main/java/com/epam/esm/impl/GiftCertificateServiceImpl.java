@@ -152,7 +152,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto) {
 
-        if (certificateDao.size() < (page - 1) * size) {
+        if (certificateDao.getAllCount() < (page - 1) * size) {
             throw new NoPageException(page, size);
         }
         List<GiftCertificateDto> certificatesWithParams = certificateDao

@@ -20,7 +20,6 @@ import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.OrderDtoConverter;
 import com.epam.esm.dto.converter.UserDtoConverter;
 import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
 
 /**
  * Jpa implementation of order dao
@@ -47,11 +46,11 @@ public class OrderDaoImpl implements OrderDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<OrderDto> create(OrderDto orderDto) {
+    public Long create(OrderDto orderDto) {
 
         Order order = orderDtoConverter.convertToEntity(orderDto);
         em.persist(order);
-        return Optional.ofNullable(orderDtoConverter.convertToDto(order));
+        return order.getId();
     }
 
     /**

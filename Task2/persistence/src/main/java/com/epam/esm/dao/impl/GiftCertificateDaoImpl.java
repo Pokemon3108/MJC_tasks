@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.query.DaoQuery;
@@ -33,7 +34,6 @@ import com.epam.esm.entity.Tag;
  * Jpa implementation of certificate dao
  */
 @Repository
-@Qualifier("certificateJpaDao")
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private GiftCertificateDtoConverter converter;
@@ -121,7 +121,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 description -> predicateList
                         .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
-        predicateList.addAll(findCertificateByTags(certificateRoot, certificateDto, query, builder));
+        predicateList.addAll(getPredicatesForSearchByTags(certificateRoot, certificateDto, query, builder));
         query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
 
         TypedQuery<GiftCertificate> q = em.createQuery(query);
@@ -134,16 +134,16 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
      * {@inheritDoc}
      */
     @Override
-    public long size() {
+    public long getAllCount() {
 
         return (long) em.createQuery("select count(c) from GiftCertificate c").getSingleResult();
     }
 
-    private List<Predicate> findCertificateByTags(Root<GiftCertificate> cr, GiftCertificateDto dto,
+    private List<Predicate> getPredicatesForSearchByTags(Root<GiftCertificate> cr, GiftCertificateDto dto,
             CriteriaQuery<GiftCertificate> cq, CriteriaBuilder cb) {
 
         List<Predicate> predicateList = new ArrayList<>();
-        if (!dto.getTags().isEmpty()) {
+        if (!CollectionUtils.isEmpty(dto.getTags())) {
             Set<String> tagNames = dto.getTags().stream().map(TagDto::getName).collect(Collectors.toSet());
             Join<GiftCertificate, Tag> join = cr.join("tags", JoinType.LEFT);
             predicateList.add(join.get("name").in(tagNames));

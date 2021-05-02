@@ -16,9 +16,9 @@ public interface OrderDao {
      * Create order
      *
      * @param order - the order to be saved in storage
-     * @return create order from storage, or {@code Optional.empty()} if it was not created
+     * @return the id of created order
      */
-    Optional<OrderDto> create(OrderDto order);
+    Long create(OrderDto order);
 
     /**
      * Read order from storage by id

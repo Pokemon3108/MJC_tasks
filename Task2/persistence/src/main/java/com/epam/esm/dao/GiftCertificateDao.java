@@ -40,7 +40,7 @@ public interface GiftCertificateDao {
     /**
      * Read certificate by name
      *
-     * @param certificateName
+     * @param certificateName - the name of certificate
      * @return certificate from storage
      */
     Optional<GiftCertificateDto> readCertificateByName(String certificateName);
@@ -54,5 +54,5 @@ public interface GiftCertificateDao {
     /**
      * @return amount of certificates in storage
      */
-    long size();
+    long getAllCount();
 }

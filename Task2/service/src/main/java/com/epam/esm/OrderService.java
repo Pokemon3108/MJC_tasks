@@ -14,9 +14,9 @@ public interface OrderService {
      *
      * @param userId        - the id of user
      * @param certificateId - the id of certificate
-     * @return dto object of created order
+     * @return the id of created order
      */
-    OrderDto makeOrder(Long userId, Long certificateId);
+    Long makeOrder(Long userId, Long certificateId);
 
     /**
      * Read order by id

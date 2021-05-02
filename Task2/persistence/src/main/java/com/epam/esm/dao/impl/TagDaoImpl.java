@@ -31,7 +31,6 @@ import com.epam.esm.entity.User;
  * Jpa implementation for access to database for work with tags
  */
 @Repository
-@Qualifier("tagJpaDao")
 public class TagDaoImpl implements TagDao {
 
     private TagDtoConverter tagDtoConverter;
@@ -74,7 +73,7 @@ public class TagDaoImpl implements TagDao {
     public void delete(TagDto dto) {
 
         Tag tag = tagDtoConverter.convertToEntity(dto);
-        em.remove(tag);
+        em.remove(em.contains(tag) ? tag : em.merge(tag));
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.epam.esm.impl;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.exception.order.CreationOrderException;
 import com.epam.esm.exception.order.NoOrderException;
 
 /**
@@ -42,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional
     @Override
-    public OrderDto makeOrder(Long userId, Long certificateId) {
+    public Long makeOrder(Long userId, Long certificateId) {
 
         GiftCertificateDto certificateDto = certificateService.read(certificateId);
         UserDto user = userService.read(userId);
@@ -51,8 +49,8 @@ public class OrderServiceImpl implements OrderService {
         order.setCertificate(certificateDto);
         order.setCost(certificateDto.getPrice());
         order.setUser(user);
-        Optional<OrderDto> createdOrder = orderDao.create(order);
-        return createdOrder.orElseThrow(CreationOrderException::new);
+
+        return orderDao.create(order);
     }
 
     @Override
