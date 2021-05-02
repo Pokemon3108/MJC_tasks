@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 @JsonRootName(value = "order")
+@Relation(collectionRelation = "orders")
 @JsonInclude(Include.NON_NULL)
 public class OrderModel extends RepresentationModel<OrderModel> {
 

@@ -46,7 +46,6 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
     @Override
     public CollectionModel<OrderModel> toCollectionModel(Iterable<? extends OrderDto> entities) {
 
-        CollectionModel<OrderModel> orderModels = super.toCollectionModel(entities);
-        return orderModels;
+        return super.toCollectionModel(entities);
     }
 }

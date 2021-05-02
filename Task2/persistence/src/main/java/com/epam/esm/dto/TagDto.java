@@ -6,8 +6,6 @@ public class TagDto {
 
     private String name;
 
-    //   private Set<GiftCertificateDto> certificates;
-
     public TagDto() {
 
     }
@@ -37,13 +35,4 @@ public class TagDto {
         this.name = name;
     }
 
-//    public Set<GiftCertificateDto> getCertificates() {
-//
-//        return certificates;
-//    }
-//
-//    public void setCertificates(Set<GiftCertificateDto> certificates) {
-//
-//        this.certificates = certificates;
-//    }
 }

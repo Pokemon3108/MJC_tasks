@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @Configuration
 @ComponentScan(basePackages = "com.epam.esm")
 @EnableWebMvc
+@EnableHypermediaSupport(type = HypermediaType.HAL_FORMS)
 public class WebConfig implements WebMvcConfigurer {
 
     @Override

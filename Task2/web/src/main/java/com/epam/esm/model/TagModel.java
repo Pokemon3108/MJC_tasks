@@ -9,9 +9,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-@JsonRootName(value = "user")
+@JsonRootName(value = "tag")
+@Relation(collectionRelation = "tags")
 @JsonInclude(Include.NON_NULL)
-public class UserModel extends RepresentationModel<UserModel> {
+public class TagModel extends RepresentationModel<TagModel> {
 
     private Long id;
 
@@ -49,14 +50,23 @@ public class UserModel extends RepresentationModel<UserModel> {
         if (!super.equals(o)) {
             return false;
         }
-        UserModel userModel = (UserModel) o;
-        return Objects.equals(id, userModel.id) &&
-                Objects.equals(name, userModel.name);
+        TagModel tagModel = (TagModel) o;
+        return Objects.equals(id, tagModel.id) &&
+                Objects.equals(name, tagModel.name);
     }
 
     @Override
     public int hashCode() {
 
         return Objects.hash(super.hashCode(), id, name);
+    }
+
+    @Override
+    public String toString() {
+
+        return "TagModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
