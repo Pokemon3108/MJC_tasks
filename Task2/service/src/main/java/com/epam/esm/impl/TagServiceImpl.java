@@ -66,7 +66,7 @@ public class TagServiceImpl implements TagService {
         if (!tag.isPresent()) {
             throw new NoTagException(id);
         }
-        tagDao.deleteCertificateTagsByTagId(id);
+        //  tagDao.deleteCertificateTagsByTagId(id);
         tagDao.delete(tag.get());
     }
 

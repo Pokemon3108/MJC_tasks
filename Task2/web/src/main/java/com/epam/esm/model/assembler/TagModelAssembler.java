@@ -28,7 +28,7 @@ public class TagModelAssembler extends RepresentationModelAssemblerSupport<TagDt
         TagController controller = methodOn(TagController.class);
 
         tagModel.add(linkTo(controller.read(entity.getId())).withSelfRel()
-                .andAffordance(afford(controller.create(null, null))),
+                        .andAffordance(afford(controller.create(null, null))),
                 linkTo(controller.delete(entity.getId())).withRel("delete")
         );
 

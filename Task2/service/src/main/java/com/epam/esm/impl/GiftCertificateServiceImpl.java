@@ -124,7 +124,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void delete(long id) {
 
         GiftCertificateDto certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
-        tagDao.unbindCertificateTags(certificate);
         certificateDao.delete(certificate);
     }
 

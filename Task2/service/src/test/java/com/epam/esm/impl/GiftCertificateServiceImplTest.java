@@ -39,16 +39,16 @@ class GiftCertificateServiceImplTest {
     GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
     GiftCertificate certificate;
     GiftCertificateDto certificateDto;
-    @Mock
-    TagService tagService = new TagServiceImpl(tagDao);
-    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
-            tagService);
     @PersistenceContext
     private EntityManager em;
     @Mock
     GiftCertificateDao certificateDao = new GiftCertificateDaoImpl(em, dtoConverter);
     @Mock
     TagDao tagDao = new TagDaoImpl(em);
+    @Mock
+    TagService tagService = new TagServiceImpl(tagDao);
+    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
+            tagService);
 
     @BeforeEach
     void init() {

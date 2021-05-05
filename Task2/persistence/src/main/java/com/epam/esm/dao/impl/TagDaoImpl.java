@@ -1,6 +1,5 @@
 package com.epam.esm.dao.impl;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dto.UserDto;
-import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.TagDtoConverter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
@@ -76,8 +74,9 @@ public class TagDaoImpl implements TagDao {
     @Override
     public void delete(TagDto dto) {
 
-        Tag tag = tagDtoConverter.convertToEntity(dto);
-        em.remove(em.contains(tag) ? tag : em.merge(tag));
+        Tag tag = em.find(Tag.class, dto.getId());
+        tag.getCertificates().forEach(c -> c.getTags().remove(tag));
+        em.remove(tag);
     }
 
     /**
@@ -99,46 +98,6 @@ public class TagDaoImpl implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public void deleteCertificateTagsByTagId(long tagId) {
-
-        Tag tag = em.find(Tag.class, tagId);
-        tag.getCertificates().forEach(c -> c.getTags().remove(tag));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void bindCertificateTags(Set<TagDto> tagSet, Long certificateId) {
-
-        GiftCertificate certificate = em.find(GiftCertificate.class, certificateId);
-        certificate.setTags(tagDtoConverter.convertToEntities(tagSet));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
-
-        GiftCertificate certificate = em.find(GiftCertificate.class, certificateId);
-        return certificate.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void unbindCertificateTags(GiftCertificateDto certificateDto) {
-
-        GiftCertificate certificate = em.find(GiftCertificate.class, certificateDto.getId());
-        certificate.setTags(new HashSet<>());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Set<TagDto> readTagsByNames(Set<String> tagNames) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -146,21 +105,6 @@ public class TagDaoImpl implements TagDao {
         Root<Tag> root = criteriaQuery.from(Tag.class);
 
         criteriaQuery.select(root).where(root.get("name").in(tagNames));
-        TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return tagDtoConverter.convertToDtos(query.getResultStream().collect(Collectors.toSet()));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<TagDto> readTagsByIds(Set<Long> ids) {
-
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
-        Root<Tag> root = criteriaQuery.from(Tag.class);
-
-        criteriaQuery.select(root).where(root.get("id").in(ids));
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
         return tagDtoConverter.convertToDtos(query.getResultStream().collect(Collectors.toSet()));
     }

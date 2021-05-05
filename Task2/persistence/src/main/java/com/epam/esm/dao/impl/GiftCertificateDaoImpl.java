@@ -78,7 +78,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public void delete(GiftCertificateDto certificateDto) {
 
-        GiftCertificate certificateToBeDeleted = converter.convertToEntity(certificateDto);
+        GiftCertificate certificateToBeDeleted = em.find(GiftCertificate.class, certificateDto.getId());
+        certificateToBeDeleted.setTags(new HashSet<>());
         em.remove(certificateToBeDeleted);
     }
 
@@ -124,7 +125,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 description -> predicateList
                         .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
-        predicateList.addAll(getPredicatesForSearchByTags(certificateRoot, certificateDto, query, builder));
+        predicateList.addAll(getPredicatesForSearchByTagNames(certificateRoot, certificateDto, query, builder));
         query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
 
         TypedQuery<GiftCertificate> q = em.createQuery(query);
@@ -142,7 +143,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return (long) em.createQuery("select count(c) from GiftCertificate c").getSingleResult();
     }
 
-    private List<Predicate> getPredicatesForSearchByTags(Root<GiftCertificate> cr, GiftCertificateDto dto,
+    private List<Predicate> getPredicatesForSearchByTagNames(Root<GiftCertificate> cr, GiftCertificateDto dto,
             CriteriaQuery<GiftCertificate> cq, CriteriaBuilder cb) {
 
         List<Predicate> predicateList = new ArrayList<>();

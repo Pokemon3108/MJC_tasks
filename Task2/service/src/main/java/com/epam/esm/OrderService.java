@@ -28,9 +28,10 @@ public interface OrderService {
 
     /**
      * Read user's orders
+     *
      * @param userId - the id of user
-     * @param page - number of page starting from 1
-     * @param size - maximum amount of orders in result set
+     * @param page   - number of page starting from 1
+     * @param size   - maximum amount of orders in result set
      * @return set of user's orders
      */
     Set<OrderDto> readUserOrders(long userId, int page, int size);
