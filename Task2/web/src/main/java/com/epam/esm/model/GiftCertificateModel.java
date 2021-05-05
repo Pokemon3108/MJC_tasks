@@ -158,5 +158,4 @@ public class GiftCertificateModel extends RepresentationModel<GiftCertificateMod
                 '}';
     }
 
-
 }

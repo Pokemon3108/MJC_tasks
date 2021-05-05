@@ -36,7 +36,7 @@ public class GiftCertificateDto {
      */
     public Set<TagDto> getTags() {
 
-        return tags;
+        return new HashSet<>();
     }
 
     /**
@@ -199,16 +199,6 @@ public class GiftCertificateDto {
         tags.add(tagDto);
     }
 
-    /**
-     * Gets tag.
-     *
-     * @param index of tag in tag's storage
-     * @return the tag of certificate
-     */
-    public TagDto getTag(int index) {
-
-        return (index < tags.size()) ? new ArrayList<>(tags).get(index) : null;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,8 +1,8 @@
 package com.epam.esm.model.assembler;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
 
 import java.util.HashSet;
 
@@ -36,8 +36,11 @@ public class GiftCertificateModelAssembler extends
         CertificateController controller = methodOn(CertificateController.class);
 
         giftCertificateModel.add(linkTo(controller.read(entity.getId())).withSelfRel()
-                    .andAffordance(afford(controller.update(entity.getId(), null)))
-                  .andAffordance(afford(controller.create(null, null))),
+                        .andAffordance(afford(controller.update(entity.getId(), null)))
+                        .andAffordance(afford(controller.create(null, null))),
+                linkTo(controller.create(null, null)).withRel("create"),
+                linkTo(controller.update(entity.getId(), null)).withRel("update"),
+                linkTo(controller.delete(entity.getId())).withRel("delete"),
                 linkTo(controller.getCertificates(1, 5, null, null, null, null, null))
                         .withRel("searchAndSort")
         );
