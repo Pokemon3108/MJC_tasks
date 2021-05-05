@@ -1,6 +1,5 @@
 package com.epam.esm.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,6 @@ import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
-import com.epam.esm.utils.BeanNullProperty;
 
 /**
  * The Gift certificate service implementation
@@ -90,22 +88,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
-        certificateDto.setLastUpdateDate(LocalDateTime.now());
-
         copyProperties(certificateDto, certificateWithId);
+        Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
+        certificateWithId.setTags(tags);
         certificateDao.update(certificateWithId);
-
-        if (!certificateDto.getTags().isEmpty()) {
-            tagDao.unbindCertificateTags(certificateDto);
-
-            long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName() != null).count();
-            if (namedTagsSize != 0) {
-                Set<TagDto> tagsWithId = tagService.bindTagsWithIds(certificateDto.getTags());
-
-                tagDao.bindCertificateTags(tagsWithId,
-                        certificateDto.getId());
-            }
-        }
     }
 
     /**
@@ -116,10 +102,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      */
     private void copyProperties(GiftCertificateDto src, GiftCertificateDto target) {
 
-        Set<TagDto> tags = src.getTags();
-        BeanNullProperty.copyNonNullProperties(src, target);
-        if (!tags.isEmpty()) {
-            src.setTags(tags);
+        if (src.getName() != null) {
+            target.setName(src.getName());
+        }
+        if (src.getDescription() != null) {
+            target.setDescription(src.getDescription());
+        }
+        if (src.getDuration() != null) {
+            target.setDuration(src.getDuration());
+        }
+        if (src.getPrice() != null) {
+            target.setPrice(src.getPrice());
         }
     }
 

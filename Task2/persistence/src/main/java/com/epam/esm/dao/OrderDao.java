@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.User;
 
 /**
  * Interface for access to database for working with orders

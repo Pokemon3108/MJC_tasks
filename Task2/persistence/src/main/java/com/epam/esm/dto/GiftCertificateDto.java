@@ -2,7 +2,6 @@ package com.epam.esm.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -36,7 +35,7 @@ public class GiftCertificateDto {
      */
     public Set<TagDto> getTags() {
 
-        return new HashSet<>();
+        return tags;
     }
 
     /**
