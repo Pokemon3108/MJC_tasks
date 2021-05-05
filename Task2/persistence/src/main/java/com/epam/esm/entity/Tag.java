@@ -3,13 +3,16 @@ package com.epam.esm.entity;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 
 /**
@@ -25,7 +28,7 @@ public class Tag {
     @Column
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.MERGE)
     private Set<GiftCertificate> certificates;
 
     /**

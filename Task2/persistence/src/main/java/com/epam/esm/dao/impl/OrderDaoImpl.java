@@ -31,15 +31,19 @@ public class OrderDaoImpl implements OrderDao {
 
     private UserDtoConverter userDtoConverter;
 
-    @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    public OrderDaoImpl(EntityManager em, OrderDtoConverter orderDtoConverter, UserDtoConverter userDtoConverter) {
+    public OrderDaoImpl(OrderDtoConverter orderDtoConverter, UserDtoConverter userDtoConverter) {
 
-        this.em = em;
         this.orderDtoConverter = orderDtoConverter;
         this.userDtoConverter = userDtoConverter;
+    }
+
+    @PersistenceContext
+    public void setEm(EntityManager em) {
+
+        this.em = em;
     }
 
     /**

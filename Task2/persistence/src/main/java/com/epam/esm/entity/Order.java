@@ -41,6 +41,12 @@ public class Order {
     @JsonIgnore
     private User user;
 
+    @PrePersist
+    public void prePersist() {
+
+        this.purchaseDate = LocalDateTime.now();
+    }
+
     public Long getId() {
 
         return id;
@@ -89,11 +95,5 @@ public class Order {
     public void setPurchaseDate(LocalDateTime purchaseDate) {
 
         this.purchaseDate = purchaseDate;
-    }
-
-    @PrePersist
-    public void prePersist() {
-
-        this.purchaseDate = LocalDateTime.now();
     }
 }

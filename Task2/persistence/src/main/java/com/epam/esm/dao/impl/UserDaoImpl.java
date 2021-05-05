@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.UserDtoConverter;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
@@ -39,13 +40,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<com.epam.esm.dto.UserDto> read(long id) {
+    public Optional<UserDto> read(long id) {
 
         return Optional.ofNullable(userDtoConverter.convertToDto(em.find(User.class, id)));
     }
 
     @Override
-    public Optional<com.epam.esm.dto.UserDto> readRichest() {
+    public Optional<UserDto> readRichest() {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);

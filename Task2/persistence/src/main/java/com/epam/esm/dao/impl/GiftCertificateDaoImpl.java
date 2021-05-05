@@ -38,14 +38,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private GiftCertificateDtoConverter converter;
 
-    @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    public GiftCertificateDaoImpl(EntityManager em, GiftCertificateDtoConverter converter) {
+    public GiftCertificateDaoImpl(GiftCertificateDtoConverter converter) {
+
+        this.converter = converter;
+    }
+
+    @PersistenceContext
+    public void setEm(EntityManager em) {
 
         this.em = em;
-        this.converter = converter;
     }
 
     /**

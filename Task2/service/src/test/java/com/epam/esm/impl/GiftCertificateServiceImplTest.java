@@ -86,7 +86,7 @@ class GiftCertificateServiceImplTest {
         certificateDto.getTags().forEach(t -> Mockito.when(tagDao.insert(t)).thenReturn(t.getId()));
 
         Long generatedId = service.add(certificateDto);
-        Mockito.verify(tagService, Mockito.times(1)).setTagsId(certificateDto.getTags());
+        Mockito.verify(tagService, Mockito.times(1)).bindTagsWithIds(certificateDto.getTags());
         Mockito.verify(tagDao, Mockito.times(1)).bindCertificateTags(Mockito.any(), eq(id));
 
         Assertions.assertEquals(id, generatedId);

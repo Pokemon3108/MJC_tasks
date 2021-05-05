@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,17 +49,30 @@ public class GiftCertificate {
     @Column
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE })
     @JoinTable(
             name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "certificate_id")
     @JsonIgnore
     private Set<Order> orders;
+
+    @PrePersist
+    public void prePersist() {
+
+        this.createDate = LocalDateTime.now();
+        this.lastUpdateDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+
+        this.lastUpdateDate = LocalDateTime.now();
+    }
 
     public Set<Order> getOrders() {
 

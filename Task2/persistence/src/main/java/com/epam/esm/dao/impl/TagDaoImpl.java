@@ -15,7 +15,6 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
@@ -35,14 +34,18 @@ public class TagDaoImpl implements TagDao {
 
     private TagDtoConverter tagDtoConverter;
 
-    @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    public TagDaoImpl(EntityManager em, TagDtoConverter tagDtoConverter) {
+    public TagDaoImpl(TagDtoConverter tagDtoConverter) {
+
+        this.tagDtoConverter = tagDtoConverter;
+    }
+
+    @PersistenceContext
+    public void setEm(EntityManager em) {
 
         this.em = em;
-        this.tagDtoConverter = tagDtoConverter;
     }
 
     /**
@@ -98,7 +101,7 @@ public class TagDaoImpl implements TagDao {
     public void deleteCertificateTagsByTagId(long tagId) {
 
         Tag tag = em.find(Tag.class, tagId);
-        tag.setCertificates(new HashSet<>());
+        tag.getCertificates().forEach(c -> c.getTags().remove(tag));
     }
 
     /**

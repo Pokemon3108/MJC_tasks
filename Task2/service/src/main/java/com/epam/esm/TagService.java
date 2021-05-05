@@ -42,7 +42,7 @@ public interface TagService {
      * @param tags
      * @return
      */
-    Set<TagDto> setTagsId(Set<TagDto> tags);
+    Set<TagDto> bindTagsWithIds(Set<TagDto> tags);
 
     /**
      * Read most popular tag in user's order

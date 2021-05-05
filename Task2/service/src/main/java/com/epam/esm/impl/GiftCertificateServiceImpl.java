@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,16 +53,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
-        certificateDto.setCreateDate(LocalDateTime.now());
-        certificateDto.setLastUpdateDate(LocalDateTime.now());
-        Long certificateId = certificateDao.insert(certificateDto);
-        certificateDto.setId(certificateId);
-
-        if (!certificateDto.getTags().isEmpty()) {
-            Set<TagDto> tagsWithId = tagService.setTagsId(certificateDto.getTags());
-            tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
-        }
-        return certificateId;
+        Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
+        certificateDto.setTags(tags);
+        return certificateDao.insert(certificateDto);
     }
 
     /**
@@ -72,11 +64,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto read(long id) {
 
-        GiftCertificateDto certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
-        Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
-        Set<TagDto> tags = tagsIds.stream().map(t -> tagDao.read(t).get()).collect(Collectors.toSet());
-        certificate.setTags(tags);
-        return certificate;
+        return certificateDao.read(id)
+                .orElseThrow(() -> new NoCertificateException(id));
     }
 
 
@@ -111,7 +100,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
             long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName() != null).count();
             if (namedTagsSize != 0) {
-                Set<TagDto> tagsWithId = tagService.setTagsId(certificateDto.getTags());
+                Set<TagDto> tagsWithId = tagService.bindTagsWithIds(certificateDto.getTags());
 
                 tagDao.bindCertificateTags(tagsWithId,
                         certificateDto.getId());

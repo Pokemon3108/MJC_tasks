@@ -1,8 +1,5 @@
 package com.epam.esm.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,15 +74,14 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public Set<TagDto> setTagsId(Set<TagDto> tags) {
+    public Set<TagDto> bindTagsWithIds(Set<TagDto> tags) {
 
         Set<TagDto> tagsWithId = tagDao
-                .readTagsByNames(tags.stream().map(TagDto::getName).collect(Collectors.toSet()));
-        Map<Boolean, List<TagDto>> tagMap = tags.stream()
-                .collect(Collectors.partitioningBy(tagsWithId::contains));
-        Set<TagDto> newTags = new HashSet<>(tagMap.get(false));
-        insertTagsIfNotExist(newTags);
-        tagsWithId.addAll(newTags);
+                .readTagsByNames(
+                        tags.stream()
+                                .map(TagDto::getName)
+                                .collect(Collectors.toSet()));
+        tagsWithId.addAll(tags);
         return tagsWithId;
     }
 
@@ -97,16 +93,4 @@ public class TagServiceImpl implements TagService {
 
         return tagDao.readTheMostPopularTag(user).orElseThrow(() -> new UsersOrderHasNoTags(user.getId()));
     }
-
-    /**
-     * Insert tags to storage if they not already exists
-     *
-     * @param tags with names, id from which will be set
-     */
-    private void insertTagsIfNotExist(Set<TagDto> tags) {
-
-        tags.stream().filter(tag -> tag.getId() == null)
-                .forEach(tag -> tag.setId(tagDao.insert(tag)));
-    }
-
 }

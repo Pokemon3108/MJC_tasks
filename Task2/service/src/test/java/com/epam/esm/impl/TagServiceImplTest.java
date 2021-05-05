@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.TagDaoImpl;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
@@ -95,9 +96,9 @@ class TagServiceImplTest {
 
 
     @Test
-    void setTagsIdTest() {
+    void bindTagsWithIds() {
 
-        Set<String> tagNames = new HashSet<>(Arrays.asList("tag1", "tag2"));
+        Set<TagDto> tagNames = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
         Set<Tag> tagsWithId = new HashSet<>(Collections.singletonList(new Tag("tag1", 1L)));
         Set<Tag> newTags = new HashSet<>(Collections.singletonList(new Tag("tag2", 2L)));
 
@@ -106,7 +107,7 @@ class TagServiceImplTest {
 
         tagsWithId.addAll(newTags);
         Assertions.assertArrayEquals(
-                service.setTagsId(tagNames.stream().map(Tag::new).collect(Collectors.toSet())).toArray(),
+                service.bindTagsWithIds(tagNames.stream().map(Tag::new).collect(Collectors.toSet())).toArray(),
                 tagsWithId.toArray());
 
     }
