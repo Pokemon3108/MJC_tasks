@@ -3,6 +3,7 @@ package com.epam.esm;
 import java.util.Set;
 
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.UserDto;
 
 /**
  * Interface for work with orders
@@ -35,4 +36,11 @@ public interface OrderService {
      * @return set of user's orders
      */
     Set<OrderDto> readUserOrders(long userId, int page, int size);
+
+    /**
+     *
+     * @param user - the user, whose orders are counted
+     * @return total amount of user's orders
+     */
+    long countUserOrders(UserDto user);
 }

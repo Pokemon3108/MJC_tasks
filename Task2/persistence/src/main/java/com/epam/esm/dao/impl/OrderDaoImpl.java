@@ -19,6 +19,7 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.OrderDtoConverter;
 import com.epam.esm.dto.converter.UserDtoConverter;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 
 /**
@@ -72,17 +73,37 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Set<OrderDto> readUserOrder(UserDto user, int page, int size) {
 
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
-        Root<Order> orderRoot = criteriaQuery.from(Order.class);
+        CriteriaQuery<Order> criteriaQuery = buildQueryForUserOrdersSearch(user);
 
-        criteriaQuery.select(orderRoot)
-                .where(criteriaBuilder.equal(orderRoot.get("user"), userDtoConverter.convertToEntity(user)));
         TypedQuery<Order> q = em.createQuery(criteriaQuery);
         q.setFirstResult((page - 1) * size);
         q.setMaxResults(size);
         return orderDtoConverter.convertToDtos(q.getResultStream().collect(Collectors.toSet()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long countUserOrders(UserDto user) {
+
+        CriteriaQuery<Order> criteriaQuery = buildQueryForUserOrdersSearch(user);
+        TypedQuery<Order> q = em.createQuery(criteriaQuery);
+        return q.getResultStream().count();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    private CriteriaQuery<Order> buildQueryForUserOrdersSearch(UserDto user) {
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> orderRoot = criteriaQuery.from(Order.class);
+
+        criteriaQuery.select(orderRoot)
+                .where(criteriaBuilder.equal(orderRoot.get("user"), userDtoConverter.convertToEntity(user)));
+        return criteriaQuery;
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.epam.esm.controller;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,11 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.OrderService;
+import com.epam.esm.PageService;
 import com.epam.esm.UserService;
-import com.epam.esm.model.OrderModel;
+import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.model.UserModel;
 import com.epam.esm.model.assembler.OrderModelAssembler;
 import com.epam.esm.model.assembler.UserModelAssembler;
+import com.epam.esm.model.PageOrderModel;
 
 @RestController
 @RequestMapping("/users")
@@ -27,14 +32,17 @@ public class UserController {
 
     private OrderService orderService;
 
+    private PageService pageService;
+
     @Autowired
     public UserController(UserService userService, UserModelAssembler userModelAssembler,
-            OrderModelAssembler orderModelAssembler, OrderService orderService) {
+            OrderModelAssembler orderModelAssembler, OrderService orderService, PageService pageService) {
 
         this.userService = userService;
         this.userModelAssembler = userModelAssembler;
         this.orderModelAssembler = orderModelAssembler;
         this.orderService = orderService;
+        this.pageService = pageService;
     }
 
     @GetMapping("/{id}")
@@ -44,9 +52,14 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/orders")
-    public CollectionModel<OrderModel> getOrders(@PathVariable Long userId, @RequestParam Integer page,
+    public PageOrderModel getOrders(@PathVariable Long userId, @RequestParam Integer page,
             @RequestParam Integer size) {
 
-        return orderModelAssembler.toCollectionModel(orderService.readUserOrders(userId, page, size));
+        UserDto userDto = userService.read(userId);
+        Set<OrderDto> orders = orderService.readUserOrders(userId, page, size);
+        return new PageOrderModel(
+                orderModelAssembler.toCollectionModel(orders),
+                pageService.buildPageForUserOrderSearch(page, size, userDto, new ArrayList<>(orders)));
+
     }
 }

@@ -1,16 +1,16 @@
-package com.epam.esm.model.page;
+package com.epam.esm.model;
 
 public class Page {
 
     private final int size;
 
-    private final int totalElements;
+    private final long totalElements;
 
     private final int totalPages;
 
     private final int number;
 
-    public Page(int size, int totalElements, int totalPages, int number) {
+    public Page(int size, long totalElements, int totalPages, int number) {
 
         this.size = size;
         this.totalElements = totalElements;
@@ -23,7 +23,7 @@ public class Page {
         return size;
     }
 
-    public int getTotalElements() {
+    public long getTotalElements() {
 
         return totalElements;
     }

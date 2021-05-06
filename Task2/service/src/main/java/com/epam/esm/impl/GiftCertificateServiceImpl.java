@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.NoIdException;
@@ -28,15 +27,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDao certificateDao;
 
-    private TagDao tagDao;
-
     private TagService tagService;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagDao tagDao, TagService tagService) {
+    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagService tagService) {
 
         this.certificateDao = certificateDao;
-        this.tagDao = tagDao;
         this.tagService = tagService;
     }
 
@@ -139,6 +135,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         List<GiftCertificateDto> certificatesWithParams = certificateDao
                 .findCertificateByParams(page, size, certificateDto);
         return new ArrayList<>(certificatesWithParams);
+    }
+
+    @Override
+    public long countFoundByParamsCertificates(GiftCertificateDto dto) {
+
+        return certificateDao.countFoundCertificates(dto);
     }
 
 }

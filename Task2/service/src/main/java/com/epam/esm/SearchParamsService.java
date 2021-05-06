@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 
+/**
+ * Service for build search params of entities
+ */
 @Service
 public class SearchParamsService {
 
-    public GiftCertificateDto buildDto(String name, String description, String tagNames) {
+    public GiftCertificateDto buildCertificateDto(String name, String description, String tagNames) {
 
         GiftCertificateDto certificate = new GiftCertificateDto();
         certificate.setName(name);

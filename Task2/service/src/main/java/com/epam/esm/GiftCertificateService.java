@@ -46,4 +46,11 @@ public interface GiftCertificateService {
      * @return list of found certificates
      */
     List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificate);
+
+    /**
+     *
+     * @param dto - the DTO object with search params
+     * @return amount of found certificates
+     */
+    long countFoundByParamsCertificates(GiftCertificateDto dto);
 }

@@ -65,4 +65,10 @@ public class OrderServiceImpl implements OrderService {
         UserDto userDto = userService.read(userId);
         return orderDao.readUserOrder(userDto, page, size);
     }
+
+    @Override
+    public long countUserOrders(UserDto user) {
+
+        return orderDao.countUserOrders(user);
+    }
 }

@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -115,21 +114,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public List<GiftCertificateDto> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto) {
 
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
-        Root<GiftCertificate> certificateRoot = query.from(GiftCertificate.class);
-
-        List<Predicate> predicateList = new ArrayList<>();
-        DaoQuery.applyIfNotNull(certificateDto.getName(),
-                name -> predicateList.add(builder.like(certificateRoot.get("name"), "%" + name + "%")));
-        DaoQuery.applyIfNotNull(certificateDto.getDescription(),
-                description -> predicateList
-                        .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
-
-        predicateList.addAll(getPredicatesForSearchByTagNames(certificateRoot, certificateDto, query, builder));
-        query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
-
-        TypedQuery<GiftCertificate> q = em.createQuery(query);
+        CriteriaQuery<GiftCertificate> criteriaQuery = buildFindByParamsQuery(certificateDto);
+        TypedQuery<GiftCertificate> q = em.createQuery(criteriaQuery);
         q.setFirstResult((page - 1) * size);
         q.setMaxResults(size);
         return new ArrayList<>(converter.convertToDtos(new HashSet<>(q.getResultList())));
@@ -144,6 +130,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return (long) em.createQuery("select count(c) from GiftCertificate c").getSingleResult();
     }
 
+    @Override
+    public long countFoundCertificates(GiftCertificateDto dto) {
+
+        CriteriaQuery<GiftCertificate> criteriaQuery = buildFindByParamsQuery(dto);
+        TypedQuery<GiftCertificate> q = em.createQuery(criteriaQuery);
+        return q.getResultStream().count();
+    }
+
     private List<Predicate> getPredicatesForSearchByTagNames(Root<GiftCertificate> cr, GiftCertificateDto dto,
             CriteriaQuery<GiftCertificate> cq, CriteriaBuilder cb) {
 
@@ -156,5 +150,23 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             cq.having(cb.count(cr).in(dto.getTags().size()));
         }
         return predicateList;
+    }
+
+    private CriteriaQuery<GiftCertificate> buildFindByParamsQuery(GiftCertificateDto certificateDto) {
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
+        Root<GiftCertificate> certificateRoot = query.from(GiftCertificate.class);
+
+        List<Predicate> predicateList = new ArrayList<>();
+        DaoQuery.applyIfNotNull(certificateDto.getName(),
+                name -> predicateList.add(builder.like(certificateRoot.get("name"), "%" + name + "%")));
+        DaoQuery.applyIfNotNull(certificateDto.getDescription(),
+                description -> predicateList
+                        .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
+
+        predicateList.addAll(getPredicatesForSearchByTagNames(certificateRoot, certificateDto, query, builder));
+        query.select(certificateRoot).where(predicateList.toArray(new Predicate[0]));
+        return query;
     }
 }

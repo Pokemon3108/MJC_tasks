@@ -55,4 +55,10 @@ public interface GiftCertificateDao {
      * @return amount of certificates in storage
      */
     long getAllCount();
+
+    /**
+     * @param dto with filled params, for which the search will be performed
+     * @return total amount of certificates, searched by params in storage
+     */
+    long countFoundCertificates(GiftCertificateDto dto);
 }

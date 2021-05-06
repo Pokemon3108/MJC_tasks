@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.GiftCertificateService;
+import com.epam.esm.PageService;
 import com.epam.esm.SearchParamsService;
 import com.epam.esm.comparator.Direction;
 import com.epam.esm.comparator.GiftCertificateSortService;
@@ -30,11 +31,8 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.IdDto;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.model.GiftCertificateModel;
-import com.epam.esm.model.page.Page;
-import com.epam.esm.model.page.PagedCertificateDto;
-import com.epam.esm.model.page.PagedGiftCertificateModel;
 import com.epam.esm.model.assembler.GiftCertificateModelAssembler;
-import com.epam.esm.model.page.PagedGiftCertificateModelAssembler;
+import com.epam.esm.model.PageCertificateModel;
 
 
 /**
@@ -54,20 +52,20 @@ public class CertificateController {
 
     private GiftCertificateModelAssembler certificateModelAssembler;
 
-    private PagedGiftCertificateModelAssembler pagedAssembler;
+    private PageService pageService;
 
     @Autowired
     public CertificateController(GiftCertificateService certificateService,
             Validator certificateValidator, GiftCertificateSortService sortService,
             SearchParamsService searchParamsService, GiftCertificateModelAssembler certificateModelAssembler,
-            PagedGiftCertificateModelAssembler pagedAssembler) {
+            PageService pageService) {
 
         this.certificateService = certificateService;
         this.certificateValidator = certificateValidator;
         this.sortService = sortService;
         this.searchParamsService = searchParamsService;
         this.certificateModelAssembler = certificateModelAssembler;
-        this.pagedAssembler = pagedAssembler;
+        this.pageService = pageService;
     }
 
     @InitBinder
@@ -148,7 +146,7 @@ public class CertificateController {
      * @return list of searchable certificates with hateoas links
      */
     @GetMapping
-    public PagedGiftCertificateModel getCertificates(
+    public PageCertificateModel getCertificates(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false) String name,
@@ -157,15 +155,13 @@ public class CertificateController {
             @RequestParam(required = false, defaultValue = "") String sortParams,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        GiftCertificateDto certificate = searchParamsService.buildDto(name, description, tags);
+        GiftCertificateDto certificate = searchParamsService.buildCertificateDto(name, description, tags);
 
         List<GiftCertificateDto> certificates = certificateService.findByParams(page, size, certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
         certificates = sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
 
-        PagedCertificateDto pagedCertificateDto = new PagedCertificateDto();
-        pagedCertificateDto.setCertificateDtos(certificates);
-        pagedCertificateDto.setPage(new Page(size, 1, 1, page));
-        return pagedAssembler.toModel(pagedCertificateDto);
+        return new PageCertificateModel(certificateModelAssembler.toCollectionModel(certificates),
+                pageService.buildPageForCertificateSearch(page, size, certificate, certificates));
     }
 }

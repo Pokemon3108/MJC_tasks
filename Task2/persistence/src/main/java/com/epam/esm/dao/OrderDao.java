@@ -36,4 +36,10 @@ public interface OrderDao {
      * @return set of user's orders
      */
     Set<OrderDto> readUserOrder(UserDto user, int page, int size);
+
+    /**
+     * @param user - the user, whose orders will be found
+     * @return total amount of user's orders
+     */
+    long countUserOrders(UserDto user);
 }
