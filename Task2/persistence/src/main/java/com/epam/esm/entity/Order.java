@@ -13,11 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Orders contain user's certificates
  */
+@Audited
 @Table(name = "ordr")
 @Entity
 public class Order {
@@ -38,7 +41,6 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
 
     @PrePersist

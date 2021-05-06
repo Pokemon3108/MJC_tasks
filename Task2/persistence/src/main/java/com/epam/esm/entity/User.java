@@ -10,11 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+
 /**
  * User entity
  */
 @Table(name = "usr")
 @Entity
+@Audited
 public class User {
 
     @Id
