@@ -1,71 +1,51 @@
 package com.epam.esm.impl;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 
 class GiftCertificateServiceImplTest {
 
-    GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
-    GiftCertificate certificate;
+    //GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
     GiftCertificateDto certificateDto;
-    @PersistenceContext
-    private EntityManager em;
-    @Mock
-    GiftCertificateDao certificateDao = new GiftCertificateDaoImpl(em, dtoConverter);
-    @Mock
-    TagDao tagDao = new TagDaoImpl(em);
-    @Mock
-    TagService tagService = new TagServiceImpl(tagDao);
-    GiftCertificateServiceImpl service = new GiftCertificateServiceImpl(certificateDao, tagDao, dtoConverter,
-            tagService);
+
+    GiftCertificateDao certificateDao;
+    TagService tagService;
+
+    GiftCertificateServiceImpl certificateService;
 
     @BeforeEach
     void init() {
 
-        MockitoAnnotations.openMocks(this);
+        certificateDao = mock(GiftCertificateDao.class);
+        tagService = mock(TagServiceImpl.class);
+        certificateService = new GiftCertificateServiceImpl(certificateDao, tagService);
 
         BigDecimal price = BigDecimal.ONE;
         int duration = 10;
         String description = "description";
         String name = "name";
-        Set<Tag> tags = new HashSet<>(Arrays.asList(new Tag("tag1", 1L), new Tag("tag2", 2L)));
-
-        certificate = new GiftCertificate();
-        certificate.setPrice(price);
-        certificate.setDuration(duration);
-        certificate.setDescription(description);
-        certificate.setName(name);
+        Set<TagDto> tags = new HashSet<>(Arrays.asList(new TagDto(1L, "tag1"), new TagDto(2L, "tag2")));
 
         certificateDto = new GiftCertificateDto();
         certificateDto.setName(name);
@@ -79,41 +59,38 @@ class GiftCertificateServiceImplTest {
     void addTest() {
 
         final long id = 9L;
-        Set<String> tagsNames = certificateDto.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+        certificateDto.setId(id);
+        Set<TagDto> tags = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
+        Set<TagDto> tagsWithIds = new HashSet<>(Arrays.asList(new TagDto(1L, "tag1"), new TagDto("tag2")));
 
+        Mockito.when(certificateDao.readCertificateByName(certificateDto.getName()))
+                .thenReturn(Optional.empty());
+        Mockito.when(tagService.bindTagsWithIds(tags)).thenReturn(tagsWithIds);
         Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
-        Mockito.when(tagDao.readTagsByNames(tagsNames)).thenReturn(certificateDto.getTags());
-        certificateDto.getTags().forEach(t -> Mockito.when(tagDao.insert(t)).thenReturn(t.getId()));
 
-        Long generatedId = service.add(certificateDto);
-        Mockito.verify(tagService, Mockito.times(1)).bindTagsWithIds(certificateDto.getTags());
-        Mockito.verify(tagDao, Mockito.times(1)).bindCertificateTags(Mockito.any(), eq(id));
+        Assertions.assertEquals(id, certificateService.add(certificateDto));
 
-        Assertions.assertEquals(id, generatedId);
+        Mockito.verify(certificateDao, times(1)).readCertificateByName(certificateDto.getName());
+        Mockito.verify(tagService, times(1)).bindTagsWithIds(tagsWithIds);
     }
+
 
     @Test
     void throwsDuplicateCertificateExceptionReadTest() {
 
-        final String name = certificate.getName();
-        Mockito.when(certificateDao.readCertificateByName(name)).thenReturn(Optional.of(certificate));
-        Assertions.assertThrows(DuplicateCertificateException.class, () -> service.add(certificateDto));
+        final String name = certificateDto.getName();
+        Mockito.when(certificateDao.readCertificateByName(name)).thenReturn(Optional.of(certificateDto));
+        Assertions.assertThrows(DuplicateCertificateException.class, () -> certificateService.add(certificateDto));
     }
 
     @Test
     void readTest() {
 
         final long id = 9L;
-        certificate.setId(id);
         certificateDto.setId(id);
-        Set<Long> tagsIds = certificateDto.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-        Set<Tag> tags = certificateDto.getTags();
+        Mockito.when(certificateDao.read(id)).thenReturn(Optional.of(certificateDto));
 
-        Mockito.when(certificateDao.read(id)).thenReturn(Optional.of(certificate));
-        Mockito.when(tagDao.readCertificateTagsIdsByCertificateId(certificate.getId())).thenReturn(tagsIds);
-        tags.forEach(t -> Mockito.when(tagDao.read(t.getId())).thenReturn(Optional.of(t)));
-
-        Assertions.assertEquals(certificateDto, service.read(id));
+        Assertions.assertEquals(certificateDto, certificateService.read(id));
     }
 
     @Test
@@ -121,14 +98,13 @@ class GiftCertificateServiceImplTest {
 
         final long id = 9L;
         Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoCertificateException.class, () -> service.read(id));
+        Assertions.assertThrows(NoCertificateException.class, () -> certificateService.read(id));
     }
 
     @Test
     void throwsNoIdExceptionUpdateTest() {
 
-        Assertions.assertThrows(NoIdException.class, () -> service.update(certificateDto));
-
+        Assertions.assertThrows(NoIdException.class, () -> certificateService.update(certificateDto));
     }
 
     @Test
@@ -137,7 +113,7 @@ class GiftCertificateServiceImplTest {
         final long id = 9L;
         certificateDto.setId(id);
         Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoCertificateException.class, () -> service.update(certificateDto));
+        Assertions.assertThrows(NoCertificateException.class, () -> certificateService.update(certificateDto));
     }
 
     @Test
@@ -145,53 +121,53 @@ class GiftCertificateServiceImplTest {
 
         final long id = 9L;
         Mockito.when(certificateDao.read(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoCertificateException.class, () -> service.delete(id));
+        Assertions.assertThrows(NoCertificateException.class, () -> certificateService.delete(id));
     }
 
     @Test
     void findByParamsTest() {
 
-        String certificateNameToFind = "certificate1";
-        String descriptionToFind = "description2";
-        Tag tag = new Tag("nature");
-        Set<Long> certificateTagsIds = new HashSet<>(Arrays.asList(1L, 2L));
-        Set<Tag> certificateTags = new HashSet<>(Arrays.asList(new Tag("nature", 1L), new Tag("new", 2L)));
-        long certificateId = 1L;
+        final int page = 3;
+        final int size = 5;
 
-        GiftCertificate certificate1 = new GiftCertificate();
-        certificate1.setName(certificateNameToFind);
-        certificate1.setDescription("description1");
+        GiftCertificateDto dtoForSearch = new GiftCertificateDto();
+        dtoForSearch.setName("certificate");
 
-        GiftCertificate certificate2 = new GiftCertificate();
-        certificate2.setName("certificate2");
-        certificate2.setDescription(descriptionToFind);
+        GiftCertificateDto dto1 = new GiftCertificateDto();
+        dto1.setName("certificate1");
+        GiftCertificateDto dto2 = new GiftCertificateDto();
+        dto1.setName("certificate2");
+        GiftCertificateDto dto3 = new GiftCertificateDto();
+        dto1.setName("certificate3");
+        List<GiftCertificateDto> certificateDtos = Arrays.asList(dto1, dto2, dto3);
 
-        GiftCertificate certificate12 = new GiftCertificate();
-        certificate12.setName(certificateNameToFind);
-        certificate12.setDescription(descriptionToFind);
-        certificate12.setId(certificateId);
+        Mockito.when(certificateDao.getAllCount()).thenReturn(100L);
+        Mockito.when(certificateDao.findCertificateByParams(page, size, dtoForSearch)).thenReturn(certificateDtos);
 
-        certificateDto.setName(certificateNameToFind);
-        certificateDto.setDescription(descriptionToFind);
-        certificateDto.setTags(new HashSet<>(Collections.singletonList(tag)));
+        Assertions.assertArrayEquals(certificateDtos.toArray(),
+                certificateService.findByParams(page, size, dtoForSearch).toArray());
+    }
 
-        List<GiftCertificate> certificatesWithNameAndDescription = Collections.singletonList(certificate12);
-        Mockito.when(certificateDao.findCertificateByParams(certificateDto))
-                .thenReturn(certificatesWithNameAndDescription);
-        List<GiftCertificate> certificatesWithTags = Arrays.asList(certificate1, certificate2, certificate12);
-        Mockito.when(certificateDao.findCertificateByTagName(certificateDto.getTag(0).getName()))
-                .thenReturn(certificatesWithTags);
-        Mockito.when(tagDao.readCertificateTagsIdsByCertificateId(Mockito.anyLong())).thenReturn(certificateTagsIds);
-        Mockito.when(tagDao.readTagsByIds(certificateTagsIds)).thenReturn(certificateTags);
+    @Test
+    void throwsNoPageExceptionFindByParamsTest() {
 
-        GiftCertificateDto dto12 = new GiftCertificateDto();
-        dto12.setTags(certificateTags);
-        dto12.setName(certificate12.getName());
-        dto12.setDescription(certificate12.getDescription());
-        dto12.setId(certificateId);
-        List<GiftCertificateDto> dtos = Collections.singletonList(dto12);
+        final int page = 3;
+        final int size = 5;
 
-        Assertions.assertArrayEquals(dtos.toArray(), service.findByParams(certificateDto).toArray());
+        GiftCertificateDto dtoForSearch = new GiftCertificateDto();
+        dtoForSearch.setName("certificate");
+
+        Mockito.when(certificateDao.getAllCount()).thenReturn(6L);
+        Assertions.assertThrows(NoPageException.class, () -> certificateService.findByParams(page, size, dtoForSearch));
+    }
+
+    @Test
+    void countFoundByParamsCertificatesTest() {
+
+        final long amount = 200;
+        Mockito.when(certificateDao.countFoundCertificates(certificateDto)).thenReturn(amount);
+        certificateService.countFoundByParamsCertificates(certificateDto);
+        Assertions.assertEquals(amount, certificateService.countFoundByParamsCertificates(certificateDto));
     }
 
 }

@@ -26,11 +26,10 @@ public class TagServiceImpl implements TagService {
     private TagDao tagDao;
 
     @Autowired
-    public TagServiceImpl(@Qualifier("tagDaoImpl") TagDao tagDao) {
+    public TagServiceImpl(TagDao tagDao) {
 
         this.tagDao = tagDao;
     }
-
 
     /**
      * {@inheritDoc}

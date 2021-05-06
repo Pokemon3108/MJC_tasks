@@ -1,5 +1,7 @@
 package com.epam.esm.impl;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,42 +9,35 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
-
+import com.epam.esm.exception.user.UsersOrderHasNoTags;
 
 class TagServiceImplTest {
 
-    @PersistenceContext
-    private EntityManager em;
-    @Mock
-    TagDao tagDao = new TagDaoImpl(em);
-    TagServiceImpl service = new TagServiceImpl(tagDao);
+    TagDao tagDao;
+    TagServiceImpl service;
 
     @BeforeEach
     void init() {
 
-        MockitoAnnotations.openMocks(this);
+        tagDao = mock(TagDaoImpl.class);
+        service = new TagServiceImpl(tagDao);
     }
 
     @Test
     void createTest() {
 
-        Tag tag = new Tag("nature");
+        TagDto tag = new TagDto("nature");
         final long id = 1L;
 
         Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.empty());
@@ -53,7 +48,7 @@ class TagServiceImplTest {
     @Test
     void throwsExceptionCreateTest() {
 
-        Tag tag = new Tag("nature");
+        TagDto tag = new TagDto("nature");
         Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.of(tag));
         Assertions.assertThrows(DuplicateTagException.class, () -> service.create(tag));
     }
@@ -62,7 +57,7 @@ class TagServiceImplTest {
     void readTagByIdTest() {
 
         final long id = 1L;
-        Tag tag = new Tag("nature", id);
+        TagDto tag = new TagDto(id, "nature");
         Mockito.when(tagDao.read(id)).thenReturn(Optional.of(tag));
         Assertions.assertEquals(tag, service.readTagById(id));
     }
@@ -87,30 +82,45 @@ class TagServiceImplTest {
     void deleteTest() {
 
         final long id = 1;
-        Mockito.when(tagDao.read(id)).thenReturn(Optional.of(new Tag()));
+        Mockito.when(tagDao.read(id)).thenReturn(Optional.of(new TagDto()));
 
         service.delete(id);
-        Mockito.verify(tagDao, Mockito.times(1)).deleteCertificateTagsByTagId(id);
         Mockito.verify(tagDao, Mockito.times(1)).delete(Mockito.any());
     }
 
 
     @Test
-    void bindTagsWithIds() {
+    void bindTagsWithIdsTest() {
 
         Set<TagDto> tagNames = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
-        Set<Tag> tagsWithId = new HashSet<>(Collections.singletonList(new Tag("tag1", 1L)));
-        Set<Tag> newTags = new HashSet<>(Collections.singletonList(new Tag("tag2", 2L)));
+        Set<TagDto> tagsWithId = new HashSet<>(Collections.singletonList(new TagDto(1L, "tag1")));
+        Set<TagDto> tagsToSave = new HashSet<>(Arrays.asList(new TagDto(1L, "tag1"), new TagDto("tag2")));
 
-        Mockito.when(tagDao.readTagsByNames(tagNames)).thenReturn(tagsWithId);
-        newTags.forEach(it -> Mockito.when(tagDao.insert(it)).thenReturn(it.getId()));
+        Mockito.when(tagDao.readTagsByNames(tagNames.stream().map(TagDto::getName).collect(Collectors.toSet())))
+                .thenReturn(tagsWithId);
 
-        tagsWithId.addAll(newTags);
         Assertions.assertArrayEquals(
-                service.bindTagsWithIds(tagNames.stream().map(Tag::new).collect(Collectors.toSet())).toArray(),
-                tagsWithId.toArray());
+                service.bindTagsWithIds(tagNames).toArray(), tagsToSave.toArray());
 
     }
+
+    @Test
+    void readMostPopularTagTest() {
+
+        UserDto user = new UserDto();
+        TagDto tagDto = new TagDto(1L, "name");
+        Mockito.when(tagDao.readTheMostPopularTag(user)).thenReturn(Optional.of(tagDto));
+        Assertions.assertEquals(tagDto, service.readMostPopularTag(user));
+    }
+
+    @Test
+    void throwsExceptionReadMostPopularTagTest() {
+
+        UserDto user = new UserDto(1L);
+        Mockito.when(tagDao.readTheMostPopularTag(user)).thenReturn(Optional.empty());
+        Assertions.assertThrows(UsersOrderHasNoTags.class, () -> service.readMostPopularTag(user));
+    }
+
 
 
 }
