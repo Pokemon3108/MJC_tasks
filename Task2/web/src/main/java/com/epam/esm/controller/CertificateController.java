@@ -30,7 +30,11 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.IdDto;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.model.GiftCertificateModel;
+import com.epam.esm.model.page.Page;
+import com.epam.esm.model.page.PagedCertificateDto;
+import com.epam.esm.model.page.PagedGiftCertificateModel;
 import com.epam.esm.model.assembler.GiftCertificateModelAssembler;
+import com.epam.esm.model.page.PagedGiftCertificateModelAssembler;
 
 
 /**
@@ -50,16 +54,20 @@ public class CertificateController {
 
     private GiftCertificateModelAssembler certificateModelAssembler;
 
+    private PagedGiftCertificateModelAssembler pagedAssembler;
+
     @Autowired
     public CertificateController(GiftCertificateService certificateService,
             Validator certificateValidator, GiftCertificateSortService sortService,
-            SearchParamsService searchParamsService, GiftCertificateModelAssembler assembler) {
+            SearchParamsService searchParamsService, GiftCertificateModelAssembler certificateModelAssembler,
+            PagedGiftCertificateModelAssembler pagedAssembler) {
 
         this.certificateService = certificateService;
         this.certificateValidator = certificateValidator;
         this.sortService = sortService;
         this.searchParamsService = searchParamsService;
-        this.certificateModelAssembler = assembler;
+        this.certificateModelAssembler = certificateModelAssembler;
+        this.pagedAssembler = pagedAssembler;
     }
 
     @InitBinder
@@ -140,7 +148,7 @@ public class CertificateController {
      * @return list of searchable certificates with hateoas links
      */
     @GetMapping
-    public List<GiftCertificateDto> getCertificates(
+    public PagedGiftCertificateModel getCertificates(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false) String name,
@@ -153,7 +161,11 @@ public class CertificateController {
 
         List<GiftCertificateDto> certificates = certificateService.findByParams(page, size, certificate);
         List<String> splitParams = Arrays.asList(sortParams.split(","));
-        return
-                sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
+        certificates = sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
+
+        PagedCertificateDto pagedCertificateDto = new PagedCertificateDto();
+        pagedCertificateDto.setCertificateDtos(certificates);
+        pagedCertificateDto.setPage(new Page(size, 1, 1, page));
+        return pagedAssembler.toModel(pagedCertificateDto);
     }
 }

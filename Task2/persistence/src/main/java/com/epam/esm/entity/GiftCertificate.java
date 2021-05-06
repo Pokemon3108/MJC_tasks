@@ -62,7 +62,7 @@ public class GiftCertificate {
     @AuditJoinTable
     private Set<Tag> tags;
 
-    @NotAudited
+    @AuditJoinTable
     @OneToMany
     @JoinColumn(name = "certificate_id")
     private Set<Order> orders;
