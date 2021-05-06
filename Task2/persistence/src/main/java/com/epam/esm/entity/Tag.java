@@ -11,11 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.envers.Audited;
+
 
 /**
  * The type Tag is an entity of tag
  */
 @Entity
+@Audited
 public class Tag {
 
     @Id
@@ -25,7 +28,7 @@ public class Tag {
     @Column
     private String name;
 
-    @ManyToMany(mappedBy = "tags", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "tags")
     private Set<GiftCertificate> certificates;
 
     /**

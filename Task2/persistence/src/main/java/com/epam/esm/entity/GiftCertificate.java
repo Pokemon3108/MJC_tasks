@@ -18,12 +18,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import org.hibernate.envers.AuditJoinTable;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
  * The type Gift certificate is an entity of certificate
  */
+@Audited
 @Entity
 public class GiftCertificate {
 
@@ -54,11 +59,12 @@ public class GiftCertificate {
             name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    @AuditJoinTable
     private Set<Tag> tags;
 
+    @NotAudited
     @OneToMany
     @JoinColumn(name = "certificate_id")
-    @JsonIgnore
     private Set<Order> orders;
 
     @PrePersist
