@@ -41,6 +41,6 @@ public class PageServiceImpl implements PageService {
 
         long totalSize = orderService.countUserOrders(user);
         int totalPages = totalSize / size == 0 ? (int) totalSize / size : (int) totalSize / size + 1;
-        return new Page(size, totalSize, totalPages, pageNumber);
+        return new Page(orders.size(), totalSize, totalPages, pageNumber);
     }
 }

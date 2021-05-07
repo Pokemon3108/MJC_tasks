@@ -3,6 +3,7 @@ package com.epam.esm.entity;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class Tag {
     @Column
     private String name;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "tags")
     private Set<GiftCertificate> certificates;
 
     /**
