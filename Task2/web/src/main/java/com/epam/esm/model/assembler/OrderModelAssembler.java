@@ -17,7 +17,6 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
 
     private GiftCertificateModelAssembler certificateModelAssembler;
 
-
     @Autowired
     public OrderModelAssembler(GiftCertificateModelAssembler assembler) {
 

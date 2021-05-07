@@ -44,5 +44,11 @@ public interface OrderDao {
      */
     long countUserOrders(UserDto user);
 
+    /**
+     * Check if certificate has been already ordered
+     *
+     * @param certificateDto - the dto certificate to be looked for
+     * @return true if certificate has been ordered, else - false
+     */
     boolean anyOrderHasCertificate(GiftCertificateDto certificateDto);
 }

@@ -13,6 +13,8 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.exception.MaxSizeLimitException;
+import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.order.NoOrderException;
 
 /**
@@ -62,7 +64,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Set<OrderDto> readUserOrders(long userId, int page, int size) {
 
+        final int maxSize = 100;
+        if (size > maxSize || size < 0) {
+            throw new MaxSizeLimitException(maxSize);
+        }
+
         UserDto userDto = userService.read(userId);
+        if (page < 0 || countUserOrders(userDto) < (page - 1) * size) {
+            throw new NoPageException(page, size);
+        }
+
         return orderDao.readUserOrder(userDto, page, size);
     }
 
