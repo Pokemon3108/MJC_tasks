@@ -69,6 +69,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public void update(GiftCertificateDto certificateDto) {
 
         GiftCertificate certificateToBeUpdated = converter.convertToEntity(certificateDto);
+        GiftCertificate certificateFromDb=em.find(GiftCertificate.class, certificateDto.getId());
+        certificateToBeUpdated.setOrders(certificateFromDb.getOrders());
         em.merge(certificateToBeUpdated);
     }
 

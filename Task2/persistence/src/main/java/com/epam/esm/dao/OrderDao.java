@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import java.util.Optional;
 import java.util.Set;
 
+import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 
@@ -42,4 +43,6 @@ public interface OrderDao {
      * @return total amount of user's orders
      */
     long countUserOrders(UserDto user);
+
+    boolean anyOrderHasCertificate(GiftCertificateDto certificateDto);
 }

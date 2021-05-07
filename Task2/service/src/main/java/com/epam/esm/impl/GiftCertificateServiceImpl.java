@@ -12,10 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 
@@ -29,11 +32,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private TagService tagService;
 
+    private OrderDao orderDao;
+
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagService tagService) {
+    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagService tagService, OrderDao orderDao) {
 
         this.certificateDao = certificateDao;
         this.tagService = tagService;
+        this.orderDao=orderDao;
     }
 
 
@@ -110,6 +116,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (src.getPrice() != null) {
             target.setPrice(src.getPrice());
         }
+        target.setId(src.getId());
     }
 
     /**
@@ -120,6 +127,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public void delete(long id) {
 
         GiftCertificateDto certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
+        if (orderDao.anyOrderHasCertificate(certificate)) {
+            throw new CertificateIsOrderedException(certificate.getId());
+        }
         certificateDao.delete(certificate);
     }
 

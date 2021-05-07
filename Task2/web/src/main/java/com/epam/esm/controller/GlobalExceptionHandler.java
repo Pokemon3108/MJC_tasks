@@ -17,6 +17,7 @@ import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
@@ -132,6 +133,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.NO_ORDER.getCode(),
                 localeService.getLocaleMessage("no_order", ex.getOrderId()));
+    }
+
+    @ExceptionHandler(CertificateIsOrderedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDeleteCertificate(CertificateIsOrderedException ex) {
+
+        return new Error(ErrorCode.NO_ORDER.getCode(),
+                localeService.getLocaleMessage("is_ordered_certificate", ex.getId()));
     }
 
     @Override

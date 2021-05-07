@@ -1,11 +1,13 @@
 package com.epam.esm.impl;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,23 +67,7 @@ public class TagServiceImpl implements TagService {
         if (!tag.isPresent()) {
             throw new NoTagException(id);
         }
-        //  tagDao.deleteCertificateTagsByTagId(id);
         tagDao.delete(tag.get());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<TagDto> bindTagsWithIds(Set<TagDto> tags) {
-
-        Set<TagDto> tagsWithId = tagDao
-                .readTagsByNames(
-                        tags.stream()
-                                .map(TagDto::getName)
-                                .collect(Collectors.toSet()));
-        tagsWithId.addAll(tags);
-        return tagsWithId;
     }
 
     /**
@@ -91,5 +77,32 @@ public class TagServiceImpl implements TagService {
     public TagDto readMostPopularTag(UserDto user) {
 
         return tagDao.readTheMostPopularTag(user).orElseThrow(() -> new UsersOrderHasNoTags(user.getId()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<TagDto> bindTagsWithIds(Set<TagDto> tags) {
+
+        Set<TagDto> tagsWithId = tagDao
+                .readTagsByNames(tags.stream().map(TagDto::getName).collect(Collectors.toSet()));
+        Map<Boolean, List<TagDto>> tagMap = tags.stream()
+                .collect(Collectors.partitioningBy(tagsWithId::contains));
+        Set<TagDto> newTags = new HashSet<>(tagMap.get(false));
+        insertTagsIfNotExist(newTags);
+        tagsWithId.addAll(newTags);
+        return tagsWithId;
+    }
+
+    /**
+     * Insert tags to storage if they not already exists
+     *
+     * @param tags with names, id from which will be set
+     */
+    private void insertTagsIfNotExist(Set<TagDto> tags) {
+
+        tags.stream().filter(tag -> tag.getId() == null)
+                .forEach(tag -> tag.setId(tagDao.insert(tag)));
     }
 }
