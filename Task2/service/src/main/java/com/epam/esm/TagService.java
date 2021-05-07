@@ -17,9 +17,9 @@ public interface TagService {
      * Insert tag into storage
      *
      * @param tag that will be saved
-     * @return the tag's id
+     * @return created tag
      */
-    Long create(TagDto tag);
+    TagDto create(TagDto tag);
 
     /**
      * Find tag in storage by id
@@ -39,8 +39,8 @@ public interface TagService {
     /**
      * Set id for named tags
      *
-     * @param tags
-     * @return
+     * @param tags - tags with names
+     * @return filled tags
      */
     Set<TagDto> bindTagsWithIds(Set<TagDto> tags);
 

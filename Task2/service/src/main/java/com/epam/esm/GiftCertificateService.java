@@ -15,7 +15,7 @@ public interface GiftCertificateService {
      * @param certificate that will be saved in storage
      * @return the id of certificate
      */
-    Long add(GiftCertificateDto certificate);
+    GiftCertificateDto add(GiftCertificateDto certificate);
 
     /**
      * Read gift certificate from storage by id

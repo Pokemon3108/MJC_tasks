@@ -47,7 +47,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * {@inheritDoc}
      */
     @Transactional
-    public Long add(GiftCertificateDto certificateDto) {
+    public GiftCertificateDto add(GiftCertificateDto certificateDto) {
 
         if (certificateDao.readCertificateByName(certificateDto.getName()).isPresent()) {
             throw new DuplicateCertificateException(certificateDto.getName());
@@ -55,7 +55,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
         certificateDto.setTags(tags);
-        return certificateDao.insert(certificateDto);
+        return read(certificateDao.insert(certificateDto));
     }
 
     /**

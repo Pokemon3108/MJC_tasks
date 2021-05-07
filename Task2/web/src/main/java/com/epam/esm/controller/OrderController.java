@@ -10,14 +10,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.OrderService;
-import com.epam.esm.dto.IdDto;
 import com.epam.esm.model.OrderModel;
 import com.epam.esm.model.assembler.OrderModelAssembler;
 
 /**
  * OrderController - REST controller for operations with orders
  */
-
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -41,9 +39,9 @@ public class OrderController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public IdDto create(@RequestParam Long userId, @RequestParam Long certificateId) {
+    public OrderModel create(@RequestParam Long userId, @RequestParam Long certificateId) {
 
-        return new IdDto(orderService.makeOrder(userId, certificateId));
+        return orderModelAssembler.toModel(orderService.makeOrder(userId, certificateId));
     }
 
     /**

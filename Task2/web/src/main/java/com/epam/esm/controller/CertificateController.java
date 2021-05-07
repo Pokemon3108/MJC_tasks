@@ -83,14 +83,14 @@ public class CertificateController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public IdDto create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
+    public GiftCertificateModel create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
 
         certificateValidator.validate(certificate, bindingResult);
         if (bindingResult.hasErrors()) {
             ObjectError error = bindingResult.getAllErrors().get(0);
             throw new NotFullCertificateException(error.getCode());
         }
-        return new IdDto(certificateService.add(certificate));
+        return certificateModelAssembler.toModel(certificateService.add(certificate));
     }
 
     /**

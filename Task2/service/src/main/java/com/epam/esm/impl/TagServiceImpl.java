@@ -38,12 +38,12 @@ public class TagServiceImpl implements TagService {
      */
     @Transactional
     @Override
-    public Long create(TagDto tag) {
+    public TagDto create(TagDto tag) {
 
         if (tagDao.readTagByName(tag.getName()).isPresent()) {
             throw new DuplicateTagException(tag.getName());
         }
-        return tagDao.insert(tag);
+        return readTagById(tagDao.insert(tag));
     }
 
     /**

@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional
     @Override
-    public Long makeOrder(Long userId, Long certificateId) {
+    public OrderDto makeOrder(Long userId, Long certificateId) {
 
         GiftCertificateDto certificateDto = certificateService.read(certificateId);
         UserDto user = userService.read(userId);
@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         order.setCost(certificateDto.getPrice());
         order.setUser(user);
 
-        return orderDao.create(order);
+        return read(orderDao.create(order));
     }
 
     @Override

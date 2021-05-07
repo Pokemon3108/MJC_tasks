@@ -53,14 +53,14 @@ public class TagController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public IdDto create(@RequestBody TagDto tag, BindingResult bindingResult) {
+    public TagModel create(@RequestBody TagDto tag, BindingResult bindingResult) {
 
         tagValidator.validate(tag, bindingResult);
         if (bindingResult.hasErrors()) {
             ObjectError error = bindingResult.getAllErrors().get(0);
             throw new NotFullCertificateException(error.getCode());
         }
-        return new IdDto(tagService.create(tag));
+        return tagModelAssembler.toModel(tagService.create(tag));
     }
 
     /**

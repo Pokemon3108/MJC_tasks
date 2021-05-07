@@ -17,7 +17,7 @@ public interface OrderService {
      * @param certificateId - the id of certificate
      * @return the id of created order
      */
-    Long makeOrder(Long userId, Long certificateId);
+    OrderDto makeOrder(Long userId, Long certificateId);
 
     /**
      * Read order by id
@@ -38,7 +38,6 @@ public interface OrderService {
     Set<OrderDto> readUserOrders(long userId, int page, int size);
 
     /**
-     *
      * @param user - the user, whose orders are counted
      * @return total amount of user's orders
      */
