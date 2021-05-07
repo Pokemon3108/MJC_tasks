@@ -27,6 +27,9 @@ public class User {
     @Column
     private String name;
 
+    @Column
+    private String password;
+
     @OneToMany(mappedBy = "user")
     private Set<Order> orders;
 
@@ -58,5 +61,15 @@ public class User {
     public void setOrders(Set<Order> orders) {
 
         this.orders = orders;
+    }
+
+    public String getPassword() {
+
+        return password;
+    }
+
+    public void setPassword(String password) {
+
+        this.password = password;
     }
 }

@@ -16,6 +16,8 @@ public class UserModel extends RepresentationModel<UserModel> {
 
     private String name;
 
+    private String password;
+
     public Long getId() {
 
         return id;
@@ -36,6 +38,16 @@ public class UserModel extends RepresentationModel<UserModel> {
         this.name = name;
     }
 
+    public String getPassword() {
+
+        return password;
+    }
+
+    public void setPassword(String password) {
+
+        this.password = password;
+    }
+
     @Override
     public boolean equals(Object o) {
 
@@ -50,12 +62,13 @@ public class UserModel extends RepresentationModel<UserModel> {
         }
         UserModel userModel = (UserModel) o;
         return Objects.equals(id, userModel.id) &&
-                Objects.equals(name, userModel.name);
+                Objects.equals(name, userModel.name) &&
+                Objects.equals(password, userModel.password);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), id, name);
+        return Objects.hash(super.hashCode(), id, name, password);
     }
 }
