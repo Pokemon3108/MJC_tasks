@@ -17,6 +17,9 @@ import org.mockito.Mockito;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.OrderDao;
+import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.NoIdException;
@@ -31,15 +34,17 @@ class GiftCertificateServiceImplTest {
 
     GiftCertificateDao certificateDao;
     TagService tagService;
+    OrderDao orderDao;
 
     GiftCertificateServiceImpl certificateService;
 
     @BeforeEach
     void init() {
 
-        certificateDao = mock(GiftCertificateDao.class);
+        certificateDao = mock(GiftCertificateDaoImpl.class);
         tagService = mock(TagServiceImpl.class);
-        certificateService = new GiftCertificateServiceImpl(certificateDao, tagService);
+        orderDao = mock(OrderDaoImpl.class);
+        certificateService = new GiftCertificateServiceImpl(certificateDao, tagService, orderDao);
 
         BigDecimal price = BigDecimal.ONE;
         int duration = 10;

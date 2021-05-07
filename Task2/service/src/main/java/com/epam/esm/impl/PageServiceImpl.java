@@ -32,8 +32,8 @@ public class PageServiceImpl implements PageService {
             GiftCertificateDto giftCertificateDto, List<GiftCertificateDto> certificates) {
 
         long totalSize = certificateService.countFoundByParamsCertificates(giftCertificateDto);
-        int totalPages = totalSize / size == 0 ? (int) totalSize / size : (int) totalSize / size + 1;
-        return new Page(size, totalSize, totalPages, pageNumber);
+        int totalPages = totalSize % size == 0 ? (int) totalSize / size : (int) totalSize / size + 1;
+        return new Page(certificates.size(), totalSize, totalPages, pageNumber);
     }
 
     @Override
