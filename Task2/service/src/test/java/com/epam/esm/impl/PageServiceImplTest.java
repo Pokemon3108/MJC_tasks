@@ -20,9 +20,9 @@ import com.epam.esm.model.Page;
 
 public class PageServiceImplTest {
 
-    GiftCertificateService certificateService;
+    GiftCertificateServiceImpl certificateService;
 
-    OrderService orderService;
+    OrderServiceImpl orderService;
 
     PageServiceImpl pageService;
 

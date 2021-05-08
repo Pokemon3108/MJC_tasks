@@ -64,7 +64,9 @@ class GiftCertificateServiceImplTest {
     void addTest() {
 
         final long id = 9L;
+        final String certificateName="cert";
         certificateDto.setId(id);
+        certificateDto.setName(certificateName);
         Set<TagDto> tags = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
         Set<TagDto> tagsWithIds = new HashSet<>(Arrays.asList(new TagDto(1L, "tag1"), new TagDto("tag2")));
 
@@ -72,8 +74,9 @@ class GiftCertificateServiceImplTest {
                 .thenReturn(Optional.empty());
         Mockito.when(tagService.bindTagsWithIds(tags)).thenReturn(tagsWithIds);
         Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
+        Mockito.when(certificateDao.read(id)).thenReturn(Optional.ofNullable(certificateDto));
 
-        Assertions.assertEquals(id, certificateService.add(certificateDto));
+        Assertions.assertEquals(certificateDto, certificateService.add(certificateDto));
 
         Mockito.verify(certificateDao, times(1)).readCertificateByName(certificateDto.getName());
         Mockito.verify(tagService, times(1)).bindTagsWithIds(tagsWithIds);
