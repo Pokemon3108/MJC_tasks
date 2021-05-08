@@ -37,12 +37,13 @@ class TagServiceImplTest {
     @Test
     void createTest() {
 
-        TagDto tag = new TagDto("nature");
         final long id = 1L;
+        TagDto tag = new TagDto(id, "nature");
 
         Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.empty());
         Mockito.when(tagDao.insert(tag)).thenReturn(id);
-        Assertions.assertEquals(id, service.create(tag));
+        Mockito.when(tagDao.read(id)).thenReturn(Optional.of(tag));
+        Assertions.assertEquals(tag, service.create(tag));
     }
 
     @Test
@@ -120,7 +121,6 @@ class TagServiceImplTest {
         Mockito.when(tagDao.readTheMostPopularTag(user)).thenReturn(Optional.empty());
         Assertions.assertThrows(UsersOrderHasNoTags.class, () -> service.readMostPopularTag(user));
     }
-
 
 
 }

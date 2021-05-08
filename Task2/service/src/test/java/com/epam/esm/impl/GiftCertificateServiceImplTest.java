@@ -13,6 +13,8 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 
 import com.epam.esm.TagService;
@@ -22,6 +24,7 @@ import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.exception.MaxSizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
@@ -29,7 +32,6 @@ import com.epam.esm.exception.certificate.NoCertificateException;
 
 class GiftCertificateServiceImplTest {
 
-    //GiftCertificateDtoConverter dtoConverter = new GiftCertificateDtoConverter();
     GiftCertificateDto certificateDto;
 
     GiftCertificateDao certificateDao;
@@ -64,7 +66,7 @@ class GiftCertificateServiceImplTest {
     void addTest() {
 
         final long id = 9L;
-        final String certificateName="cert";
+        final String certificateName = "cert";
         certificateDto.setId(id);
         certificateDto.setName(certificateName);
         Set<TagDto> tags = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
@@ -81,7 +83,6 @@ class GiftCertificateServiceImplTest {
         Mockito.verify(certificateDao, times(1)).readCertificateByName(certificateDto.getName());
         Mockito.verify(tagService, times(1)).bindTagsWithIds(tagsWithIds);
     }
-
 
     @Test
     void throwsDuplicateCertificateExceptionReadTest() {
@@ -125,6 +126,21 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
+    void deleteTest() {
+
+        final long id = 9L;
+        certificateDto.setId(id);
+        final boolean orderHasCertificate = false;
+
+        Mockito.when(certificateDao.read(id)).thenReturn(Optional.of(certificateDto));
+        Mockito.when(orderDao.anyOrderHasCertificate(certificateDto)).thenReturn(orderHasCertificate);
+
+        certificateService.delete(id);
+
+        Mockito.verify(certificateDao, times(1)).delete(certificateDto);
+    }
+
+    @Test
     void throwsNoCertificateExceptionDeleteTest() {
 
         final long id = 9L;
@@ -156,17 +172,35 @@ class GiftCertificateServiceImplTest {
                 certificateService.findByParams(page, size, dtoForSearch).toArray());
     }
 
-    @Test
-    void throwsNoPageExceptionFindByParamsTest() {
+    static Object[][] findByParamsTestData() {
 
-        final int page = 3;
-        final int size = 5;
+        final int validPage = 7;
+        final int validSize = 20;
 
-        GiftCertificateDto dtoForSearch = new GiftCertificateDto();
-        dtoForSearch.setName("certificate");
+        final int negativeSize = -10;
+        final int bigSize = 1000;
+        final int negativePage = -17;
 
-        Mockito.when(certificateDao.getAllCount()).thenReturn(6L);
-        Assertions.assertThrows(NoPageException.class, () -> certificateService.findByParams(page, size, dtoForSearch));
+        final Class<? extends Exception> maxSizeLimitException = MaxSizeLimitException.class;
+        final Class<? extends Exception> noPageException = NoPageException.class;
+
+        return new Object[][]{
+                {validPage, negativeSize, maxSizeLimitException},
+                {validPage, bigSize, maxSizeLimitException},
+                {validPage, validSize, noPageException},
+                {negativePage, validSize, noPageException},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("findByParamsTestData")
+    void findByParamsThrowsExceptionsTest(final int page, final int size,
+            final Class<? extends Exception> exceptionClass) {
+
+        final long certificatesAmount = 110;
+        Mockito.when(certificateDao.getAllCount()).thenReturn(certificatesAmount);
+        Assertions.assertThrows(exceptionClass,
+                () -> certificateService.findByParams(page, size, new GiftCertificateDto()));
     }
 
     @Test

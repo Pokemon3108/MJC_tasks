@@ -90,19 +90,7 @@ public class TagServiceImpl implements TagService {
         Map<Boolean, List<TagDto>> tagMap = tags.stream()
                 .collect(Collectors.partitioningBy(tagsWithId::contains));
         Set<TagDto> newTags = new HashSet<>(tagMap.get(false));
-        insertTagsIfNotExist(newTags);
         tagsWithId.addAll(newTags);
         return tagsWithId;
-    }
-
-    /**
-     * Insert tags to storage if they not already exists
-     *
-     * @param tags with names, id from which will be set
-     */
-    private void insertTagsIfNotExist(Set<TagDto> tags) {
-
-        tags.stream().filter(tag -> tag.getId() == null)
-                .forEach(tag -> tag.setId(tagDao.insert(tag)));
     }
 }

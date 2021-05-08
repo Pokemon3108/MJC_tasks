@@ -19,7 +19,7 @@ public class OrderDtoConverter extends Converter<Order, OrderDto> {
 
     @Autowired
     public OrderDtoConverter(GiftCertificateDtoConverter certificateDtoConverter,
-            @Lazy UserDtoConverter userDtoConverter) {
+             UserDtoConverter userDtoConverter) {
 
         this.certificateDtoConverter = certificateDtoConverter;
         this.userDtoConverter = userDtoConverter;
@@ -36,6 +36,7 @@ public class OrderDtoConverter extends Converter<Order, OrderDto> {
         orderDto.setCost(order.getCost());
         orderDto.setCertificate(certificateDtoConverter.convertToDto(order.getCertificate()));
         orderDto.setUser(userDtoConverter.convertToDto(order.getUser()));
+        orderDto.setPurchaseDate(order.getPurchaseDate());
         return orderDto;
     }
 
@@ -50,6 +51,7 @@ public class OrderDtoConverter extends Converter<Order, OrderDto> {
         order.setCost(dto.getCost());
         order.setCertificate(certificateDtoConverter.convertToEntity(dto.getCertificate()));
         order.setUser(userDtoConverter.convertToEntity(dto.getUser()));
+        order.setPurchaseDate(dto.getPurchaseDate());
         return order;
     }
 

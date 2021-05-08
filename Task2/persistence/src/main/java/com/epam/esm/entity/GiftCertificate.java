@@ -20,9 +20,6 @@ import javax.persistence.PreUpdate;
 
 import org.hibernate.envers.AuditJoinTable;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -54,7 +51,7 @@ public class GiftCertificate {
     @Column
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),

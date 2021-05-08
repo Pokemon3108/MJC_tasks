@@ -15,10 +15,10 @@ import com.epam.esm.PageService;
 import com.epam.esm.UserService;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.model.PageOrderModel;
 import com.epam.esm.model.UserModel;
 import com.epam.esm.model.assembler.OrderModelAssembler;
 import com.epam.esm.model.assembler.UserModelAssembler;
-import com.epam.esm.model.PageOrderModel;
 
 @RestController
 @RequestMapping("/users")
@@ -52,8 +52,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/orders")
-    public PageOrderModel getOrders(@PathVariable Long userId, @RequestParam Integer page,
-            @RequestParam Integer size) {
+    public PageOrderModel getOrders(@PathVariable Long userId,
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "5") Integer size) {
 
         UserDto userDto = userService.read(userId);
         Set<OrderDto> orders = orderService.readUserOrders(userId, page, size);

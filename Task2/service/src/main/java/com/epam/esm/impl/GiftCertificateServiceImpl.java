@@ -91,8 +91,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
 
         copyProperties(certificateDto, certificateWithId);
-        Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
-        certificateWithId.setTags(tags);
+        if (!certificateDto.getTags().isEmpty()) {
+            Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
+            certificateWithId.setTags(tags);
+        }
         certificateDao.update(certificateWithId);
     }
 
@@ -115,6 +117,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         if (src.getPrice() != null) {
             target.setPrice(src.getPrice());
+        }
+        if (!src.getTags().isEmpty()) {
+            target.setTags(src.getTags());
         }
         target.setId(src.getId());
     }

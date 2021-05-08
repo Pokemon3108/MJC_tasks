@@ -58,6 +58,16 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public Long insert(GiftCertificateDto certificateDto) {
 
         GiftCertificate certificate = converter.convertToEntity(certificateDto);
+
+        Set<Tag> tags=certificate.getTags().stream().map(t-> {
+            if (t.getId()!=null) {
+                return em.merge(t);
+            } else {
+                return t;
+            }
+        }).collect(Collectors.toSet());
+        certificate.setTags(tags);
+
         em.persist(certificate);
         return certificate.getId();
     }
