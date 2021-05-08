@@ -6,11 +6,10 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +19,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.TagDtoConverter;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
 
 /**
  * Jpa implementation for access to database for work with tags
@@ -113,19 +109,21 @@ public class TagDaoImpl implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TagDto> readTheMostPopularTag(UserDto user) {
+    public Optional<TagDto> readTheMostPopularTagOfRichestUser() {
 
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
-        Root<User> root = criteriaQuery.from(User.class);
+        Query query = em.createNativeQuery(
+                "SELECT tag.name, tag.id FROM tag JOIN gift_certificate_tag AS gct ON tag.id=gct.tag_id "
+                        + "JOIN gift_certificate AS gc ON gc.id=gct.certificate_id "
+                        + "JOIN ordr ON ordr.certificate_id=gc.id "
+                        + "JOIN usr ON usr.id=ordr.user_id WHERE usr.id = "
+                        + "(SELECT usr.id FROM usr join ordr on usr.id=ordr.user_id GROUP BY usr.id "
+                        + "ORDER BY SUM(cost) DESC FETCH FIRST 1 ROW ONLY) "
+                        + "GROUP BY tag.name, tag.id ORDER BY COUNT(tag.name) DESC FETCH FIRST 1 ROW ONLY"
+                ,
+                Tag.class);
 
-        Join<User, Order> orderJoin = root.join("orders", JoinType.LEFT);
-        Join<Order, GiftCertificate> certificateJoin = orderJoin.join("certificate", JoinType.LEFT);
-        Join<GiftCertificate, Tag> tagJoin = certificateJoin.join("tags", JoinType.LEFT);
+        Tag tag = (Tag) query.getSingleResult();
+        return Optional.ofNullable(tagDtoConverter.convertToDto(tag));
 
-        criteriaQuery.select(tagJoin).where(root.get("id").in(user.getId())).groupBy(tagJoin.get("id"))
-                .orderBy(criteriaBuilder.desc(criteriaBuilder.count(tagJoin)));
-        TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().findFirst().map(t -> tagDtoConverter.convertToDto(t));
     }
 }

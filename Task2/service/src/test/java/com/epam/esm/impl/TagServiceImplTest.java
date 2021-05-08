@@ -108,18 +108,17 @@ class TagServiceImplTest {
     @Test
     void readMostPopularTagTest() {
 
-        UserDto user = new UserDto();
         TagDto tagDto = new TagDto(1L, "name");
-        Mockito.when(tagDao.readTheMostPopularTag(user)).thenReturn(Optional.of(tagDto));
-        Assertions.assertEquals(tagDto, service.readMostPopularTag(user));
+        Mockito.when(tagDao.readTheMostPopularTagOfRichestUser()).thenReturn(Optional.of(tagDto));
+        Assertions.assertEquals(tagDto, service.readMostPopularTag());
     }
 
     @Test
     void throwsExceptionReadMostPopularTagTest() {
 
         UserDto user = new UserDto(1L);
-        Mockito.when(tagDao.readTheMostPopularTag(user)).thenReturn(Optional.empty());
-        Assertions.assertThrows(UsersOrderHasNoTags.class, () -> service.readMostPopularTag(user));
+        Mockito.when(tagDao.readTheMostPopularTagOfRichestUser()).thenReturn(Optional.empty());
+        Assertions.assertThrows(UsersOrderHasNoTags.class, () -> service.readMostPopularTag());
     }
 
 

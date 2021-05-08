@@ -45,11 +45,10 @@ public interface TagService {
     Set<TagDto> bindTagsWithIds(Set<TagDto> tags);
 
     /**
-     * Read most popular tag in user's order
+     * Read the most popular tag in orders of user, that made orders with the highest price
      *
-     * @param user - the user with order
-     * @return most popular tag
+     * @return the most popular tag
      */
-    TagDto readMostPopularTag(UserDto user);
+    TagDto readMostPopularTag();
 
 }

@@ -13,8 +13,6 @@ import com.epam.esm.dto.UserDto;
 
 class AdminServiceImplTest {
 
-    UserServiceImpl userService;
-
     TagServiceImpl tagService;
 
     AdminServiceImpl adminService;
@@ -22,29 +20,22 @@ class AdminServiceImplTest {
     @BeforeEach
     void init() {
 
-        userService = mock(UserServiceImpl.class);
         tagService = mock(TagServiceImpl.class);
-        adminService = new AdminServiceImpl(userService, tagService);
+        adminService = new AdminServiceImpl(tagService);
     }
 
     @Test
     void getMostPopularTagOfRichestUserTest() {
 
-        final long userId = 5;
-        UserDto userDto = new UserDto();
-        userDto.setId(userId);
-
         final long tagId = 900;
         final String tagName = "aquapark";
         TagDto tagDto = new TagDto(tagId, tagName);
 
-        Mockito.when(userService.readRichest()).thenReturn(userDto);
-        Mockito.when(tagService.readMostPopularTag(userDto)).thenReturn(tagDto);
+        Mockito.when(tagService.readMostPopularTag()).thenReturn(tagDto);
 
         Assertions.assertEquals(tagDto, adminService.getMostPopularTagOfRichestUser());
 
-        Mockito.verify(userService, times(1)).readRichest();
-        Mockito.verify(tagService, times(1)).readMostPopularTag(userDto);
+        Mockito.verify(tagService, times(1)).readMostPopularTag();
     }
 
 

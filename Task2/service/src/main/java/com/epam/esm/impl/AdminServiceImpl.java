@@ -15,21 +15,17 @@ import com.epam.esm.dto.UserDto;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    private UserService userService;
-
     private TagService tagService;
 
     @Autowired
-    public AdminServiceImpl(UserService userService, TagService tagService) {
+    public AdminServiceImpl(TagService tagService) {
 
-        this.userService = userService;
         this.tagService = tagService;
     }
 
     @Override
     public TagDto getMostPopularTagOfRichestUser() {
 
-        UserDto user = userService.readRichest();
-        return tagService.readMostPopularTag(user);
+        return tagService.readMostPopularTag();
     }
 }

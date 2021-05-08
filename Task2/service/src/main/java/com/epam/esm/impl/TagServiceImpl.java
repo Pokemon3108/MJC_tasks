@@ -74,9 +74,9 @@ public class TagServiceImpl implements TagService {
      * {@inheritDoc}
      */
     @Override
-    public TagDto readMostPopularTag(UserDto user) {
+    public TagDto readMostPopularTag() {
 
-        return tagDao.readTheMostPopularTag(user).orElseThrow(() -> new UsersOrderHasNoTags(user.getId()));
+        return tagDao.readTheMostPopularTagOfRichestUser().orElseThrow(UsersOrderHasNoTags::new);
     }
 
     /**

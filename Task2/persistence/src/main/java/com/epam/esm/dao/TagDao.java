@@ -53,10 +53,9 @@ public interface TagDao {
     Set<TagDto> readTagsByNames(Set<String> tagNames);
 
     /**
-     * Read the most popular tag in user's order
+     * Read the most popular tag in orders of user, that made orders with the highest price
      *
-     * @param user - the user with order
      * @return tag from storage, or {@code Optional.empty()} if it is not found
      */
-    Optional<TagDto> readTheMostPopularTag(UserDto user);
+    Optional<TagDto> readTheMostPopularTagOfRichestUser();
 }
