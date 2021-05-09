@@ -26,10 +26,10 @@ CREATE TABLE usr
 (
     id   SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
-    password VARCHAR(20)
+    password VARCHAR(40)
 );
 
-CREATE TABLE order
+CREATE TABLE ordr
 (
     id             SERIAL PRIMARY KEY,
     user_id        BIGINT    NOT NULL REFERENCES usr (id),

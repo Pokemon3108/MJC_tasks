@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 
 class AdminServiceImplTest {
 
@@ -37,6 +36,4 @@ class AdminServiceImplTest {
 
         Mockito.verify(tagService, times(1)).readMostPopularTag();
     }
-
-
 }
