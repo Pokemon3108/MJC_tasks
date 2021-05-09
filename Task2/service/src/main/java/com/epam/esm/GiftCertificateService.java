@@ -3,6 +3,7 @@ package com.epam.esm;
 import java.util.List;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SortParamsDto;
 
 /**
  * The interface for gift certificate CRUD operations
@@ -40,15 +41,15 @@ public interface GiftCertificateService {
     void delete(long id);
 
     /**
-     * Search certificates by params
-     *
+     * @param page        - the page number
+     * @param size        - maximum size of result list
      * @param certificate with params for search
-     * @return list of found certificates
+     * @param sortParams  the sorting params
+     * @return list of found and sorted certificates
      */
-    List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificate);
+    List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificate, SortParamsDto sortParams);
 
     /**
-     *
      * @param dto - the DTO object with search params
      * @return amount of found certificates
      */

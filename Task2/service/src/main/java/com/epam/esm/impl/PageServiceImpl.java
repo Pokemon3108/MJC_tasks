@@ -24,7 +24,7 @@ public class PageServiceImpl implements PageService {
     public PageServiceImpl(GiftCertificateService certificateService, OrderService orderService) {
 
         this.certificateService = certificateService;
-        this.orderService=orderService;
+        this.orderService = orderService;
     }
 
     @Override

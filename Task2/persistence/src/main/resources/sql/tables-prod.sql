@@ -24,8 +24,8 @@ CREATE TABLE gift_certificate_tag
 
 CREATE TABLE usr
 (
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE,
+    id       SERIAL PRIMARY KEY,
+    name     VARCHAR(255) UNIQUE,
     password VARCHAR(40)
 );
 

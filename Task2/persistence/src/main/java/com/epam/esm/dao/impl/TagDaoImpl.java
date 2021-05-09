@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.TagDtoConverter;
 import com.epam.esm.entity.Tag;
 

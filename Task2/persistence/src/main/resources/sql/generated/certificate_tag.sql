@@ -1331,6 +1331,7 @@ INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (550,148);
 INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (551,180);
 INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (552,409);
 INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (553,50);
+INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (553,793);
 INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (554,734);
 INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (554,340);
 INSERT INTO gift_certificate_tag(certificate_id,tag_id) VALUES (554,780);

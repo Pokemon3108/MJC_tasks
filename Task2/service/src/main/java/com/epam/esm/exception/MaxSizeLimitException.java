@@ -6,7 +6,7 @@ public class MaxSizeLimitException extends RuntimeException {
 
     public MaxSizeLimitException(int maxSize) {
 
-        this.maxSize=maxSize;
+        this.maxSize = maxSize;
     }
 
     public MaxSizeLimitException() {

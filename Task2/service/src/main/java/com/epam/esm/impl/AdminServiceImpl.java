@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.epam.esm.AdminService;
 import com.epam.esm.TagService;
-import com.epam.esm.UserService;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 
 /**
  * Implementation of admin service

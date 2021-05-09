@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 
 
 /**

@@ -14,6 +14,7 @@ import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.MaxSizeLimitException;
 import com.epam.esm.exception.NoIdException;
@@ -142,7 +143,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * {@inheritDoc}
      */
     @Override
-    public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto) {
+    public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto,
+            SortParamsDto sortParams) {
 
         final int maxSize = 100;
         if (size > maxSize || size < 0) {
@@ -152,7 +154,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new NoPageException(page, size);
         }
         List<GiftCertificateDto> certificatesWithParams = certificateDao
-                .findCertificateByParams(page, size, certificateDto);
+                .findCertificateByParams(page, size, certificateDto, sortParams);
         return new ArrayList<>(certificatesWithParams);
     }
 

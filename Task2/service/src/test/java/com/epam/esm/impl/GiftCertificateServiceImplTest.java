@@ -40,6 +40,26 @@ class GiftCertificateServiceImplTest {
 
     GiftCertificateServiceImpl certificateService;
 
+    static Object[][] findByParamsTestData() {
+
+        final int validPage = 7;
+        final int validSize = 20;
+
+        final int negativeSize = -10;
+        final int bigSize = 1000;
+        final int negativePage = -17;
+
+        final Class<? extends Exception> maxSizeLimitException = MaxSizeLimitException.class;
+        final Class<? extends Exception> noPageException = NoPageException.class;
+
+        return new Object[][]{
+                {validPage, negativeSize, maxSizeLimitException},
+                {validPage, bigSize, maxSizeLimitException},
+                {validPage, validSize, noPageException},
+                {negativePage, validSize, noPageException},
+        };
+    }
+
     @BeforeEach
     void init() {
 
@@ -170,26 +190,6 @@ class GiftCertificateServiceImplTest {
 
         Assertions.assertArrayEquals(certificateDtos.toArray(),
                 certificateService.findByParams(page, size, dtoForSearch).toArray());
-    }
-
-    static Object[][] findByParamsTestData() {
-
-        final int validPage = 7;
-        final int validSize = 20;
-
-        final int negativeSize = -10;
-        final int bigSize = 1000;
-        final int negativePage = -17;
-
-        final Class<? extends Exception> maxSizeLimitException = MaxSizeLimitException.class;
-        final Class<? extends Exception> noPageException = NoPageException.class;
-
-        return new Object[][]{
-                {validPage, negativeSize, maxSizeLimitException},
-                {validPage, bigSize, maxSizeLimitException},
-                {validPage, validSize, noPageException},
-                {negativePage, validSize, noPageException},
-        };
     }
 
     @ParameterizedTest

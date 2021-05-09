@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SortParamsDto;
 
 
 /**
@@ -49,7 +50,8 @@ public interface GiftCertificateDao {
      * @param certificateDto with filled params, for which the search will be performed
      * @return list of found certificates
      */
-    List<GiftCertificateDto> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto);
+    List<GiftCertificateDto> findCertificateByParams(int page, int size, GiftCertificateDto certificateDto,
+            SortParamsDto sortParamsDto);
 
     /**
      * @return amount of certificates in storage

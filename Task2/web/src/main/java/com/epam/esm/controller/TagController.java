@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.TagService;
-import com.epam.esm.dto.IdDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.model.TagModel;

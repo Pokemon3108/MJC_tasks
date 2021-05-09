@@ -1,19 +1,22 @@
 package com.epam.esm;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.epam.esm.dto.Direction;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.dto.TagDto;
 
 /**
- * Service for build search params of entities
+ * Service for build dto objects
  */
 @Service
-public class SearchParamsService {
+public class DtoBuilderService {
 
     public GiftCertificateDto buildCertificateDto(String name, String description, String tagNames) {
 
@@ -29,6 +32,13 @@ public class SearchParamsService {
     private Set<TagDto> parseTagNames(String[] tagNames) {
 
         return Arrays.stream(tagNames).map(TagDto::new).collect(Collectors.toSet());
+    }
+
+    public SortParamsDto buildSortParams(String params, String direction) {
+
+        List<String> splitParams = Arrays.asList(params.split(","));
+        Direction dir = Direction.valueOf(direction.toUpperCase());
+        return new SortParamsDto(splitParams, dir);
     }
 
 }

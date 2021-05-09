@@ -1,5 +1,7 @@
 package com.epam.esm.dto.converter;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,11 +75,16 @@ public class GiftCertificateDtoConverter {
 
     public Set<GiftCertificateDto> convertToDtos(Set<GiftCertificate> orderSet) {
 
-        return orderSet.stream().map(this::convertToDto).collect(Collectors.toSet());
+        List<GiftCertificateDto> s = orderSet.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return new LinkedHashSet<>(s);
     }
 
     public Set<GiftCertificate> convertToEntities(Set<GiftCertificateDto> orderSet) {
 
-        return orderSet.stream().map(this::convertToEntity).collect(Collectors.toSet());
+        return orderSet.stream()
+                .map(this::convertToEntity)
+                .collect(Collectors.toSet());
     }
 }

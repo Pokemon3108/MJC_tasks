@@ -5,7 +5,6 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 
 /**
  * The interface Tag service for CRD operation

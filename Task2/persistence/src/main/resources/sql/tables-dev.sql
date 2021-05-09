@@ -28,7 +28,7 @@ CREATE TABLE usr
     name VARCHAR(255) UNIQUE
 );
 
-CREATE TABLE order
+CREATE TABLE ordr
 (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id        BIGINT  NOT NULL REFERENCES usr (id),

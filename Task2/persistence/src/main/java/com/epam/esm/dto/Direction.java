@@ -1,4 +1,4 @@
-package com.epam.esm.comparator;
+package com.epam.esm.dto;
 
 
 /**

@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.epam.esm.DtoBuilderService;
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.PageService;
-import com.epam.esm.SearchParamsService;
-import com.epam.esm.comparator.Direction;
-import com.epam.esm.comparator.GiftCertificateSortService;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.IdDto;
+import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.model.GiftCertificateModel;
-import com.epam.esm.model.assembler.GiftCertificateModelAssembler;
 import com.epam.esm.model.PageCertificateModel;
+import com.epam.esm.model.assembler.GiftCertificateModelAssembler;
 
 
 /**
@@ -46,9 +43,7 @@ public class CertificateController {
 
     private Validator certificateValidator;
 
-    private GiftCertificateSortService sortService;
-
-    private SearchParamsService searchParamsService;
+    private DtoBuilderService dtoBuilderService;
 
     private GiftCertificateModelAssembler certificateModelAssembler;
 
@@ -56,14 +51,13 @@ public class CertificateController {
 
     @Autowired
     public CertificateController(GiftCertificateService certificateService,
-            Validator certificateValidator, GiftCertificateSortService sortService,
-            SearchParamsService searchParamsService, GiftCertificateModelAssembler certificateModelAssembler,
+            Validator certificateValidator,
+            DtoBuilderService dtoBuilderService, GiftCertificateModelAssembler certificateModelAssembler,
             PageService pageService) {
 
         this.certificateService = certificateService;
         this.certificateValidator = certificateValidator;
-        this.sortService = sortService;
-        this.searchParamsService = searchParamsService;
+        this.dtoBuilderService = dtoBuilderService;
         this.certificateModelAssembler = certificateModelAssembler;
         this.pageService = pageService;
     }
@@ -155,11 +149,10 @@ public class CertificateController {
             @RequestParam(required = false, defaultValue = "") String sortParams,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        GiftCertificateDto certificate = searchParamsService.buildCertificateDto(name, description, tags);
+        GiftCertificateDto certificate = dtoBuilderService.buildCertificateDto(name, description, tags);
+        SortParamsDto sortParamsDto = dtoBuilderService.buildSortParams(sortParams, direction);
 
-        List<GiftCertificateDto> certificates = certificateService.findByParams(page, size, certificate);
-        List<String> splitParams = Arrays.asList(sortParams.split(","));
-        certificates = sortService.sort(certificates, splitParams, Direction.valueOf(direction.toUpperCase()));
+        List<GiftCertificateDto> certificates = certificateService.findByParams(page, size, certificate, sortParamsDto);
 
         return new PageCertificateModel(certificateModelAssembler.toCollectionModel(certificates),
                 pageService.buildPageForCertificateSearch(page, size, certificate, certificates));

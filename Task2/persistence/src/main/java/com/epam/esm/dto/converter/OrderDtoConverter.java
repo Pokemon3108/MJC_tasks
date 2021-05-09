@@ -1,7 +1,6 @@
 package com.epam.esm.dto.converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.epam.esm.dto.OrderDto;
@@ -19,7 +18,7 @@ public class OrderDtoConverter extends Converter<Order, OrderDto> {
 
     @Autowired
     public OrderDtoConverter(GiftCertificateDtoConverter certificateDtoConverter,
-             UserDtoConverter userDtoConverter) {
+            UserDtoConverter userDtoConverter) {
 
         this.certificateDtoConverter = certificateDtoConverter;
         this.userDtoConverter = userDtoConverter;

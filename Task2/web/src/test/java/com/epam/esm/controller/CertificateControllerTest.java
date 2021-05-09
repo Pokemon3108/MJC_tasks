@@ -11,6 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -18,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
@@ -26,14 +26,14 @@ import com.epam.esm.exception.certificate.NoCertificateException;
 
 
 @SpringBootTest
-@Transactional
+@AutoConfigureMockMvc
 @ActiveProfiles(value = "dev")
 class CertificateControllerTest {
 
-    MockMvc mockMvc;
-
     @Autowired
     WebApplicationContext webApplicationContext;
+
+    MockMvc mockMvc;
 
     @BeforeEach
     public void init() {
@@ -51,7 +51,7 @@ class CertificateControllerTest {
         final String createDate = "2021-04-11T00:00:00";
         final String lastUpdateDate = "2021-04-11T00:00:00";
 
-        mockMvc.perform(get("/certificate/{id}", id))
+        mockMvc.perform(get("/certificates/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(certificateName))
@@ -69,7 +69,7 @@ class CertificateControllerTest {
     void readNoExistingCertificateTest() throws Exception {
 
         final long id = 20;
-        mockMvc.perform(get("/certificate/{id}", id))
+        mockMvc.perform(get("/certificates/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andExpect(result -> result.getResolvedException().getClass().equals(NoCertificateException.class));
     }
@@ -78,7 +78,7 @@ class CertificateControllerTest {
     void deleteTest() throws Exception {
 
         final long id = 1;
-        mockMvc.perform(delete("/certificate/{id}", id))
+        mockMvc.perform(delete("/certificates/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
@@ -86,7 +86,7 @@ class CertificateControllerTest {
     void deleteNoExistingCertificateTest() throws Exception {
 
         final long id = 20;
-        mockMvc.perform(get("/certificate/{id}", id))
+        mockMvc.perform(get("/certificates/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andExpect(result -> result.getResolvedException().getClass().equals(NoCertificateException.class));
     }
@@ -97,7 +97,7 @@ class CertificateControllerTest {
         String fileName = "newCertificate.json";
         String json = FileReaderHelper.readFile(fileName);
         long generatedId = 7;
-        mockMvc.perform(post("/certificate")
+        mockMvc.perform(post("/certificates")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -109,7 +109,7 @@ class CertificateControllerTest {
 
         String fileName = "existingCertificate.json";
         String json = FileReaderHelper.readFile(fileName);
-        mockMvc.perform(post("/certificate")
+        mockMvc.perform(post("/certificates")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -128,7 +128,7 @@ class CertificateControllerTest {
 
         String fileName = "updatedCertificate.json";
         String json = FileReaderHelper.readFile(fileName);
-        mockMvc.perform(patch("/certificate/{id}", id)
+        mockMvc.perform(patch("/certificates/{id}", id)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -146,11 +146,12 @@ class CertificateControllerTest {
 
         int[] ids = new int[]{3, 5, 2};
 
-        mockMvc.perform(get("/certificate?name=new&sortParams=name"))
+        mockMvc.perform(get("/certificates?name=new&sortParams=name"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(ids[0]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(ids[1]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[2].id").value(ids[2]));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[0].id").value(ids[0]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[1].id").value(ids[1]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[2].id").value(ids[2]));
     }
 
     @Test
@@ -158,27 +159,30 @@ class CertificateControllerTest {
 
         int[] ids = new int[]{1, 5};
 
-        mockMvc.perform(get("/certificate?tag=car"))
+        mockMvc.perform(get("/certificates?tags=car"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.*", Matchers.hasSize(ids.length)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[*].id", Matchers.hasItem(ids[0])))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[*].id", Matchers.hasItem(ids[1])));
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.certificateModels.content.*", Matchers.hasSize(ids.length)))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.certificateModels.content.[*].id", Matchers.hasItem(ids[0])))
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.certificateModels.content.[*].id", Matchers.hasItem(ids[1])));
     }
 
     @Test
     void sortByDateDescTest() throws Exception {
 
-        int[] ids = new int[]{1, 3, 2, 4, 6, 5};
+        int[] ids = new int[]{1, 3, 2, 4, 6};
 
-        mockMvc.perform(get("/certificate?sortParams=date&direction=desc"))
+        mockMvc.perform(get("/certificates?sortParams=createDate&direction=desc"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(ids[0]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(ids[1]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[2].id").value(ids[2]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[3].id").value(ids[3]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[4].id").value(ids[4]))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[5].id").value(ids[5]));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[0].id").value(ids[0]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[1].id").value(ids[1]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[2].id").value(ids[2]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[3].id").value(ids[3]))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.certificateModels.content.[4].id").value(ids[4]));
     }
 
 }

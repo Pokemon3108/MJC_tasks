@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
 import com.epam.esm.exception.user.UsersOrderHasNoTags;

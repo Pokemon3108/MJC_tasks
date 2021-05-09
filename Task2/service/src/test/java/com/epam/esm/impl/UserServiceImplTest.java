@@ -29,16 +29,16 @@ class UserServiceImplTest {
     @Test
     void readThrowsExceptionTest() {
 
-        final long id=900L;
+        final long id = 900L;
         Mockito.when(userDao.read(id)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoUserWithIdException.class, ()->userService.read(id));
+        Assertions.assertThrows(NoUserWithIdException.class, () -> userService.read(id));
     }
 
     @Test
     void readRichestThrowsException() {
 
         Mockito.when(userDao.readRichest()).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoUsersException.class, ()->userService.readRichest());
+        Assertions.assertThrows(NoUsersException.class, () -> userService.readRichest());
     }
 
 }
