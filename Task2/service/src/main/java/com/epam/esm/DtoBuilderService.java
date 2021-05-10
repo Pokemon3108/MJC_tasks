@@ -18,6 +18,8 @@ import com.epam.esm.dto.TagDto;
 @Service
 public class DtoBuilderService {
 
+    private static final List<String> sortParams = Arrays.asList("createDate", "name");
+
     public GiftCertificateDto buildCertificateDto(String name, String description, String tagNames) {
 
         GiftCertificateDto certificate = new GiftCertificateDto();
@@ -37,6 +39,7 @@ public class DtoBuilderService {
     public SortParamsDto buildSortParams(String params, String direction) {
 
         List<String> splitParams = Arrays.asList(params.split(","));
+        splitParams = splitParams.stream().filter(sortParams::contains).collect(Collectors.toList());
         Direction dir = Direction.valueOf(direction.toUpperCase());
         return new SortParamsDto(splitParams, dir);
     }

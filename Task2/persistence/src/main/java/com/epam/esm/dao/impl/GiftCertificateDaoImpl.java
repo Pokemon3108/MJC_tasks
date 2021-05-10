@@ -186,7 +186,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 description -> predicateList
                         .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
-        if (sortParams != null) {
+        if (sortParams != null && !sortParams.getSortParams().isEmpty()) {
             Function<Path<?>, Order> orderSortBuilder = sortParams.getDirection().equals(Direction.ASC)
                     ? builder::asc
                     : builder::desc;
