@@ -16,7 +16,7 @@ import com.epam.esm.entity.GiftCertificate;
  * The type Gift certificate dto converter for converting from entity to dto and vice versa
  */
 @Component
-public class GiftCertificateDtoConverter {
+public class GiftCertificateDtoConverter extends Converter<GiftCertificate, GiftCertificateDto> {
 
     private TagDtoConverter tagDtoConverter;
 

@@ -57,6 +57,7 @@ public class UserDaoImpl implements UserDao {
                 .groupBy(userRoot.get("id"))
                 .orderBy(criteriaBuilder.desc(criteriaBuilder.sum(join.get("cost"))));
         TypedQuery<User> query = em.createQuery(criteriaQuery);
+        query.setMaxResults(1);
         return query.getResultStream().findFirst().map(user -> userDtoConverter.convertToDto(user));
     }
 }

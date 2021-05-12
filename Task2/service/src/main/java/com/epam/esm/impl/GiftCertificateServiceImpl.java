@@ -1,6 +1,5 @@
 package com.epam.esm.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,10 +28,9 @@ import com.epam.esm.exception.certificate.NoCertificateException;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
+    private static final int MAX_SIZE = 100;
     private GiftCertificateDao certificateDao;
-
     private TagService tagService;
-
     private OrderDao orderDao;
 
     @Autowired
@@ -146,16 +144,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto,
             SortParamsDto sortParams) {
 
-        final int maxSize = 100;
-        if (size > maxSize || size < 0) {
-            throw new MaxSizeLimitException(maxSize);
+        if (size > MAX_SIZE || size < 0) {
+            throw new MaxSizeLimitException(MAX_SIZE);
         }
         if (page < 0 || certificateDao.getAllCount() < (page - 1) * size) {
             throw new NoPageException(page, size);
         }
-        List<GiftCertificateDto> certificatesWithParams = certificateDao
+        return certificateDao
                 .findCertificateByParams(page, size, certificateDto, sortParams);
-        return new ArrayList<>(certificatesWithParams);
     }
 
     @Override
