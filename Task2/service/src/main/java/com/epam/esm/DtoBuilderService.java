@@ -40,7 +40,8 @@ public class DtoBuilderService {
 
         List<String> splitParams = Arrays.asList(params.split(","));
         splitParams = splitParams.stream().filter(sortParams::contains).collect(Collectors.toList());
-        Direction dir = Direction.valueOf(direction.toUpperCase());
+        Direction dir = Direction.contains(direction.toUpperCase()) ? Direction.valueOf(direction.toUpperCase()) :
+                Direction.ASC;
         return new SortParamsDto(splitParams, dir);
     }
 

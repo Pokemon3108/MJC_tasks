@@ -13,5 +13,16 @@ public enum Direction {
     /**
      * Descending order
      */
-    DESC
+    DESC;
+
+    public static boolean contains(String direction) {
+
+        for (Direction dir : Direction.values()) {
+            if (dir.name().equals(direction)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
