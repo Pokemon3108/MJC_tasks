@@ -40,7 +40,7 @@ public class PageServiceImpl implements PageService {
     public Page buildPageForUserOrderSearch(int pageNumber, int size, UserDto user, List<OrderDto> orders) {
 
         long totalSize = orderService.countUserOrders(user);
-        int totalPages = totalSize / size == 0 ? (int) totalSize / size : (int) totalSize / size + 1;
+        int totalPages = totalSize % size == 0 ? (int) totalSize / size : (int) totalSize / size + 1;
         return new Page(orders.size(), totalSize, totalPages, pageNumber);
     }
 }

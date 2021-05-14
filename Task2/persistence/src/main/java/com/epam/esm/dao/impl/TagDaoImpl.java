@@ -116,8 +116,8 @@ public class TagDaoImpl implements TagDao {
                         + "JOIN ordr ON ordr.certificate_id=gc.id "
                         + "JOIN usr ON usr.id=ordr.user_id WHERE usr.id = "
                         + "(SELECT usr.id FROM usr join ordr on usr.id=ordr.user_id GROUP BY usr.id "
-                        + "ORDER BY SUM(cost) DESC FETCH FIRST 1 ROW ONLY) "
-                        + "GROUP BY tag.name, tag.id ORDER BY COUNT(tag.name) DESC FETCH FIRST 1 ROW ONLY"
+                        + "ORDER BY SUM(cost) DESC LIMIT 1) "
+                        + "GROUP BY tag.name, tag.id ORDER BY COUNT(tag.name) DESC LIMIT 1"
                 ,
                 Tag.class);
 

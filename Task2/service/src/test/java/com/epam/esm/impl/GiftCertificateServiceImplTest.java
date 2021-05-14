@@ -186,10 +186,11 @@ class GiftCertificateServiceImplTest {
         List<GiftCertificateDto> certificateDtos = Arrays.asList(dto1, dto2, dto3);
 
         Mockito.when(certificateDao.getAllCount()).thenReturn(100L);
-        Mockito.when(certificateDao.findCertificateByParams(page, size, dtoForSearch)).thenReturn(certificateDtos);
+        Mockito.when(certificateDao.findCertificateByParams(page, size, dtoForSearch, null))
+                .thenReturn(certificateDtos);
 
         Assertions.assertArrayEquals(certificateDtos.toArray(),
-                certificateService.findByParams(page, size, dtoForSearch).toArray());
+                certificateService.findByParams(page, size, dtoForSearch, null).toArray());
     }
 
     @ParameterizedTest
@@ -197,10 +198,11 @@ class GiftCertificateServiceImplTest {
     void findByParamsThrowsExceptionsTest(final int page, final int size,
             final Class<? extends Exception> exceptionClass) {
 
+        final GiftCertificateDto certificateDto = new GiftCertificateDto();
         final long certificatesAmount = 110;
-        Mockito.when(certificateDao.getAllCount()).thenReturn(certificatesAmount);
+        Mockito.when(certificateDao.countFoundCertificates(certificateDto)).thenReturn(certificatesAmount);
         Assertions.assertThrows(exceptionClass,
-                () -> certificateService.findByParams(page, size, new GiftCertificateDto()));
+                () -> certificateService.findByParams(page, size, certificateDto, null));
     }
 
     @Test

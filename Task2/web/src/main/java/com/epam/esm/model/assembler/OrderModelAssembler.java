@@ -17,12 +17,15 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
 
     private GiftCertificateModelAssembler certificateModelAssembler;
 
+    private UserModelAssembler userModelAssembler;
+
     @Autowired
-    public OrderModelAssembler(GiftCertificateModelAssembler assembler) {
+    public OrderModelAssembler(GiftCertificateModelAssembler certificateAssembler, UserModelAssembler userAssembler) {
 
         super(OrderController.class, OrderModel.class);
 
-        this.certificateModelAssembler = assembler;
+        this.certificateModelAssembler = certificateAssembler;
+        this.userModelAssembler = userAssembler;
     }
 
     @Override
@@ -31,13 +34,15 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
         OrderModel orderModel = instantiateModel(entity);
 
         orderModel.add(
+                linkTo(methodOn(OrderController.class).read(entity.getId())).withSelfRel(),
                 linkTo(methodOn(OrderController.class).create(null, null)).withRel("create")
         );
 
         orderModel.setCost(entity.getCost());
         orderModel.setId(entity.getId());
         orderModel.setPurchaseDate(entity.getPurchaseDate());
-        orderModel.setCertificateModel(certificateModelAssembler.toModel(entity.getCertificate()));
+        orderModel.setCertificate(certificateModelAssembler.toModel(entity.getCertificate()));
+        orderModel.setUser(userModelAssembler.toModel(entity.getUser()));
 
         return orderModel;
     }

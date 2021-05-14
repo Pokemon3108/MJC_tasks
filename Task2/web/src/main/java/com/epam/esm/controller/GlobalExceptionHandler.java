@@ -20,8 +20,8 @@ import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
+import com.epam.esm.exception.certificate.IllegalCertificateProperties;
 import com.epam.esm.exception.certificate.NoCertificateException;
-import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.exception.order.CreationOrderException;
 import com.epam.esm.exception.order.NoOrderException;
 import com.epam.esm.exception.tag.DuplicateTagException;
@@ -57,9 +57,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("no_id"));
     }
 
-    @ExceptionHandler(NotFullCertificateException.class)
+    @ExceptionHandler(IllegalCertificateProperties.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleNotFullCertificate(NotFullCertificateException ex) {
+    public Error handleNotFullCertificate(IllegalCertificateProperties ex) {
 
         return new Error(ErrorCode.NOT_FULL_CERTIFICATE.getCode(),
                 localeService.getLocaleMessage(ex.getMessage()));
@@ -171,13 +171,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }
 
-//    @Override
-//    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-//            HttpStatus status, WebRequest request) {
-//
-//        Error error = new Error(ErrorCode.BASE_ERROR.getCode(),
-//                localeService.getLocaleMessage("base_error"));
-//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-//    }
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+
+        Error error = new Error(ErrorCode.BASE_ERROR.getCode(),
+                localeService.getLocaleMessage("base_error"));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 }

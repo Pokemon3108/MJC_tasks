@@ -28,7 +28,6 @@ import com.epam.esm.exception.certificate.NoCertificateException;
 
 @Transactional
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles(value = "dev")
 class CertificateControllerTest {
 

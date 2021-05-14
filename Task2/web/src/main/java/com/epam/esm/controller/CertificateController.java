@@ -5,13 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +21,10 @@ import com.epam.esm.GiftCertificateService;
 import com.epam.esm.PageService;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SortParamsDto;
-import com.epam.esm.exception.certificate.NotFullCertificateException;
 import com.epam.esm.model.GiftCertificateModel;
 import com.epam.esm.model.PageCertificateModel;
 import com.epam.esm.model.assembler.GiftCertificateModelAssembler;
+import com.epam.esm.validator.GiftCertificateValidator;
 
 
 /**
@@ -41,7 +36,7 @@ public class CertificateController {
 
     private GiftCertificateService certificateService;
 
-    private Validator certificateValidator;
+    private GiftCertificateValidator certificateValidator;
 
     private DtoBuilderService dtoBuilderService;
 
@@ -51,7 +46,7 @@ public class CertificateController {
 
     @Autowired
     public CertificateController(GiftCertificateService certificateService,
-            Validator certificateValidator,
+            GiftCertificateValidator certificateValidator,
             DtoBuilderService dtoBuilderService, GiftCertificateModelAssembler certificateModelAssembler,
             PageService pageService) {
 
@@ -62,28 +57,17 @@ public class CertificateController {
         this.pageService = pageService;
     }
 
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-
-        binder.setValidator(certificateValidator);
-    }
-
     /**
      * Create certificate
      *
-     * @param certificate   dto object with certificate properties
-     * @param bindingResult uses for validation
+     * @param certificate dto object with certificate properties
      * @return dto object with generated id
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificateModel create(@RequestBody GiftCertificateDto certificate, BindingResult bindingResult) {
+    public GiftCertificateModel create(@RequestBody GiftCertificateDto certificate) {
 
-        certificateValidator.validate(certificate, bindingResult);
-        if (bindingResult.hasErrors()) {
-            ObjectError error = bindingResult.getAllErrors().get(0);
-            throw new NotFullCertificateException(error.getCode());
-        }
+        certificateValidator.validateCreate(certificate);
         return certificateModelAssembler.toModel(certificateService.add(certificate));
     }
 
@@ -110,6 +94,7 @@ public class CertificateController {
     public GiftCertificateModel update(@PathVariable Long id, @RequestBody GiftCertificateDto certificate) {
 
         certificate.setId(id);
+        certificateValidator.validateUpdate(certificate);
         certificateService.update(certificate);
         return certificateModelAssembler.toModel(certificateService.read(certificate.getId()));
     }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.certificate.NotFullCertificateException;
+import com.epam.esm.exception.certificate.IllegalCertificateProperties;
 import com.epam.esm.model.TagModel;
 import com.epam.esm.model.assembler.TagModelAssembler;
 
@@ -57,7 +57,7 @@ public class TagController {
         tagValidator.validate(tag, bindingResult);
         if (bindingResult.hasErrors()) {
             ObjectError error = bindingResult.getAllErrors().get(0);
-            throw new NotFullCertificateException(error.getCode());
+            throw new IllegalCertificateProperties(error.getCode());
         }
         return tagModelAssembler.toModel(tagService.create(tag));
     }

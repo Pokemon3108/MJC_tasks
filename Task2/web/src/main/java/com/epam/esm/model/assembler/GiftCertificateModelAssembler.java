@@ -37,8 +37,8 @@ public class GiftCertificateModelAssembler extends
 
         giftCertificateModel.add(linkTo(controller.read(entity.getId())).withSelfRel()
                         .andAffordance(afford(controller.update(entity.getId(), null)))
-                        .andAffordance(afford(controller.create(null, null))),
-                linkTo(controller.create(null, null)).withRel("create"),
+                        .andAffordance(afford(controller.create(null))),
+                linkTo(controller.create(null)).withRel("create"),
                 linkTo(controller.update(entity.getId(), null)).withRel("update"),
                 linkTo(controller.delete(entity.getId())).withRel("delete"),
                 linkTo(controller.getCertificates(1, 5, null, null, null, null, null))
@@ -62,7 +62,7 @@ public class GiftCertificateModelAssembler extends
     public CollectionModel<GiftCertificateModel> toCollectionModel(Iterable<? extends GiftCertificateDto> entities) {
 
         CollectionModel<GiftCertificateModel> collectionModel = super.toCollectionModel(entities);
-        collectionModel.add(linkTo(methodOn(CertificateController.class).create(null, null))
+        collectionModel.add(linkTo(methodOn(CertificateController.class).create(null))
                 .withRel("create"));
         return collectionModel;
     }

@@ -22,7 +22,19 @@ public class OrderModel extends RepresentationModel<OrderModel> {
 
     private LocalDateTime purchaseDate;
 
-    private GiftCertificateModel certificateModel;
+    private GiftCertificateModel certificate;
+
+    private UserModel user;
+
+    public UserModel getUser() {
+
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+
+        this.user = user;
+    }
 
     public Long getId() {
 
@@ -54,14 +66,14 @@ public class OrderModel extends RepresentationModel<OrderModel> {
         this.purchaseDate = purchaseDate;
     }
 
-    public GiftCertificateModel getCertificateModel() {
+    public GiftCertificateModel getCertificate() {
 
-        return certificateModel;
+        return certificate;
     }
 
-    public void setCertificateModel(GiftCertificateModel certificateModel) {
+    public void setCertificate(GiftCertificateModel certificate) {
 
-        this.certificateModel = certificateModel;
+        this.certificate = certificate;
     }
 
     @Override
@@ -80,12 +92,13 @@ public class OrderModel extends RepresentationModel<OrderModel> {
         return Objects.equals(id, that.id) &&
                 Objects.equals(cost, that.cost) &&
                 Objects.equals(purchaseDate, that.purchaseDate) &&
-                Objects.equals(certificateModel, that.certificateModel);
+                Objects.equals(certificate, that.certificate) &&
+                Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), id, cost, purchaseDate, certificateModel);
+        return Objects.hash(super.hashCode(), id, cost, purchaseDate, certificate, user);
     }
 }

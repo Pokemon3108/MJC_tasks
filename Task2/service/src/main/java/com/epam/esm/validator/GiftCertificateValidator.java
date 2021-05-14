@@ -1,45 +1,39 @@
 package com.epam.esm.validator;
 
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.exception.certificate.IllegalCertificateProperties;
 
 /**
  * This class uses for validation {@code GiftCertificate} objects
  */
 @Service("certificateValidator")
-public class GiftCertificateValidator implements Validator {
+public class GiftCertificateValidator {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean supports(Class<?> clazz) {
+    public void validateCreate(GiftCertificateDto certificate) {
 
-        return GiftCertificateDto.class.equals(clazz);
+        if (certificate.getName() == null) {
+            throw new IllegalCertificateProperties("empty_name");
+        } else if (certificate.getDescription() == null) {
+            throw new IllegalCertificateProperties("empty_description");
+        } else if (certificate.getDuration() == null) {
+            throw new IllegalCertificateProperties("empty_duration");
+        } else if (certificate.getDuration() <= 0) {
+            throw new IllegalCertificateProperties("negative_duration");
+        } else if (certificate.getPrice() == null) {
+            throw new IllegalCertificateProperties("empty_price");
+        } else if (certificate.getPrice().doubleValue() <= 0.0) {
+            throw new IllegalCertificateProperties("negative_price");
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate(Object target, Errors errors) {
+    public void validateUpdate(GiftCertificateDto certificate) {
 
-        GiftCertificateDto certificate = (GiftCertificateDto) target;
-        if (certificate.getName() == null) {
-            errors.reject("empty_name");
-        } else if (certificate.getDescription() == null) {
-            errors.reject("empty_description");
-        } else if (certificate.getDuration() == null) {
-            errors.reject("empty_duration");
-        } else if (certificate.getDuration() <= 0) {
-            errors.reject("negative_duration");
-        } else if (certificate.getPrice() == null) {
-            errors.reject("empty_price");
-        } else if (certificate.getPrice().doubleValue() <= 0.0) {
-            errors.reject("negative_price");
+        if (certificate.getPrice() != null && certificate.getPrice().doubleValue() < 0) {
+            throw new IllegalCertificateProperties("negative_price");
+        } else if (certificate.getDuration() != null && certificate.getDuration() < 0) {
+            throw new IllegalCertificateProperties("negative_duration");
         }
     }
 }

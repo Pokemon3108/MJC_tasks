@@ -48,7 +48,7 @@ class GiftCertificateValidatorTest {
     void validateEmptyCertificateFields(GiftCertificateDto certificateDto, final String message) {
 
         Errors errors = Mockito.mock(Errors.class);
-        validator.validate(certificateDto, errors);
+        validator.validateCreate(certificateDto, errors);
         Mockito.verify(errors, Mockito.times(1)).reject(message);
     }
 
@@ -62,7 +62,7 @@ class GiftCertificateValidatorTest {
         dto.setPrice(BigDecimal.ONE);
 
         Errors errors = Mockito.mock(Errors.class);
-        validator.validate(dto, errors);
+        validator.validateCreate(dto, errors);
         Mockito.verify(errors, Mockito.times(0)).reject(Mockito.anyString());
     }
 

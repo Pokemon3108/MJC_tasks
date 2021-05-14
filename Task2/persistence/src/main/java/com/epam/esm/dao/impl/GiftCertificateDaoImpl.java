@@ -26,7 +26,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.query.DaoQuery;
 import com.epam.esm.dto.Direction;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SortParamsDto;
@@ -64,6 +63,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public Long insert(GiftCertificateDto certificateDto) {
 
         GiftCertificate certificate = converter.convertToEntity(certificateDto);
+        certificate.setId(null);
 
         Set<Tag> tags = certificate.getTags()
                 .stream()
@@ -177,11 +177,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         Root<GiftCertificate> certificateRoot = query.from(GiftCertificate.class);
 
         List<Predicate> predicateList = new ArrayList<>();
-        DaoQuery.applyIfNotNull(certificateDto.getName(),
-                name -> predicateList.add(builder.like(certificateRoot.get("name"), "%" + name + "%")));
-        DaoQuery.applyIfNotNull(certificateDto.getDescription(),
-                description -> predicateList
-                        .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
+        Optional.ofNullable(certificateDto.getName())
+                .ifPresent(name -> predicateList.add(builder.like(certificateRoot.get("name"), "%" + name + "%")));
+        Optional.ofNullable(certificateDto.getDescription()).ifPresent(description -> predicateList
+                .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
         if (sortParams != null && !sortParams.getSortParams().isEmpty()) {
             Function<Path<?>, Order> orderSortBuilder = sortParams.getDirection().equals(Direction.ASC)

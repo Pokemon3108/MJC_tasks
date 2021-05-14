@@ -147,7 +147,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (size > MAX_SIZE || size < 0) {
             throw new MaxSizeLimitException(MAX_SIZE);
         }
-        if (page < 0 || certificateDao.getAllCount() < (page - 1) * size) {
+        if (page < 0 || certificateDao.countFoundCertificates(certificateDto) < (page - 1) * size) {
             throw new NoPageException(page, size);
         }
         return certificateDao
