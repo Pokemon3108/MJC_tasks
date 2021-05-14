@@ -2,13 +2,13 @@ package com.epam.esm.validator;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
-import org.springframework.validation.Errors;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.exception.certificate.IllegalCertificateProperties;
 
 class GiftCertificateValidatorTest {
 
@@ -45,25 +45,24 @@ class GiftCertificateValidatorTest {
 
     @ParameterizedTest
     @MethodSource("validateTestData")
-    void validateEmptyCertificateFields(GiftCertificateDto certificateDto, final String message) {
+    void validateCreateCertificateWithEmptyFields(GiftCertificateDto certificateDto, final String message) {
 
-        Errors errors = Mockito.mock(Errors.class);
-        validator.validateCreate(certificateDto, errors);
-        Mockito.verify(errors, Mockito.times(1)).reject(message);
+        Assertions.assertThrows(IllegalCertificateProperties.class, () -> validator.validateCreate(certificateDto),
+                message);
     }
 
     @Test
-    void validateFilledCertificate() {
+    void validateUpdateCertificate() {
 
-        GiftCertificateDto dto = new GiftCertificateDto();
+        final String NEGATIVE_PRICE_MESSAGE = "negative_price";
+        final GiftCertificateDto dto = new GiftCertificateDto();
         dto.setDescription("description");
         dto.setName("name");
-        dto.setDuration(10);
+        dto.setDuration(-10);
         dto.setPrice(BigDecimal.ONE);
 
-        Errors errors = Mockito.mock(Errors.class);
-        validator.validateCreate(dto, errors);
-        Mockito.verify(errors, Mockito.times(0)).reject(Mockito.anyString());
+        Assertions.assertThrows(IllegalCertificateProperties.class, () -> validator.validateCreate(dto),
+                NEGATIVE_PRICE_MESSAGE);
     }
 
 }
