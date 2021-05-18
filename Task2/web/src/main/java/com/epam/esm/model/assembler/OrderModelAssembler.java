@@ -3,6 +3,8 @@ package com.epam.esm.model.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -35,7 +37,7 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
 
         orderModel.add(
                 linkTo(methodOn(OrderController.class).read(entity.getId())).withSelfRel(),
-                linkTo(methodOn(OrderController.class).create(null, null)).withRel("create")
+                linkTo(methodOn(OrderController.class).create(entity.getUser().getId(), null)).withRel("create")
         );
 
         orderModel.setCost(entity.getCost());
@@ -50,6 +52,11 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
     @Override
     public CollectionModel<OrderModel> toCollectionModel(Iterable<? extends OrderDto> entities) {
 
-        return super.toCollectionModel(entities);
+        AtomicReference<Long> userId = new AtomicReference<>();
+        entities.forEach(e -> userId.set(e.getUser().getId()));
+        CollectionModel<OrderModel> collectionModel = super.toCollectionModel(entities);
+        collectionModel.add(linkTo(methodOn(OrderController.class).create(userId.get(), null))
+                .withRel("create"));
+        return collectionModel;
     }
 }

@@ -6,12 +6,12 @@ public class SortParamsDto {
 
     final List<String> sortParams;
 
-    final Direction direction;
+    final SortDirection sortDirection;
 
-    public SortParamsDto(List<String> sortParams, Direction direction) {
+    public SortParamsDto(List<String> sortParams, SortDirection sortDirection) {
 
         this.sortParams = sortParams;
-        this.direction = direction;
+        this.sortDirection = sortDirection;
     }
 
     public List<String> getSortParams() {
@@ -19,8 +19,8 @@ public class SortParamsDto {
         return sortParams;
     }
 
-    public Direction getDirection() {
+    public SortDirection getSortDirection() {
 
-        return direction;
+        return sortDirection;
     }
 }

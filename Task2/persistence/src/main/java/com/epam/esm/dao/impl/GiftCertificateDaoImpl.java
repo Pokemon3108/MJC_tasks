@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dto.Direction;
+import com.epam.esm.dto.SortDirection;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.dto.TagDto;
@@ -183,7 +183,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 .add(builder.like(certificateRoot.get("description"), "%" + description + "%")));
 
         if (sortParams != null && !sortParams.getSortParams().isEmpty()) {
-            Function<Path<?>, Order> orderSortBuilder = sortParams.getDirection().equals(Direction.ASC)
+            Function<Path<?>, Order> orderSortBuilder = sortParams.getSortDirection().equals(SortDirection.ASC)
                     ? builder::asc
                     : builder::desc;
             sortParams.getSortParams()

@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.epam.esm.LocaleService;
 import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
-import com.epam.esm.exception.MaxSizeLimitException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.CertificateIsOrderedException;
@@ -144,9 +144,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("is_ordered_certificate", ex.getId()));
     }
 
-    @ExceptionHandler(MaxSizeLimitException.class)
+    @ExceptionHandler(SizeLimitException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleMaxSizeLimited(MaxSizeLimitException ex) {
+    public Error handleMaxSizeLimited(SizeLimitException ex) {
 
         return new Error(ErrorCode.MAX_SIZE_LIMIT.getCode(),
                 localeService.getLocaleMessage("max_size_limit", ex.getMaxSize()));

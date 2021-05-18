@@ -39,7 +39,7 @@ class TagControllerTest {
 
         final long id = 1;
         final String tagName = "nature";
-        mockMvc.perform(get("/tag/{id}", id))
+        mockMvc.perform(get("/tags/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(tagName));
@@ -49,7 +49,7 @@ class TagControllerTest {
     void readNoExistingTagTest() throws Exception {
 
         final long id = 7;
-        mockMvc.perform(get("/tag/{id}", id))
+        mockMvc.perform(get("/tags/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andExpect(result -> result.getResolvedException().getClass().equals(NoTagException.class));
     }
@@ -58,7 +58,7 @@ class TagControllerTest {
     void deleteTest() throws Exception {
 
         final long id = 1;
-        mockMvc.perform(delete("/tag/{id}", id))
+        mockMvc.perform(delete("/tags/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
@@ -66,22 +66,9 @@ class TagControllerTest {
     void deleteNoExistingTagTest() throws Exception {
 
         final long id = 8;
-        mockMvc.perform(get("/tag/{id}", id))
+        mockMvc.perform(get("/tags/{id}", id))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andExpect(result -> result.getResolvedException().getClass().equals(NoTagException.class));
-    }
-
-    @Test
-    void createTagTest() throws Exception {
-
-        String fileName = "newTag.json";
-        String json = FileReaderHelper.readFile(fileName);
-        long generatedId = 7;
-        mockMvc.perform(post("/tag")
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(generatedId));
     }
 
     @Test
@@ -89,7 +76,7 @@ class TagControllerTest {
 
         String fileName = "existingTag.json";
         String json = FileReaderHelper.readFile(fileName);
-        mockMvc.perform(post("/tag")
+        mockMvc.perform(post("/tags")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())

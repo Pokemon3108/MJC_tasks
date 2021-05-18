@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-//    id 'org.springframework.boot' version '2.2.5.RELEASE'
 }
 
 group 'com.epam.esm'
@@ -8,9 +7,6 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
-//bootRun {
-//    mainClassName = 'com.epam.esm.Application'
-//}
 
 subprojects { project ->
     project.apply plugin: 'java'

@@ -4,7 +4,7 @@ package com.epam.esm.dto;
 /**
  * The enum Direction uses for sorting direction
  */
-public enum Direction {
+public enum SortDirection {
 
     /**
      * Ascending order
@@ -17,7 +17,7 @@ public enum Direction {
 
     public static boolean contains(String direction) {
 
-        for (Direction dir : Direction.values()) {
+        for (SortDirection dir : SortDirection.values()) {
             if (dir.name().equals(direction)) {
                 return true;
             }

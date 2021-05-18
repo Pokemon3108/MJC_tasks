@@ -24,7 +24,7 @@ import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.MaxSizeLimitException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
@@ -49,7 +49,7 @@ class GiftCertificateServiceImplTest {
         final int bigSize = 1000;
         final int negativePage = -17;
 
-        final Class<? extends Exception> maxSizeLimitException = MaxSizeLimitException.class;
+        final Class<? extends Exception> maxSizeLimitException = SizeLimitException.class;
         final Class<? extends Exception> noPageException = NoPageException.class;
 
         return new Object[][]{
@@ -185,7 +185,7 @@ class GiftCertificateServiceImplTest {
         dto1.setName("certificate3");
         List<GiftCertificateDto> certificateDtos = Arrays.asList(dto1, dto2, dto3);
 
-        Mockito.when(certificateDao.getAllCount()).thenReturn(100L);
+        Mockito.when(certificateDao.countFoundCertificates(dtoForSearch)).thenReturn(100L);
         Mockito.when(certificateDao.findCertificateByParams(page, size, dtoForSearch, null))
                 .thenReturn(certificateDtos);
 

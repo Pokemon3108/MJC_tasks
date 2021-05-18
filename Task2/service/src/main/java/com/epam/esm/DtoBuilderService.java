@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.epam.esm.dto.Direction;
+import com.epam.esm.dto.SortDirection;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.dto.TagDto;
@@ -40,8 +40,8 @@ public class DtoBuilderService {
 
         List<String> splitParams = Arrays.asList(params.split(","));
         splitParams = splitParams.stream().filter(sortParams::contains).collect(Collectors.toList());
-        Direction dir = Direction.contains(direction.toUpperCase()) ? Direction.valueOf(direction.toUpperCase()) :
-                Direction.ASC;
+        SortDirection dir = SortDirection.contains(direction.toUpperCase()) ? SortDirection.valueOf(direction.toUpperCase()) :
+                SortDirection.ASC;
         return new SortParamsDto(splitParams, dir);
     }
 

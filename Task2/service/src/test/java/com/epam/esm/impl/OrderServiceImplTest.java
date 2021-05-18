@@ -17,7 +17,7 @@ import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.exception.MaxSizeLimitException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.order.NoOrderException;
 
@@ -40,7 +40,7 @@ class OrderServiceImplTest {
         final int bigSize = 1000;
         final int negativePage = -17;
 
-        final Class<? extends Exception> maxSizeLimitException = MaxSizeLimitException.class;
+        final Class<? extends Exception> maxSizeLimitException = SizeLimitException.class;
         final Class<? extends Exception> noPageException = NoPageException.class;
 
         return new Object[][]{
