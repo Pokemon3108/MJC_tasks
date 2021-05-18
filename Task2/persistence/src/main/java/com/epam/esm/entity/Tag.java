@@ -1,16 +1,35 @@
 package com.epam.esm.entity;
 
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
+import org.hibernate.envers.Audited;
 
 
 /**
  * The type Tag is an entity of tag
  */
+@Entity
+@Audited
 public class Tag {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "tags")
+    private Set<GiftCertificate> certificates;
 
     /**
      * Instantiates a new Tag.
@@ -39,6 +58,16 @@ public class Tag {
 
         this.name = name;
         this.id = id;
+    }
+
+    public Set<GiftCertificate> getCertificates() {
+
+        return certificates;
+    }
+
+    public void setCertificates(Set<GiftCertificate> certificates) {
+
+        this.certificates = certificates;
     }
 
     /**

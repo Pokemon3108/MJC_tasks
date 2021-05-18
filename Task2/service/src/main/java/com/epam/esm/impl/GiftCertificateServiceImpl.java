@@ -1,12 +1,8 @@
 package com.epam.esm.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.epam.esm.GiftCertificateService;
 import com.epam.esm.TagService;
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateDtoConverter;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateCertificateException;
-import com.epam.esm.exception.NoCertificateException;
+import com.epam.esm.dto.SortParamsDto;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
+import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.certificate.CertificateIsOrderedException;
+import com.epam.esm.exception.certificate.DuplicateCertificateException;
+import com.epam.esm.exception.certificate.NoCertificateException;
 
 /**
  * The Gift certificate service implementation
@@ -30,58 +28,38 @@ import com.epam.esm.exception.NoIdException;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
+    private static final int MAX_SIZE = 100;
+
+    private static final int MIN_SIZE=0;
+
     private GiftCertificateDao certificateDao;
-
-    private TagDao tagDao;
-
-    private GiftCertificateDtoConverter dtoConverter;
 
     private TagService tagService;
 
+    private OrderDao orderDao;
+
     @Autowired
-    public void setCertificateDao(GiftCertificateDao certificateDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao certificateDao, TagService tagService, OrderDao orderDao) {
 
         this.certificateDao = certificateDao;
-    }
-
-    @Autowired
-    public void setTagDao(TagDao tagDao) {
-
-        this.tagDao = tagDao;
-    }
-
-    @Autowired
-    public void setDtoConverter(GiftCertificateDtoConverter dtoConverter) {
-
-        this.dtoConverter = dtoConverter;
-    }
-
-    @Autowired
-    public void setTagService(TagService tagService) {
-
         this.tagService = tagService;
+        this.orderDao = orderDao;
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Transactional
-    public Long add(GiftCertificateDto certificateDto) {
+    public GiftCertificateDto add(GiftCertificateDto certificateDto) {
 
         if (certificateDao.readCertificateByName(certificateDto.getName()).isPresent()) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
-        certificateDto.setCreateDate(LocalDateTime.now());
-        certificateDto.setLastUpdateDate(LocalDateTime.now());
-        Long certificateId = certificateDao.insert(certificateDto);
-        certificateDto.setId(certificateId);
-
-        if (!certificateDto.getTags().isEmpty()) {
-            Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
-            tagDao.bindCertificateTags(tagsWithId, certificateDto.getId());
-        }
-        return certificateId;
+        Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
+        certificateDto.setTags(tags);
+        return read(certificateDao.insert(certificateDto));
     }
 
     /**
@@ -90,10 +68,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificateDto read(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
-        Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(certificate.getId());
-        Set<Tag> tags = tagsIds.stream().map(t -> tagDao.read(t).get()).collect(Collectors.toSet());
-        return dtoConverter.convertToDto(certificate, tags);
+        return certificateDao.read(id)
+                .orElseThrow(() -> new NoCertificateException(id));
     }
 
 
@@ -108,28 +84,48 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (certificateId == null) {
             throw new NoIdException();
         }
-        if (!certificateDao.read(certificateId).isPresent()) {
-            throw new NoCertificateException(certificateId);
-        }
 
-        Optional<GiftCertificate> certificate = certificateDao.readCertificateByName(certificateDto.getName());
-        if (certificate.isPresent() && !certificate.get().getId().equals(certificateDto.getId())) {
+        GiftCertificateDto certificateWithId = certificateDao.read(certificateId)
+                .orElseThrow(() -> new NoCertificateException(certificateId));
+
+        Optional<GiftCertificateDto> certificateWithName = certificateDao
+                .readCertificateByName(certificateDto.getName());
+        if (certificateWithName.isPresent() && !certificateWithName.get().getId().equals(certificateDto.getId())) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
-        certificateDto.setLastUpdateDate(LocalDateTime.now());
-        certificateDao.update(certificateDto);
+        copyProperties(certificateDto, certificateWithId);
         if (!certificateDto.getTags().isEmpty()) {
-            tagDao.unbindCertificateTags(certificateDto.getId());
-
-            long namedTagsSize = certificateDto.getTags().stream().filter(t -> t.getName() != null).count();
-            if (namedTagsSize != 0) {
-                Set<Tag> tagsWithId = tagService.setTagsId(certificateDto.getTags());
-
-                tagDao.bindCertificateTags(tagsWithId,
-                        certificateDto.getId());
-            }
+            Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
+            certificateWithId.setTags(tags);
         }
+        certificateDao.update(certificateWithId);
+    }
+
+    /**
+     * Copy properties from dto to certificate
+     *
+     * @param src    the source object
+     * @param target the target object
+     */
+    private void copyProperties(GiftCertificateDto src, GiftCertificateDto target) {
+
+        if (src.getName() != null) {
+            target.setName(src.getName());
+        }
+        if (src.getDescription() != null) {
+            target.setDescription(src.getDescription());
+        }
+        if (src.getDuration() != null) {
+            target.setDuration(src.getDuration());
+        }
+        if (src.getPrice() != null) {
+            target.setPrice(src.getPrice());
+        }
+        if (!src.getTags().isEmpty()) {
+            target.setTags(src.getTags());
+        }
+        target.setId(src.getId());
     }
 
     /**
@@ -139,39 +135,35 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void delete(long id) {
 
-        GiftCertificate certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
-        tagDao.unbindCertificateTags(certificate.getId());
-        certificateDao.delete(id);
+        GiftCertificateDto certificate = certificateDao.read(id).orElseThrow(() -> new NoCertificateException(id));
+        if (orderDao.anyOrderHasCertificate(certificate)) {
+            throw new CertificateIsOrderedException(certificate.getId());
+        }
+        certificateDao.delete(certificate);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<GiftCertificateDto> findByParams(GiftCertificateDto certificateDto) {
+    public List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificateDto,
+            SortParamsDto sortParams) {
 
-        List<GiftCertificate> certificatesWithParams = certificateDao.findCertificateByParams(certificateDto);
-        if (certificateDto.getTag(0).getName() != null) {
-            List<GiftCertificate> certificatesWithTagParams = certificateDao
-                    .findCertificateByTagName(certificateDto.getTag(0).getName());
-            certificatesWithParams = certificatesWithParams
-                    .stream()
-                    .filter(certificatesWithTagParams::contains)
-                    .collect(Collectors.toList());
+        if (size > MAX_SIZE || size < 0) {
+            throw new SizeLimitException(MAX_SIZE, MIN_SIZE);
         }
-
-        List<GiftCertificateDto> certificateDtos = new ArrayList<>();
-        for (GiftCertificate c : certificatesWithParams) {
-            Set<Tag> tags = new HashSet<>();
-            Set<Long> tagsIds = tagDao.readCertificateTagsIdsByCertificateId(c.getId());
-            if (!tagsIds.isEmpty()) {
-                tags = tagDao.readTagsByIds(tagsIds);
-            }
-            certificateDtos.add(dtoConverter.convertToDto(c, tags));
+        long c=certificateDao.countFoundCertificates(certificateDto);
+        if (page < 0 || certificateDao.countFoundCertificates(certificateDto) < (page - 1) * size) {
+            throw new NoPageException(page, size);
         }
+        return certificateDao
+                .findCertificateByParams(page, size, certificateDto, sortParams);
+    }
 
-        return certificateDtos;
+    @Override
+    public long countFoundByParamsCertificates(GiftCertificateDto dto) {
 
+        return certificateDao.countFoundCertificates(dto);
     }
 
 }

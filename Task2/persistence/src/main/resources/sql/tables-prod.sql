@@ -20,4 +20,20 @@ CREATE TABLE gift_certificate_tag
     id             SERIAL PRIMARY KEY,
     certificate_id INTEGER REFERENCES gift_certificate (id),
     tag_id         INTEGER REFERENCES tag (id)
-)
+);
+
+CREATE TABLE usr
+(
+    id       SERIAL PRIMARY KEY,
+    name     VARCHAR(255) UNIQUE,
+    password VARCHAR(40)
+);
+
+CREATE TABLE ordr
+(
+    id             SERIAL PRIMARY KEY,
+    user_id        BIGINT    NOT NULL REFERENCES usr (id),
+    certificate_id BIGINT    NOT NULL REFERENCES gift_certificate (id),
+    cost           DECIMAL   NOT NULL,
+    purchase_date  TIMESTAMP NOT NULL
+);

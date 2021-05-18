@@ -3,6 +3,7 @@ package com.epam.esm.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,9 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateTagException;
-import com.epam.esm.exception.NoTagException;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.exception.tag.DuplicateTagException;
+import com.epam.esm.exception.tag.NoTagException;
+import com.epam.esm.exception.user.UsersOrderHasNoTags;
 
 /**
  * Implementation of tag service
@@ -25,7 +27,7 @@ public class TagServiceImpl implements TagService {
     private TagDao tagDao;
 
     @Autowired
-    public void setTagDao(TagDao tagDao) {
+    public TagServiceImpl(TagDao tagDao) {
 
         this.tagDao = tagDao;
     }
@@ -33,20 +35,21 @@ public class TagServiceImpl implements TagService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
-    public Long create(Tag tag) {
+    public TagDto create(TagDto tag) {
 
         if (tagDao.readTagByName(tag.getName()).isPresent()) {
             throw new DuplicateTagException(tag.getName());
         }
-        return tagDao.insert(tag);
+        return readTagById(tagDao.insert(tag));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Tag readTagById(long id) {
+    public TagDto readTagById(long id) {
 
         return tagDao.read(id).orElseThrow(() -> new NoTagException(id));
     }
@@ -59,38 +62,34 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(long id) {
 
-        if (!tagDao.read(id).isPresent()) {
+        Optional<TagDto> tag = tagDao.read(id);
+        if (!tag.isPresent()) {
             throw new NoTagException(id);
         }
-        tagDao.deleteCertificateTagsByTagId(id);
-        tagDao.delete(id);
+        tagDao.delete(tag.get());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<Tag> setTagsId(Set<Tag> tags) {
+    public TagDto readMostPopularTag() {
 
-        Set<Tag> tagsWithId = tagDao
-                .readTagsByNames(tags.stream().map(Tag::getName).collect(Collectors.toSet()));
-        Map<Boolean, List<Tag>> tagMap = tags.stream()
-                .collect(Collectors.partitioningBy(tagsWithId::contains));
-        Set<Tag> newTags = new HashSet<>(tagMap.get(false));
-        insertTagsIfNotExist(newTags);
-        tagsWithId.addAll(newTags);
-        return tagsWithId;
+        return tagDao.readTheMostPopularTagOfRichestUser().orElseThrow(UsersOrderHasNoTags::new);
     }
 
     /**
-     * Insert tags to storage if they not already exists
-     *
-     * @param tags with names, id from which will be set
+     * {@inheritDoc}
      */
-    private void insertTagsIfNotExist(Set<Tag> tags) {
+    @Override
+    public Set<TagDto> bindTagsWithIds(Set<TagDto> tags) {
 
-        tags.stream().filter(tag -> tag.getId() == null)
-                .forEach(tag -> tag.setId(tagDao.insert(tag)));
+        Set<TagDto> tagsWithId = tagDao
+                .readTagsByNames(tags.stream().map(TagDto::getName).collect(Collectors.toSet()));
+        Map<Boolean, List<TagDto>> tagMap = tags.stream()
+                .collect(Collectors.partitioningBy(tagsWithId::contains));
+        Set<TagDto> newTags = new HashSet<>(tagMap.get(false));
+        tagsWithId.addAll(newTags);
+        return tagsWithId;
     }
-
 }

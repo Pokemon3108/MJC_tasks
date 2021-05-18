@@ -3,26 +3,99 @@ package com.epam.esm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+
+import org.hibernate.envers.AuditJoinTable;
+import org.hibernate.envers.Audited;
 
 
 /**
  * The type Gift certificate is an entity of certificate
  */
+@Audited
+@Entity
 public class GiftCertificate {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
     private String description;
 
+    @Column
     private BigDecimal price;
 
+    @Column
     private Integer duration;
 
+    @Column
     private LocalDateTime createDate;
 
+    @Column
     private LocalDateTime lastUpdateDate;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "gift_certificate_tag",
+            joinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    @AuditJoinTable
+    private Set<Tag> tags;
+
+    @AuditJoinTable
+    @OneToMany
+    @JoinColumn(name = "certificate_id")
+    private Set<Order> orders;
+
+    @PrePersist
+    public void prePersist() {
+
+        this.createDate = LocalDateTime.now();
+        this.lastUpdateDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+
+        this.lastUpdateDate = LocalDateTime.now();
+    }
+
+    public Set<Order> getOrders() {
+
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+
+        this.orders = orders;
+    }
+
+    public Set<Tag> getTags() {
+
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+
+        this.tags = tags;
+    }
 
     /**
      * Gets id.

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.validation.Errors;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 class TagValidatorTest {
 
@@ -15,7 +15,7 @@ class TagValidatorTest {
 
         String errorName = "empty_name";
         Errors errors = Mockito.mock(Errors.class);
-        tagValidator.validate(new Tag(), errors);
+        tagValidator.validate(new TagDto(), errors);
         Mockito.verify(errors, Mockito.times(1)).reject(errorName);
     }
 
@@ -24,7 +24,7 @@ class TagValidatorTest {
 
         String errorName = "empty_name";
         Errors errors = Mockito.mock(Errors.class);
-        tagValidator.validate(new Tag("sport", 1L), errors);
+        tagValidator.validate(new TagDto(1L, "sport"), errors);
         Mockito.verify(errors, Mockito.times(0)).reject(errorName);
     }
 

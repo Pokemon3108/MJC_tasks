@@ -2,12 +2,9 @@ package com.epam.esm.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import com.epam.esm.entity.Tag;
 
 
 /**
@@ -29,14 +26,14 @@ public class GiftCertificateDto {
 
     private LocalDateTime lastUpdateDate;
 
-    private Set<Tag> tags = new HashSet<>();
+    private Set<TagDto> tags = new HashSet<>();
 
     /**
      * Gets tags.
      *
      * @return the tags
      */
-    public Set<Tag> getTags() {
+    public Set<TagDto> getTags() {
 
         return tags;
     }
@@ -46,7 +43,7 @@ public class GiftCertificateDto {
      *
      * @param tags the tags
      */
-    public void setTags(Set<Tag> tags) {
+    public void setTags(Set<TagDto> tags) {
 
         this.tags = tags;
     }
@@ -194,23 +191,13 @@ public class GiftCertificateDto {
     /**
      * Add tag.
      *
-     * @param tag the tag
+     * @param tagDto the tag dto
      */
-    public void addTag(Tag tag) {
+    public void addTag(TagDto tagDto) {
 
-        tags.add(tag);
+        tags.add(tagDto);
     }
 
-    /**
-     * Gets tag.
-     *
-     * @param index of tag in tag's storage
-     * @return the tag of certificate
-     */
-    public Tag getTag(int index) {
-
-        return (index < tags.size()) ? new ArrayList<>(tags).get(index) : null;
-    }
 
     @Override
     public boolean equals(Object o) {

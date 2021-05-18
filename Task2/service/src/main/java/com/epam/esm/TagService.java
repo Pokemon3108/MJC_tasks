@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 /**
  * The interface Tag service for CRD operation
@@ -16,9 +16,9 @@ public interface TagService {
      * Insert tag into storage
      *
      * @param tag that will be saved
-     * @return the tag's id
+     * @return created tag
      */
-    Long create(Tag tag);
+    TagDto create(TagDto tag);
 
     /**
      * Find tag in storage by id
@@ -26,7 +26,7 @@ public interface TagService {
      * @param id of tag
      * @return the tag from storage
      */
-    Tag readTagById(long id);
+    TagDto readTagById(long id);
 
     /**
      * Delete tag from storage
@@ -38,9 +38,16 @@ public interface TagService {
     /**
      * Set id for named tags
      *
-     * @param tags
-     * @return
+     * @param tags - tags with names
+     * @return filled tags
      */
-    Set<Tag> setTagsId(Set<Tag> tags);
+    Set<TagDto> bindTagsWithIds(Set<TagDto> tags);
+
+    /**
+     * Read the most popular tag in orders of user, that made orders with the highest price
+     *
+     * @return the most popular tag
+     */
+    TagDto readMostPopularTag();
 
 }

@@ -1,189 +1,128 @@
 package com.epam.esm.dao.impl;
 
-import java.sql.PreparedStatement;
-import java.sql.Types;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.mapper.TagMapper;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.converter.TagDtoConverter;
 import com.epam.esm.entity.Tag;
 
-
 /**
- * The type Tag dao uses database as storage and works with it
+ * Jpa implementation for access to database for work with tags
  */
 @Repository
 public class TagDaoImpl implements TagDao {
 
-    private static final String INSERT_TAG = "INSERT INTO tag (name) VALUES (?)";
+    private TagDtoConverter tagDtoConverter;
 
-    private static final String READ_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
+    private EntityManager em;
 
-    private static final String READ_TAG_BY_ID = "SELECT id, name FROM tag WHERE id=?";
-
-    private static final String DELETE_TAG_BY_ID = "DELETE FROM tag WHERE id=?";
-
-    private static final String DELETE_CERTIFICATE_TAGS_BY_TAG_ID = "DELETE FROM gift_certificate_tag WHERE tag_id=?";
-
-    private static final String INSERT_CERTIFICATE_TAGS = "INSERT INTO gift_certificate_tag" +
-            "(certificate_id, tag_id) VALUES(?, ?)";
-
-    private static final String READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id " +
-            "FROM gift_certificate_tag WHERE certificate_id=?";
-
-    private static final String DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID = "DELETE FROM gift_certificate_tag "
-            + "WHERE certificate_id=?";
-
-    private static final String READ_TAGS_BY_TAGS_NAMES = "SELECT id, name FROM tag WHERE name IN(%s)";
-
-    private static final String READ_TAGS_BY_TAGS_IDS = "SELECT id, name FROM tag WHERE id IN(%s)";
-
-
-    private JdbcTemplate jdbcTemplate;
-
-    private TagMapper tagMapper;
-
-    /**
-     * Sets jdbc template.
-     *
-     * @param jdbcTemplate
-     */
     @Autowired
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    public TagDaoImpl(TagDtoConverter tagDtoConverter) {
 
-        this.jdbcTemplate = jdbcTemplate;
+        this.tagDtoConverter = tagDtoConverter;
     }
 
-    /**
-     * Sets tag mapper.
-     *
-     * @param tagMapper
-     */
-    @Autowired
-    public void setTagMapper(TagMapper tagMapper) {
+    @PersistenceContext
+    public void setEm(EntityManager em) {
 
-        this.tagMapper = tagMapper;
+        this.em = em;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Long insert(Tag tag) {
+    public Long insert(TagDto dto) {
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(INSERT_TAG, new String[]{"id"});
-            ps.setString(1, tag.getName());
-            return ps;
-        }, keyHolder);
-        return keyHolder.getKey().longValue();
+        Tag tag = tagDtoConverter.convertToEntity(dto);
+        em.persist(tag);
+        return tag.getId();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void delete(long id) {
+    public Optional<TagDto> read(long id) {
 
-        jdbcTemplate.update(DELETE_TAG_BY_ID, id);
+        Tag tag = em.find(Tag.class, id);
+        return Optional.ofNullable(tagDtoConverter.convertToDto(tag));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tag> read(long id) {
+    public void delete(TagDto dto) {
 
-        List<Tag> tagList = jdbcTemplate.query(READ_TAG_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, tagMapper);
-        return (tagList.isEmpty()) ? Optional.empty() : Optional.ofNullable(tagList.get(0));
+        Tag tag = em.find(Tag.class, dto.getId());
+        tag.getCertificates().forEach(c -> c.getTags().remove(tag));
+        em.remove(tag);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tag> readTagByName(String name) {
+    public Optional<TagDto> readTagByName(String name) {
 
-        List<Tag> tagList = jdbcTemplate
-                .query(READ_TAG_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, tagMapper);
-        return (tagList.isEmpty()) ? Optional.empty() : Optional.ofNullable(tagList.get(0));
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = criteriaQuery.from(Tag.class);
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("name"), name));
+
+        TypedQuery<Tag> query = em.createQuery(criteriaQuery);
+        return query.getResultList().stream().findFirst().map(t -> tagDtoConverter.convertToDto(t));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteCertificateTagsByTagId(long tagId) {
+    public Set<TagDto> readTagsByNames(Set<String> tagNames) {
 
-        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_TAG_ID, tagId);
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = criteriaQuery.from(Tag.class);
+
+        criteriaQuery.select(root).where(root.get("name").in(tagNames));
+        TypedQuery<Tag> query = em.createQuery(criteriaQuery);
+        return tagDtoConverter.convertToDtos(query.getResultStream().collect(Collectors.toSet()));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void bindCertificateTags(Set<Tag> tagSet, Long certificateId) {
+    public Optional<TagDto> readTheMostPopularTagOfRichestUser() {
 
-        tagSet.forEach(tag -> jdbcTemplate
-                .update(INSERT_CERTIFICATE_TAGS, certificateId, tag.getId()));
-    }
+        Query query = em.createNativeQuery(
+                "SELECT tag.name, tag.id FROM tag JOIN gift_certificate_tag AS gct ON tag.id=gct.tag_id "
+                        + "JOIN gift_certificate AS gc ON gc.id=gct.certificate_id "
+                        + "JOIN ordr ON ordr.certificate_id=gc.id "
+                        + "JOIN usr ON usr.id=ordr.user_id WHERE usr.id = "
+                        + "(SELECT usr.id FROM usr join ordr on usr.id=ordr.user_id GROUP BY usr.id "
+                        + "ORDER BY SUM(cost) DESC LIMIT 1) "
+                        + "GROUP BY tag.name, tag.id ORDER BY COUNT(tag.name) DESC LIMIT 1"
+                ,
+                Tag.class);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<Long> readCertificateTagsIdsByCertificateId(long certificateId) {
+        Tag tag = (Tag) query.getSingleResult();
+        return Optional.ofNullable(tagDtoConverter.convertToDto(tag));
 
-        return new HashSet<>(
-                jdbcTemplate.queryForList(READ_CERTIFICATE_TAGS_ID_BY_CERTIFICATE_ID, new Object[]{certificateId},
-                        new int[]{Types.INTEGER}, Long.class));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void unbindCertificateTags(long certificateId) {
-
-        jdbcTemplate.update(DELETE_CERTIFICATE_TAGS_BY_CERTIFICATE_ID, certificateId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<Tag> readTagsByNames(Set<String> tagNames) {
-
-        String inSql = String.join(",", Collections.nCopies(tagNames.size(), "?"));
-
-        List<Tag> tags = jdbcTemplate.query(String.format(READ_TAGS_BY_TAGS_NAMES, inSql),
-                tagMapper, tagNames.toArray());
-
-        return new HashSet<>(tags);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<Tag> readTagsByIds(Set<Long> ids) {
-
-        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
-
-        List<Tag> tags = jdbcTemplate.query(String.format(READ_TAGS_BY_TAGS_IDS, inSql),
-                tagMapper, ids.toArray());
-
-        return new HashSet<>(tags);
     }
 }

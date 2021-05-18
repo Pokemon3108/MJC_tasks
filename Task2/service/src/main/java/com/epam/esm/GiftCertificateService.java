@@ -2,14 +2,12 @@ package com.epam.esm;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SortParamsDto;
 
 /**
  * The interface for gift certificate CRUD operations
  */
-@Service
 public interface GiftCertificateService {
 
     /**
@@ -18,7 +16,7 @@ public interface GiftCertificateService {
      * @param certificate that will be saved in storage
      * @return the id of certificate
      */
-    Long add(GiftCertificateDto certificate);
+    GiftCertificateDto add(GiftCertificateDto certificate);
 
     /**
      * Read gift certificate from storage by id
@@ -43,10 +41,17 @@ public interface GiftCertificateService {
     void delete(long id);
 
     /**
-     * Search certificates by params
-     *
+     * @param page        - the page number
+     * @param size        - maximum size of result list
      * @param certificate with params for search
-     * @return list of found certificates
+     * @param sortParams  the sorting params
+     * @return list of found and sorted certificates
      */
-    List<GiftCertificateDto> findByParams(GiftCertificateDto certificate);
+    List<GiftCertificateDto> findByParams(int page, int size, GiftCertificateDto certificate, SortParamsDto sortParams);
+
+    /**
+     * @param dto - the DTO object with search params
+     * @return amount of found certificates
+     */
+    long countFoundByParamsCertificates(GiftCertificateDto dto);
 }

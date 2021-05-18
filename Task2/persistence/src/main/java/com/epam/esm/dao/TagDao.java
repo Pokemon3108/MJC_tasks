@@ -3,7 +3,7 @@ package com.epam.esm.dao;
 import java.util.Optional;
 import java.util.Set;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.TagDto;
 
 
 /**
@@ -18,22 +18,22 @@ public interface TagDao {
      * @param tag that will be inserted
      * @return the id of tag in storage
      */
-    Long insert(Tag tag);
+    Long insert(TagDto tag);
 
     /**
      * Read tag by id.
      *
      * @param id
-     * @return tag from storage, or {@code Optional.empty()} if it is not found
+     * @return {@code Optional} mapper of tag dto , or {@code Optional.empty()} if it is not found
      */
-    Optional<Tag> read(long id);
+    Optional<TagDto> read(long id);
 
     /**
-     * Delete tag from storage by id.
+     * Delete tag from storage
      *
-     * @param id
+     * @param tag to be deleted
      */
-    void delete(long id);
+    void delete(TagDto tag);
 
     /**
      * Read tag by name.
@@ -41,37 +41,7 @@ public interface TagDao {
      * @param name the name
      * @return tag from storage, or {@code Optional.empty()} if it is not found
      */
-    Optional<Tag> readTagByName(String name);
-
-    /**
-     * Delete tags with id  {@code tagId}  from certificates
-     *
-     * @param tagId
-     */
-    void deleteCertificateTagsByTagId(long tagId);
-
-    /**
-     * Bind certificate tags with certificate
-     *
-     * @param tagSet        certificate tags
-     * @param certificateId the id of certificate
-     */
-    void bindCertificateTags(Set<Tag> tagSet, Long certificateId);
-
-    /**
-     * Get certificate tags ids
-     *
-     * @param certificateId the id of certificate
-     * @return certificate tags
-     */
-    Set<Long> readCertificateTagsIdsByCertificateId(long certificateId);
-
-    /**
-     * Unbind all certificate tags.
-     *
-     * @param certificateId
-     */
-    void unbindCertificateTags(long certificateId);
+    Optional<TagDto> readTagByName(String name);
 
     /**
      * Read tags by their names
@@ -79,13 +49,12 @@ public interface TagDao {
      * @param tagNames
      * @return the set of filled tags
      */
-    Set<Tag> readTagsByNames(Set<String> tagNames);
+    Set<TagDto> readTagsByNames(Set<String> tagNames);
 
     /**
-     * Read tags by their ids
+     * Read the most popular tag in orders of user, that made orders with the highest price
      *
-     * @param ids of tags
-     * @return the set of filled tags
+     * @return tag from storage, or {@code Optional.empty()} if it is not found
      */
-    Set<Tag> readTagsByIds(Set<Long> ids);
+    Optional<TagDto> readTheMostPopularTagOfRichestUser();
 }
