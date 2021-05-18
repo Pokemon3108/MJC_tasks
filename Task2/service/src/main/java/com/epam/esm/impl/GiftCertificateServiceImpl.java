@@ -15,9 +15,9 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
@@ -30,7 +30,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private static final int MAX_SIZE = 100;
 
-    private static final int MIN_SIZE=0;
+    private static final int MIN_SIZE = 0;
 
     private GiftCertificateDao certificateDao;
 
@@ -59,7 +59,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
         Set<TagDto> tags = tagService.bindTagsWithIds(certificateDto.getTags());
         certificateDto.setTags(tags);
-        return read(certificateDao.insert(certificateDto));
+        return certificateDao.insert(certificateDto);
     }
 
     /**
@@ -152,7 +152,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (size > MAX_SIZE || size < 0) {
             throw new SizeLimitException(MAX_SIZE, MIN_SIZE);
         }
-        long c=certificateDao.countFoundCertificates(certificateDto);
         if (page < 0 || certificateDao.countFoundCertificates(certificateDto) < (page - 1) * size) {
             throw new NoPageException(page, size);
         }

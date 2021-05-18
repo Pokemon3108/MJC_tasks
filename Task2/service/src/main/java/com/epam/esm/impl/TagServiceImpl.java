@@ -42,7 +42,7 @@ public class TagServiceImpl implements TagService {
         if (tagDao.readTagByName(tag.getName()).isPresent()) {
             throw new DuplicateTagException(tag.getName());
         }
-        return readTagById(tagDao.insert(tag));
+        return tagDao.insert(tag);
     }
 
     /**

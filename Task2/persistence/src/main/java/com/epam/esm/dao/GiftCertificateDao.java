@@ -14,9 +14,9 @@ public interface GiftCertificateDao {
 
     /**
      * @param certificateDto that will be saved in storage
-     * @return id of {@code certificateDto} from storage
+     * @return created certificate
      */
-    Long insert(GiftCertificateDto certificateDto);
+    GiftCertificateDto insert(GiftCertificateDto certificateDto);
 
     /**
      * @param certificateDto certificate with params for update

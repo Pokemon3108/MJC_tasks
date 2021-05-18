@@ -46,11 +46,11 @@ public class TagDaoImpl implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Long insert(TagDto dto) {
+    public TagDto insert(TagDto dto) {
 
         Tag tag = tagDtoConverter.convertToEntity(dto);
         em.persist(tag);
-        return tag.getId();
+        return tagDtoConverter.convertToDto(tag);
     }
 
     /**

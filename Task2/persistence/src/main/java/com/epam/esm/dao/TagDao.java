@@ -16,9 +16,9 @@ public interface TagDao {
      * Insert tag.
      *
      * @param tag that will be inserted
-     * @return the id of tag in storage
+     * @return created tag
      */
-    Long insert(TagDto tag);
+    TagDto insert(TagDto tag);
 
     /**
      * Read tag by id.

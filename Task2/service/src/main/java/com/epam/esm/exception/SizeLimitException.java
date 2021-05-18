@@ -9,7 +9,7 @@ public class SizeLimitException extends RuntimeException {
     public SizeLimitException(int maxSize, int minSize) {
 
         this.maxSize = maxSize;
-        this.minSize=minSize;
+        this.minSize = minSize;
     }
 
     public SizeLimitException() {

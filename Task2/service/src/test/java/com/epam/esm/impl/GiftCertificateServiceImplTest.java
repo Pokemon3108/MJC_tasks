@@ -24,9 +24,9 @@ import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 
@@ -95,8 +95,8 @@ class GiftCertificateServiceImplTest {
         Mockito.when(certificateDao.readCertificateByName(certificateDto.getName()))
                 .thenReturn(Optional.empty());
         Mockito.when(tagService.bindTagsWithIds(tags)).thenReturn(tagsWithIds);
-        Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
-        Mockito.when(certificateDao.read(id)).thenReturn(Optional.ofNullable(certificateDto));
+        certificateDto.setId(id);
+        Mockito.when(certificateDao.insert(certificateDto)).thenReturn(certificateDto);
 
         Assertions.assertEquals(certificateDto, certificateService.add(certificateDto));
 

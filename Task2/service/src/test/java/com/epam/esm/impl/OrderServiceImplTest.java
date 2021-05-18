@@ -17,8 +17,8 @@ import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.order.NoOrderException;
 
 class OrderServiceImplTest {
