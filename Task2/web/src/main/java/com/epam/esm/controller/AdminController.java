@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.AdminService;
-import com.epam.esm.dto.TagDto;
+import com.epam.esm.model.TagModel;
+import com.epam.esm.model.assembler.TagModelAssembler;
 
 @RestController
 @RequestMapping("/admin")
@@ -14,15 +15,18 @@ public class AdminController {
 
     private AdminService adminService;
 
+    private TagModelAssembler tagModelAssembler;
+
     @Autowired
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, TagModelAssembler tagModelAssembler) {
 
         this.adminService = adminService;
+        this.tagModelAssembler = tagModelAssembler;
     }
 
     @GetMapping("/tags/mostPopular")
-    public TagDto getMostPopularTag() {
+    public TagModel getMostPopularTag() {
 
-        return adminService.getMostPopularTagOfRichestUser();
+        return tagModelAssembler.toModel(adminService.getMostPopularTagOfRichestUser());
     }
 }
