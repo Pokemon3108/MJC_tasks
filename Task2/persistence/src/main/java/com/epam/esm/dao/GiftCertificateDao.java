@@ -44,7 +44,7 @@ public interface GiftCertificateDao {
      * @param certificateName - the name of certificate
      * @return certificate from storage
      */
-    Optional<GiftCertificateDto> readCertificateByName(String certificateName);
+    Optional<GiftCertificateDto> read(String certificateName);
 
     /**
      * @param certificateDto with filled params, for which the search will be performed

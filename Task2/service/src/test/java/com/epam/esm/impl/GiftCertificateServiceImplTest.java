@@ -92,7 +92,7 @@ class GiftCertificateServiceImplTest {
         Set<TagDto> tags = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
         Set<TagDto> tagsWithIds = new HashSet<>(Arrays.asList(new TagDto(1L, "tag1"), new TagDto("tag2")));
 
-        Mockito.when(certificateDao.readCertificateByName(certificateDto.getName()))
+        Mockito.when(certificateDao.read(certificateDto.getName()))
                 .thenReturn(Optional.empty());
         Mockito.when(tagService.bindTagsWithIds(tags)).thenReturn(tagsWithIds);
         certificateDto.setId(id);
@@ -100,7 +100,7 @@ class GiftCertificateServiceImplTest {
 
         Assertions.assertEquals(certificateDto, certificateService.add(certificateDto));
 
-        Mockito.verify(certificateDao, times(1)).readCertificateByName(certificateDto.getName());
+        Mockito.verify(certificateDao, times(1)).read(certificateDto.getName());
         Mockito.verify(tagService, times(1)).bindTagsWithIds(tagsWithIds);
     }
 
@@ -108,7 +108,7 @@ class GiftCertificateServiceImplTest {
     void throwsDuplicateCertificateExceptionReadTest() {
 
         final String name = certificateDto.getName();
-        Mockito.when(certificateDao.readCertificateByName(name)).thenReturn(Optional.of(certificateDto));
+        Mockito.when(certificateDao.read(name)).thenReturn(Optional.of(certificateDto));
         Assertions.assertThrows(DuplicateCertificateException.class, () -> certificateService.add(certificateDto));
     }
 

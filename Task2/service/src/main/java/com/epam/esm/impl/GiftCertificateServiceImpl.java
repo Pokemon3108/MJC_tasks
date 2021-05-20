@@ -53,7 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto add(GiftCertificateDto certificateDto) {
 
-        if (certificateDao.readCertificateByName(certificateDto.getName()).isPresent()) {
+        if (certificateDao.read(certificateDto.getName()).isPresent()) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }
 
@@ -89,7 +89,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 .orElseThrow(() -> new NoCertificateException(certificateId));
 
         Optional<GiftCertificateDto> certificateWithName = certificateDao
-                .readCertificateByName(certificateDto.getName());
+                .read(certificateDto.getName());
         if (certificateWithName.isPresent() && !certificateWithName.get().getId().equals(certificateDto.getId())) {
             throw new DuplicateCertificateException(certificateDto.getName());
         }

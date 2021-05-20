@@ -64,6 +64,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<UserDto> read(String username) {
 
-        return Optional.empty();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> certificateRoot = criteriaQuery.from(User.class);
+
+        criteriaQuery.select(certificateRoot)
+                .where(criteriaBuilder.equal(certificateRoot.get("name"), username));
+        TypedQuery<User> query = em.createQuery(criteriaQuery);
+        return query.getResultStream().findFirst().map(c -> userDtoConverter.convertToDto(c));
     }
 }

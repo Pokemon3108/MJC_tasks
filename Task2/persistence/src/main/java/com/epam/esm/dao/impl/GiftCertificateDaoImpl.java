@@ -111,7 +111,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<GiftCertificateDto> readCertificateByName(String certificateName) {
+    public Optional<GiftCertificateDto> read(String certificateName) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> criteriaQuery = criteriaBuilder.createQuery(GiftCertificate.class);

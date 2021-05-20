@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
+import org.springframework.security.web.csrf.InvalidCsrfTokenException;
+import org.springframework.security.web.csrf.MissingCsrfTokenException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -150,6 +155,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.MAX_SIZE_LIMIT.getCode(),
                 localeService.getLocaleMessage("max_size_limit", ex.getMaxSize()));
+    }
+
+    @ExceptionHandler({AuthenticationException.class, MissingCsrfTokenException.class, InvalidCsrfTokenException.class,
+            SessionAuthenticationException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Error handleAuthenticationException(RuntimeException ex) {
+
+        return new Error(ErrorCode.NO_AUTHORIZED.getCode(), "error.authorization");
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleUsernameNotFoundException(UsernameNotFoundException ex) {
+
+        return new Error(ErrorCode.NO_USERNAME.getCode(),
+                localeService.getLocaleMessage("no_username", ex.getMessage()));
     }
 
 
