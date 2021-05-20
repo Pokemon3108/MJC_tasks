@@ -1,6 +1,9 @@
 package com.epam.esm.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.epam.esm.UserService;
@@ -14,7 +17,7 @@ import com.epam.esm.exception.user.NoUsersException;
  * Implementation of user service
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserDao userDao;
 
@@ -40,5 +43,11 @@ public class UserServiceImpl implements UserService {
     public UserDto readRichest() {
 
         return userDao.readRichest().orElseThrow(NoUsersException::new);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        return null;
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.stereotype.Repository;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
@@ -26,10 +28,11 @@ import io.jsonwebtoken.impl.TextCodec;
 @PropertySource("file:application.properties")
 public class JwtTokenRepository implements CsrfTokenRepository {
 
-    @Value("${tokenLifeTime}")
+    @Value("${security.jwt.token.expire-length}")
     private int tokenLifeTime;
 
-    private static final String SECRET = "certificate_secret";
+    @Value("${security.jwt.token.secret-key:secret}")
+    private String secretKey;
 
     @Override
     public CsrfToken generateToken(HttpServletRequest request) {
@@ -43,7 +46,7 @@ public class JwtTokenRepository implements CsrfTokenRepository {
                 .setId(id)
                 .setIssuedAt(now)
                 .setExpiration(exp)
-                .signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(SECRET))
+                .signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.decode(secretKey))
                 .compact();
 
         return new DefaultCsrfToken("x-csrf-token", "_csrf", token);
@@ -77,5 +80,12 @@ public class JwtTokenRepository implements CsrfTokenRepository {
         if (response.getHeaderNames().contains("x-csrf-token")) {
             response.setHeader("x-csrf-token", "");
         }
+    }
+
+    public boolean validateToken(String token) {
+
+        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+        final Date now = new Date();
+        return claims.getBody().getExpiration().after(now);
     }
 }

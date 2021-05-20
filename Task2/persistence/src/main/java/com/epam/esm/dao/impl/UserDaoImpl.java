@@ -60,4 +60,10 @@ public class UserDaoImpl implements UserDao {
         query.setMaxResults(1);
         return query.getResultStream().findFirst().map(user -> userDtoConverter.convertToDto(user));
     }
+
+    @Override
+    public Optional<UserDto> read(String username) {
+
+        return Optional.empty();
+    }
 }

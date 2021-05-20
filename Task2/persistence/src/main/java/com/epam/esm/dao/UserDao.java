@@ -13,4 +13,6 @@ public interface UserDao {
 
     Optional<UserDto> readRichest();
 
+    Optional<UserDto> read(String username);
+
 }
