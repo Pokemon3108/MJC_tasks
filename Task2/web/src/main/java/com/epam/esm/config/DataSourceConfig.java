@@ -18,7 +18,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:database.properties")
-public class DataSourceConfiguration {
+public class DataSourceConfig {
 
     @Bean
     @Profile("dev")

@@ -8,32 +8,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private JwtTokenRepository tokenRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public JwtTokenFilter(JwtTokenRepository tokenRepository) {
+    public JwtTokenFilter(JwtTokenProvider tokenProvider) {
 
-        this.tokenRepository = tokenRepository;
+        this.jwtTokenProvider = tokenProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
 
-        CsrfToken csrfToken = this.tokenRepository.loadToken(request);
-
-        if (csrfToken == null) {
-            csrfToken = tokenRepository.generateToken(request);
-            tokenRepository.saveToken(csrfToken, request, response);
+        String token = jwtTokenProvider.loadToken((HttpServletRequest) request);
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            Authentication auth = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
         filterChain.doFilter(request, response);
     }
 }

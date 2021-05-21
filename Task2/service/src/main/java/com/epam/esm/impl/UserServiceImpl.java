@@ -47,6 +47,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userDao.readRichest().orElseThrow(NoUsersException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDetails loadUserByUsername(String username) {
 
