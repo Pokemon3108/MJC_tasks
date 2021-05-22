@@ -46,24 +46,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<UserDto> readRichest() {
-
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> userRoot = criteriaQuery.from(User.class);
-
-        Join<User, Order> join = userRoot.join("orders", JoinType.LEFT);
-        criteriaQuery.select(userRoot)
-                .groupBy(userRoot.get("id"))
-                .orderBy(criteriaBuilder.desc(criteriaBuilder.sum(join.get("cost"))));
-        TypedQuery<User> query = em.createQuery(criteriaQuery);
-        query.setMaxResults(1);
-        return query.getResultStream()
-                .findFirst()
-                .map(user -> userDtoConverter.convertToDto(user));
-    }
-
-    @Override
     public Optional<User> read(String username) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

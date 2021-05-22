@@ -11,15 +11,15 @@ public interface UserService {
      * Read user by id
      *
      * @param id - the user id
-     * @return filled user
+     * @return user
      */
     UserDto read(Long id);
 
     /**
-     * Read user with the highest cost of order
-     *
-     * @return user from storage
+     * Read user by name
+     * @param username - the name of user
+     * @return user
      */
-    UserDto readRichest();
+    UserDto read(String username);
 
 }

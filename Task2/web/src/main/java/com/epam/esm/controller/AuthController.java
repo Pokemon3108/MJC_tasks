@@ -59,7 +59,8 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<?> currentUser(@AuthenticationPrincipal UserDetails userDetails) {
+
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("roles", userDetails.getAuthorities()

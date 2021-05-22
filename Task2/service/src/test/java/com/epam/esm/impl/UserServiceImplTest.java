@@ -34,11 +34,4 @@ class UserServiceImplTest {
         Assertions.assertThrows(NoUserWithIdException.class, () -> userService.read(id));
     }
 
-    @Test
-    void readRichestThrowsException() {
-
-        Mockito.when(userDao.readRichest()).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoUsersException.class, () -> userService.readRichest());
-    }
-
 }

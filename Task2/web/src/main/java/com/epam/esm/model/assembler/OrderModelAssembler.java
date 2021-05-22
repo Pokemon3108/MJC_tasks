@@ -37,7 +37,7 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
 
         orderModel.add(
                 linkTo(methodOn(OrderController.class).read(entity.getId())).withSelfRel(),
-                linkTo(methodOn(OrderController.class).create(entity.getUser().getId(), null)).withRel("create")
+                linkTo(methodOn(OrderController.class).create(null, null)).withRel("create")
         );
 
         orderModel.setCost(entity.getCost());
@@ -55,7 +55,7 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
         AtomicReference<Long> userId = new AtomicReference<>();
         entities.forEach(e -> userId.set(e.getUser().getId()));
         CollectionModel<OrderModel> collectionModel = super.toCollectionModel(entities);
-        collectionModel.add(linkTo(methodOn(OrderController.class).create(userId.get(), null))
+        collectionModel.add(linkTo(methodOn(OrderController.class).create(null, null))
                 .withRel("create"));
         return collectionModel;
     }

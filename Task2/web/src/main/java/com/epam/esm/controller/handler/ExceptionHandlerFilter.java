@@ -1,6 +1,9 @@
 package com.epam.esm.controller.handler;
 
+import java.io.IOException;
+
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
@@ -22,11 +27,12 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
 
         try {
             filterChain.doFilter(request, response);
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {
             resolver.resolveException(request, response, null, e);
         }
     }

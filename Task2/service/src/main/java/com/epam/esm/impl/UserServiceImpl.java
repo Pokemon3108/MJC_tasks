@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.epam.esm.UserService;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.converter.UserDtoConverter;
 import com.epam.esm.exception.user.NoUserWithIdException;
-import com.epam.esm.exception.user.NoUsersException;
 
 
 /**
@@ -21,10 +21,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserDao userDao;
 
+    private UserDtoConverter userDtoConverter;
+
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, UserDtoConverter userDtoConverter) {
 
         this.userDao = userDao;
+        this.userDtoConverter = userDtoConverter;
     }
 
     /**
@@ -40,9 +43,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * {@inheritDoc}
      */
     @Override
-    public UserDto readRichest() {
+    public UserDto read(String username) {
 
-        return userDao.readRichest().orElseThrow(NoUsersException::new);
+        return userDtoConverter.convertToDto(userDao.read(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username)));
     }
 
     /**
