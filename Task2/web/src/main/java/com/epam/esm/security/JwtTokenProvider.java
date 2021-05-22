@@ -1,17 +1,13 @@
 package com.epam.esm.security;
 
-import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -39,8 +34,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
 
-    @Value("${security.jwt.token.prefix}")
-    private String tokenPrefix;
+    private static final String TOKEN_PREFIX = "Bearer ";
 
     private UserDetailsService userService;
 
@@ -76,8 +70,8 @@ public class JwtTokenProvider {
     public String loadToken(HttpServletRequest request) {
 
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith(tokenPrefix)) {
-            return bearerToken.substring(tokenPrefix.length());
+        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
+            return bearerToken.substring(TOKEN_PREFIX.length());
         }
         return null;
     }

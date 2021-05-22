@@ -1,4 +1,4 @@
-package com.epam.esm.controller;
+package com.epam.esm.controller.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +34,8 @@ import com.epam.esm.exception.tag.NoTagException;
 import com.epam.esm.exception.user.NoUserWithIdException;
 import com.epam.esm.exception.user.NoUsersException;
 import com.epam.esm.exception.user.UsersOrderHasNoTags;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -172,6 +174,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.NO_USERNAME.getCode(),
                 localeService.getLocaleMessage("no_username", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Error handleJwtExpiredException(ExpiredJwtException ex) {
+
+        return new Error(ErrorCode.JWT_EXPIRED.getCode(),
+                localeService.getLocaleMessage("jwt_expired", ex.getClaims().getExpiration()));
     }
 
 

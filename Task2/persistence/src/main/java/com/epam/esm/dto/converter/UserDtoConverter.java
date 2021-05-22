@@ -19,7 +19,7 @@ public class UserDtoConverter extends Converter<User, UserDto> {
         }
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
-        userDto.setName(user.getName());
+        userDto.setName(user.getUsername());
         userDto.setPassword(user.getPassword());
         return userDto;
     }
@@ -32,7 +32,7 @@ public class UserDtoConverter extends Converter<User, UserDto> {
         }
         User user = new User();
         user.setId(dto.getId());
-        user.setName(dto.getName());
+        user.setUsername(dto.getName());
         user.setPassword(dto.getPassword());
         return user;
     }

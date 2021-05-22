@@ -11,10 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
+import com.epam.esm.controller.handler.ExceptionHandlerFilter;
 import com.epam.esm.security.JwtConfigurer;
 import com.epam.esm.security.JwtTokenFilter;
 
@@ -28,20 +29,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userService;
 
+    private ExceptionHandlerFilter handlerFilter;
+
     @Autowired
-    public SecurityConfig(JwtTokenFilter tokenFilter, JwtConfigurer jwtConfigurer,
+    public SecurityConfig(JwtTokenFilter tokenFilter, JwtConfigurer jwtConfigurer, ExceptionHandlerFilter handlerFilter,
             @Qualifier("userServiceImpl") UserDetailsService userService) {
 
         this.tokenFilter = tokenFilter;
         this.jwtConfigurer = jwtConfigurer;
         this.userService = userService;
+        this.handlerFilter = handlerFilter;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
 
         return NoOpPasswordEncoder.getInstance();
-
+//        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -49,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
+                .addFilterBefore(handlerFilter, LogoutFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
