@@ -78,7 +78,7 @@ public class TagDaoImpl implements TagDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TagDto> readTagByName(String name) {
+    public Optional<TagDto> read(String name) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
@@ -86,7 +86,10 @@ public class TagDaoImpl implements TagDao {
         criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("name"), name));
 
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return query.getResultList().stream().findFirst().map(t -> tagDtoConverter.convertToDto(t));
+        return query.getResultList()
+                .stream()
+                .findFirst()
+                .map(t -> tagDtoConverter.convertToDto(t));
     }
 
     /**
@@ -101,7 +104,8 @@ public class TagDaoImpl implements TagDao {
 
         criteriaQuery.select(root).where(root.get("name").in(tagNames));
         TypedQuery<Tag> query = em.createQuery(criteriaQuery);
-        return tagDtoConverter.convertToDtos(query.getResultStream().collect(Collectors.toSet()));
+        return tagDtoConverter.convertToDtos(query.getResultStream()
+                .collect(Collectors.toSet()));
     }
 
     /**

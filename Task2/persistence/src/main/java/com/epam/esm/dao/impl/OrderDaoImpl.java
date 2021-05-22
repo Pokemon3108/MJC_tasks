@@ -83,7 +83,8 @@ public class OrderDaoImpl implements OrderDao {
         TypedQuery<Order> q = em.createQuery(criteriaQuery);
         q.setFirstResult((page - 1) * size);
         q.setMaxResults(size);
-        return orderDtoConverter.convertToDtos(q.getResultStream().collect(Collectors.toSet()));
+        return orderDtoConverter.convertToDtos(q.getResultStream()
+                .collect(Collectors.toSet()));
     }
 
     /**

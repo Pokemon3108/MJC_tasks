@@ -164,7 +164,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Error handleAuthenticationException(RuntimeException ex) {
 
-        return new Error(ErrorCode.NO_AUTHORIZED.getCode(), ex.getClass().toString());
+        return new Error(ErrorCode.NO_AUTHORIZED.getCode(), ex.getMessage());
 //                localeService.getLocaleMessage("error.authorization"));
     }
 

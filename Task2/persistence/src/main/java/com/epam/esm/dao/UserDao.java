@@ -3,6 +3,7 @@ package com.epam.esm.dao;
 import java.util.Optional;
 
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.User;
 
 /**
  * Interface for work with user entities
@@ -13,6 +14,6 @@ public interface UserDao {
 
     Optional<UserDto> readRichest();
 
-    Optional<UserDto> read(String username);
+    Optional<User> read(String username);
 
 }

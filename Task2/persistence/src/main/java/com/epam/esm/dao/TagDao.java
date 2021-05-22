@@ -41,7 +41,7 @@ public interface TagDao {
      * @param name the name
      * @return tag from storage, or {@code Optional.empty()} if it is not found
      */
-    Optional<TagDto> readTagByName(String name);
+    Optional<TagDto> read(String name);
 
     /**
      * Read tags by their names

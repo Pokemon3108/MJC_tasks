@@ -120,7 +120,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         criteriaQuery.select(certificateRoot)
                 .where(criteriaBuilder.equal(certificateRoot.get("name"), certificateName));
         TypedQuery<GiftCertificate> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().findFirst().map(c -> converter.convertToDto(c));
+        return query.getResultStream()
+                .findFirst()
+                .map(c -> converter.convertToDto(c));
     }
 
     /**

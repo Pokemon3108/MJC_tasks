@@ -58,19 +58,22 @@ public class UserDaoImpl implements UserDao {
                 .orderBy(criteriaBuilder.desc(criteriaBuilder.sum(join.get("cost"))));
         TypedQuery<User> query = em.createQuery(criteriaQuery);
         query.setMaxResults(1);
-        return query.getResultStream().findFirst().map(user -> userDtoConverter.convertToDto(user));
+        return query.getResultStream()
+                .findFirst()
+                .map(user -> userDtoConverter.convertToDto(user));
     }
 
     @Override
-    public Optional<UserDto> read(String username) {
+    public Optional<User> read(String username) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> certificateRoot = criteriaQuery.from(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("username"), username));
 
-        criteriaQuery.select(certificateRoot)
-                .where(criteriaBuilder.equal(certificateRoot.get("name"), username));
         TypedQuery<User> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().findFirst().map(c -> userDtoConverter.convertToDto(c));
+        return query.getResultList()
+                .stream()
+                .findFirst();
     }
 }

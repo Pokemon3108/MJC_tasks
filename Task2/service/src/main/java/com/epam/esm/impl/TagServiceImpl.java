@@ -39,7 +39,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto create(TagDto tag) {
 
-        if (tagDao.readTagByName(tag.getName()).isPresent()) {
+        if (tagDao.read(tag.getName()).isPresent()) {
             throw new DuplicateTagException(tag.getName());
         }
         return tagDao.insert(tag);
