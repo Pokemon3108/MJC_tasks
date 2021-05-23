@@ -998,3 +998,5 @@ INSERT INTO usr(id,username,password) VALUES (997,'depressed','98c4ea5732997e432
 INSERT INTO usr(id,username,password) VALUES (998,'houses','faf3b916280658ef2a0cc5d3cfec7948');
 INSERT INTO usr(id,username,password) VALUES (999,'fact','375605e101f284966acf9f0087698a5a');
 INSERT INTO usr(id,username,password) VALUES (1000,'fire','7ccde3ebc4ccd98762bd10c2955be5f3');
+
+SELECT setval('usr_id_seq', (SELECT MAX(id) from usr));

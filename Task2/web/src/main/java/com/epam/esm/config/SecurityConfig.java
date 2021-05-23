@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -24,8 +25,6 @@ import com.epam.esm.security.JwtTokenFilter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private JwtTokenFilter tokenFilter;
-
     private JwtConfigurer jwtConfigurer;
 
     private UserDetailsService userService;
@@ -33,10 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private ExceptionHandlerFilter handlerFilter;
 
     @Autowired
-    public SecurityConfig(JwtTokenFilter tokenFilter, JwtConfigurer jwtConfigurer, ExceptionHandlerFilter handlerFilter,
+    public SecurityConfig(JwtConfigurer jwtConfigurer, ExceptionHandlerFilter handlerFilter,
             @Qualifier("userServiceImpl") UserDetailsService userService) {
 
-        this.tokenFilter = tokenFilter;
         this.jwtConfigurer = jwtConfigurer;
         this.userService = userService;
         this.handlerFilter = handlerFilter;
@@ -45,8 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
 
-        return NoOpPasswordEncoder.getInstance();
-//        return new BCryptPasswordEncoder();
+        //return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -58,9 +56,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET).permitAll()
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers("/auth/me").authenticated()
-                .antMatchers(HttpMethod.POST, "/orders").authenticated()
+                .antMatchers("/auth/me").hasAuthority("ROLE_USER")
+                .antMatchers(HttpMethod.POST, "/orders").hasAuthority("ROLE_USER")
                 .and()
                 .apply(jwtConfigurer);
 

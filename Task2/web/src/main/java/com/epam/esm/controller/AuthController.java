@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -30,16 +32,12 @@ public class AuthController {
 
     private JwtTokenProvider jwtTokenProvider;
 
-    private UserDetailsService userService;
-
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
-            @Qualifier("userServiceImpl") UserDetailsService userService) {
+    public AuthController(JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
 
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
         this.authenticationManager = authenticationManager;
     }
 

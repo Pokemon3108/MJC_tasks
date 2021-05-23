@@ -9998,3 +9998,5 @@ INSERT INTO gift_certificate(id,name,description,price,duration,create_date,last
 INSERT INTO gift_certificate(id,name,description,price,duration,create_date,last_update_date) VALUES (9998,'Instructress was','Badness amateur terribly into',700.41,2625,'2010-04-06T20:09:24','2019-11-30T13:09:45');
 INSERT INTO gift_certificate(id,name,description,price,duration,create_date,last_update_date) VALUES (9999,'Spent tried','Reinscribed sprung affection apparatus heel',467.02,5615,'2013-08-27T17:33:38','2021-04-02T04:56:17');
 INSERT INTO gift_certificate(id,name,description,price,duration,create_date,last_update_date) VALUES (10000,'Comb clothing','Force breathe responsible disregarded covering rag dictatorship jobs sentences crack muscular waiting',457.06,6877,'2012-05-28T20:28:09','2020-08-27T12:50:14');
+
+SELECT setval('gift_certificate_id_seq', (SELECT MAX(id) from gift_certificate));

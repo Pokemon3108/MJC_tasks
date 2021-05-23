@@ -54,6 +54,12 @@ public class UserController {
         return userModelAssembler.toModel(userService.read(id));
     }
 
+    @PostMapping
+    public UserModel create(@RequestBody UserDto userDto) {
+
+        return userModelAssembler.toModel(userService.create(userDto));
+    }
+
     @GetMapping("/{userId}/orders")
     public PageOrderModel getOrders(@PathVariable Long userId,
             @RequestParam(required = false, defaultValue = "1") Integer page,

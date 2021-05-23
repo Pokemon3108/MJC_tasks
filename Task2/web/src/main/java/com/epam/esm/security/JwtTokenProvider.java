@@ -36,6 +36,8 @@ public class JwtTokenProvider {
 
     private static final String TOKEN_PREFIX = "Bearer ";
 
+    private static final String AUTH_HEADER = "Authorization";
+
     private UserDetailsService userService;
 
     @Autowired
@@ -69,7 +71,7 @@ public class JwtTokenProvider {
 
     public String loadToken(HttpServletRequest request) {
 
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader(AUTH_HEADER);
         if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(TOKEN_PREFIX.length());
         }

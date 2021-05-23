@@ -999,3 +999,5 @@ INSERT INTO ordr(id,cost,purchase_date,user_id,certificate_id) VALUES (997,878.3
 INSERT INTO ordr(id,cost,purchase_date,user_id,certificate_id) VALUES (998,588.8,'2015-07-11T19:07:03',190,371);
 INSERT INTO ordr(id,cost,purchase_date,user_id,certificate_id) VALUES (999,193.83,'2018-09-13T12:41:29',254,136);
 INSERT INTO ordr(id,cost,purchase_date,user_id,certificate_id) VALUES (1000,974.29,'2021-02-13T12:15:36',128,238);
+
+SELECT setval('ordr_id_seq', (SELECT MAX(id) from ordr));

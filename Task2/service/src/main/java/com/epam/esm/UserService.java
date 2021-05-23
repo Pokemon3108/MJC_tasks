@@ -22,4 +22,11 @@ public interface UserService {
      */
     UserDto read(String username);
 
+    /**
+     * Saves user in storage
+     * @param userDto to be saved in storage
+     * @return created user
+     */
+    UserDto create(UserDto userDto);
+
 }
