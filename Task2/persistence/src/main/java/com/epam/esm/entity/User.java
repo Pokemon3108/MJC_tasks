@@ -2,6 +2,7 @@ package com.epam.esm.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class User implements UserDetails {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
+    private Set<String> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<Order> orders;
@@ -85,7 +86,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(Set<String> roles) {
 
         this.roles = roles;
     }

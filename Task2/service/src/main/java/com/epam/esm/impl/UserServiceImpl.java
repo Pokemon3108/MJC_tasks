@@ -28,6 +28,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private PasswordEncoder passwordEncoder;
 
+    private static final String ROLE_USER = "ROLE_USER";
+
     @Autowired
     public UserServiceImpl(UserDao userDao, UserDtoConverter userDtoConverter, @Lazy PasswordEncoder passwordEncoder) {
 
@@ -61,6 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         String codedPassword = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(codedPassword);
+        userDto.setRole(ROLE_USER);
         return userDao.create(userDto);
     }
 
