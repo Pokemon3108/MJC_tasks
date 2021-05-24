@@ -13,13 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import com.epam.esm.controller.handler.ExceptionHandlerFilter;
 import com.epam.esm.security.JwtConfigurer;
-import com.epam.esm.security.JwtTokenFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -56,10 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET).permitAll()
-                .antMatchers("/auth/login").permitAll()
-                .antMatchers("/auth/me").hasAuthority("ROLE_USER")
+                .antMatchers(HttpMethod.POST, "/auth/login", "/users").anonymous()
+                .antMatchers(HttpMethod.GET, "/certificates").anonymous()
+                .antMatchers(HttpMethod.GET).hasAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.POST, "/orders").hasAuthority("ROLE_USER")
+                .antMatchers("/**").hasAuthority("ROLE_ADMIN")
                 .and()
                 .apply(jwtConfigurer);
 

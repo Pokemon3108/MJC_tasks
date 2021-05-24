@@ -85,6 +85,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public void setRoles(List<String> roles) {
+
+        this.roles = roles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
