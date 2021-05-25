@@ -25,7 +25,7 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
         UserModel userModel = instantiateModel(entity);
 
         userModel.add(linkTo(methodOn(UserController.class).read(entity.getId())).withSelfRel());
-        userModel.add(linkTo(methodOn(UserController.class).getOrders(null, null, null)).withRel("orders"));
+        userModel.add(linkTo(methodOn(UserController.class).getOrders(null, null, null, null)).withRel("orders"));
 
         userModel.setId(entity.getId());
         userModel.setName(entity.getUsername());

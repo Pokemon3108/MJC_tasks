@@ -56,9 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth/login", "/users").anonymous()
                 .antMatchers(HttpMethod.GET, "/certificates").anonymous()
-                .antMatchers(HttpMethod.GET).hasAuthority("ROLE_USER")
-                .antMatchers(HttpMethod.POST, "/orders").hasAuthority("ROLE_USER")
-                .antMatchers("/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/orders").hasAnyRole("USER", "ADMIN")
+                .anyRequest().hasRole("ADMIN")
                 .and()
                 .apply(jwtConfigurer);
 

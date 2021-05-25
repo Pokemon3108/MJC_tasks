@@ -13,6 +13,7 @@ import com.epam.esm.UserService;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.UserDtoConverter;
+import com.epam.esm.exception.user.DuplicateUserException;
 import com.epam.esm.exception.user.NoUserWithIdException;
 
 
@@ -60,6 +61,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
+
+        String username = userDto.getUsername();
+        if (userDao.read(username).isPresent()) {
+            throw new DuplicateUserException(username);
+        }
 
         String codedPassword = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(codedPassword);

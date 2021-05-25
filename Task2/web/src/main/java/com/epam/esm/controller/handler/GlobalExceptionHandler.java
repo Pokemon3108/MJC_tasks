@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.session.SessionAuthenticationException;
-import org.springframework.security.web.csrf.InvalidCsrfTokenException;
-import org.springframework.security.web.csrf.MissingCsrfTokenException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +29,7 @@ import com.epam.esm.exception.order.CreationOrderException;
 import com.epam.esm.exception.order.NoOrderException;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
+import com.epam.esm.exception.user.DuplicateUserException;
 import com.epam.esm.exception.user.NoUserWithIdException;
 import com.epam.esm.exception.user.NoUsersException;
 import com.epam.esm.exception.user.UsersOrderHasNoTags;
@@ -159,13 +158,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("max_size_limit", ex.getMaxSize()));
     }
 
-    @ExceptionHandler({AuthenticationException.class, MissingCsrfTokenException.class, InvalidCsrfTokenException.class,
-            SessionAuthenticationException.class})
+    @ExceptionHandler({AuthenticationException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Error handleAuthenticationException(RuntimeException ex) {
 
-        return new Error(ErrorCode.NO_AUTHORIZED.getCode(), ex.getMessage());
-//                localeService.getLocaleMessage("error.authorization"));
+        return new Error(ErrorCode.NO_AUTHORIZED.getCode(),
+                localeService.getLocaleMessage("error.authorization"));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -184,6 +182,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("jwt_expired", ex.getClaims().getExpiration()));
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Error handleBadCredentialsException(BadCredentialsException ex) {
+
+        return new Error(ErrorCode.NO_AUTHORIZED.getCode(),
+                localeService.getLocaleMessage("bad_credentials"));
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDuplicateUserException(DuplicateUserException ex) {
+
+        return new Error(ErrorCode.DUPLICATE_USERNAME.getCode(),
+                localeService.getLocaleMessage("duplicate_username", ex.getUsername()));
+    }
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,

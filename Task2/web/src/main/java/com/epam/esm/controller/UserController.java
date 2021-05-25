@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,12 +62,24 @@ public class UserController {
         return userModelAssembler.toModel(userService.create(userDto));
     }
 
-    @GetMapping("/{userId}/orders")
-    public PageOrderModel getOrders(@PathVariable Long userId,
+    @GetMapping(value = {"/{userId}/orders", "/orders"})
+    public PageOrderModel getOrders(@AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable(required = false) Long userId,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "5") Integer size) {
 
-        UserDto userDto = userService.read(userId);
+        if (userDetails == null && userId == null) {
+            throw new BadCredentialsException("");
+        }
+
+        UserDto userDto;
+        if (userDetails != null) {
+            userDto = userService.read(userDetails.getUsername());
+            userId = userDto.getId();
+        } else {
+            userDto = userService.read(userId);
+        }
+
         Set<OrderDto> orders = orderService.readUserOrders(userId, page, size);
         return new PageOrderModel(
                 orderModelAssembler.toCollectionModel(orders),
