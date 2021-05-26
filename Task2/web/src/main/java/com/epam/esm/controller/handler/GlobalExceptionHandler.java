@@ -23,13 +23,14 @@ import com.epam.esm.exception.NoPageException;
 import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
-import com.epam.esm.exception.certificate.IllegalCertificateProperties;
+import com.epam.esm.exception.certificate.IllegalCertificatePropertiesException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 import com.epam.esm.exception.order.CreationOrderException;
 import com.epam.esm.exception.order.NoOrderException;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
 import com.epam.esm.exception.user.DuplicateUserException;
+import com.epam.esm.exception.user.InvalidUserPropertiesException;
 import com.epam.esm.exception.user.NoUserWithIdException;
 import com.epam.esm.exception.user.NoUsersException;
 import com.epam.esm.exception.user.UsersOrderHasNoTags;
@@ -63,9 +64,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("no_id"));
     }
 
-    @ExceptionHandler(IllegalCertificateProperties.class)
+    @ExceptionHandler(IllegalCertificatePropertiesException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleNotFullCertificate(IllegalCertificateProperties ex) {
+    public Error handleNotFullCertificate(IllegalCertificatePropertiesException ex) {
 
         return new Error(ErrorCode.NOT_FULL_CERTIFICATE.getCode(),
                 localeService.getLocaleMessage(ex.getMessage()));
@@ -196,6 +197,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.DUPLICATE_USERNAME.getCode(),
                 localeService.getLocaleMessage("duplicate_username", ex.getUsername()));
+    }
+
+    @ExceptionHandler(InvalidUserPropertiesException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleInvalidUserPropertiesException(InvalidUserPropertiesException ex) {
+
+        return new Error(ErrorCode.INVALID_USER.getCode(),
+                localeService.getLocaleMessage(ex.getMessage()));
     }
 
     @Override

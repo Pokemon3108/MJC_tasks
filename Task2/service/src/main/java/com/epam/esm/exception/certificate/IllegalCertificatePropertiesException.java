@@ -4,19 +4,19 @@ package com.epam.esm.exception.certificate;
 /**
  * NotFullCertificateException is thrown when certificate has empty required fields
  */
-public class IllegalCertificateProperties extends RuntimeException {
+public class IllegalCertificatePropertiesException extends RuntimeException {
 
     /**
      * Instantiates a new Not full certificate exception.
      */
-    public IllegalCertificateProperties() {
+    public IllegalCertificatePropertiesException() {
 
     }
 
     /**
      * {@inheritDoc}
      */
-    public IllegalCertificateProperties(String message) {
+    public IllegalCertificatePropertiesException(String message) {
 
         super(message);
     }
@@ -24,7 +24,7 @@ public class IllegalCertificateProperties extends RuntimeException {
     /**
      * {@inheritDoc}
      */
-    public IllegalCertificateProperties(String message, Throwable cause) {
+    public IllegalCertificatePropertiesException(String message, Throwable cause) {
 
         super(message, cause);
     }
@@ -32,7 +32,7 @@ public class IllegalCertificateProperties extends RuntimeException {
     /**
      * {@inheritDoc}
      */
-    public IllegalCertificateProperties(Throwable cause) {
+    public IllegalCertificatePropertiesException(Throwable cause) {
 
         super(cause);
     }
@@ -40,7 +40,7 @@ public class IllegalCertificateProperties extends RuntimeException {
     /**
      * {@inheritDoc}
      */
-    public IllegalCertificateProperties(String message, Throwable cause, boolean enableSuppression,
+    public IllegalCertificatePropertiesException(String message, Throwable cause, boolean enableSuppression,
             boolean writableStackTrace) {
 
         super(message, cause, enableSuppression, writableStackTrace);

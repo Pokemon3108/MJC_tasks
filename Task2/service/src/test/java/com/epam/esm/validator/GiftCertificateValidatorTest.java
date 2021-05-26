@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.exception.certificate.IllegalCertificateProperties;
+import com.epam.esm.exception.certificate.IllegalCertificatePropertiesException;
 
 class GiftCertificateValidatorTest {
 
@@ -47,7 +47,7 @@ class GiftCertificateValidatorTest {
     @MethodSource("validateTestData")
     void validateCreateCertificateWithEmptyFields(GiftCertificateDto certificateDto, final String message) {
 
-        Assertions.assertThrows(IllegalCertificateProperties.class, () -> validator.validateCreate(certificateDto),
+        Assertions.assertThrows(IllegalCertificatePropertiesException.class, () -> validator.validateCreation(certificateDto),
                 message);
     }
 
@@ -61,7 +61,7 @@ class GiftCertificateValidatorTest {
         dto.setDuration(-10);
         dto.setPrice(BigDecimal.ONE);
 
-        Assertions.assertThrows(IllegalCertificateProperties.class, () -> validator.validateCreate(dto),
+        Assertions.assertThrows(IllegalCertificatePropertiesException.class, () -> validator.validateCreation(dto),
                 NEGATIVE_PRICE_MESSAGE);
     }
 

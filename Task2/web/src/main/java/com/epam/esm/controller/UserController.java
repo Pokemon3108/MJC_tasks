@@ -24,6 +24,7 @@ import com.epam.esm.model.PageOrderModel;
 import com.epam.esm.model.UserModel;
 import com.epam.esm.model.assembler.OrderModelAssembler;
 import com.epam.esm.model.assembler.UserModelAssembler;
+import com.epam.esm.validator.UserValidator;
 
 @RestController
 @RequestMapping("/users")
@@ -39,15 +40,19 @@ public class UserController {
 
     private PageService pageService;
 
+    private UserValidator userValidator;
+
     @Autowired
     public UserController(UserService userService, UserModelAssembler userModelAssembler,
-            OrderModelAssembler orderModelAssembler, OrderService orderService, PageService pageService) {
+            OrderModelAssembler orderModelAssembler, OrderService orderService,
+            PageService pageService, UserValidator userValidator) {
 
         this.userService = userService;
         this.userModelAssembler = userModelAssembler;
         this.orderModelAssembler = orderModelAssembler;
         this.orderService = orderService;
         this.pageService = pageService;
+        this.userValidator = userValidator;
     }
 
     @GetMapping("/{id}")
@@ -59,6 +64,7 @@ public class UserController {
     @PostMapping
     public UserModel create(@RequestBody UserDto userDto) {
 
+        userValidator.validatePassword(userDto.getPassword());
         return userModelAssembler.toModel(userService.create(userDto));
     }
 

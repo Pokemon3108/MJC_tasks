@@ -31,7 +31,8 @@ public enum ErrorCode {
     NO_USERS_IN_STORAGE(40442),
     NO_TAGS_IN_USER_ORDER(40443),
     NO_USERNAME(40444),
-    DUPLICATE_USERNAME(40044);
+    DUPLICATE_USERNAME(40044),
+    INVALID_USER(40045);
 
     private int code;
 
