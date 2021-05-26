@@ -1,6 +1,15 @@
 package com.epam.esm.dto;
 
-public class UserDto {
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+public class UserDto implements UserDetails {
 
     private Long id;
 
@@ -8,10 +17,11 @@ public class UserDto {
 
     private String password;
 
-    private String role;
+    private Set<String> roles;
 
     public UserDto() {
 
+        roles = new HashSet<>();
     }
 
     public UserDto(Long id) {
@@ -49,13 +59,46 @@ public class UserDto {
         this.password = password;
     }
 
-    public String getRole() {
+    public Set<String> getRoles() {
 
-        return role;
+        return roles;
     }
 
-    public void setRole(String role) {
+    public void setRoles(Set<String> roles) {
 
-        this.role = role;
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return roles
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+
+        return true;
     }
 }

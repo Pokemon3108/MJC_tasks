@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<User> read(String username) {
+    public Optional<UserDto> read(String username) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
@@ -59,7 +59,8 @@ public class UserDaoImpl implements UserDao {
         TypedQuery<User> query = em.createQuery(criteriaQuery);
         return query.getResultList()
                 .stream()
-                .findFirst();
+                .findFirst()
+                .map(user -> userDtoConverter.convertToDto(user));
     }
 
     /**

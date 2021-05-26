@@ -22,7 +22,7 @@ public interface UserDao {
      * @param username
      * @return user from storage or {@code Optional.empty()} if it is not found
      */
-    Optional<User> read(String username);
+    Optional<UserDto> read(String username);
 
     /**
      * Saves user in storage

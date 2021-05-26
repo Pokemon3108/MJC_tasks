@@ -1,6 +1,6 @@
 package com.epam.esm.dto.converter;
 
-import java.util.Collections;
+import java.util.HashSet;
 
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,7 @@ public class UserDtoConverter extends Converter<User, UserDto> {
         userDto.setId(user.getId());
         userDto.setUsername(user.getUsername());
         userDto.setPassword(user.getPassword());
+        userDto.setRoles(new HashSet<>(user.getRoles()));
         return userDto;
     }
 
@@ -36,7 +37,7 @@ public class UserDtoConverter extends Converter<User, UserDto> {
         user.setId(dto.getId());
         user.setUsername(dto.getUsername());
         user.setPassword(dto.getPassword());
-        user.setRoles(Collections.singleton(dto.getRole()));
+        user.setRoles(dto.getRoles());
         return user;
     }
 

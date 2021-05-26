@@ -1,5 +1,7 @@
 package com.epam.esm.impl;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.epam.esm.UserService;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.dto.converter.UserDtoConverter;
 import com.epam.esm.exception.user.DuplicateUserException;
 import com.epam.esm.exception.user.NoUserWithIdException;
 
@@ -25,17 +26,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserDao userDao;
 
-    private UserDtoConverter userDtoConverter;
-
     private PasswordEncoder passwordEncoder;
 
     private static final String ROLE_USER = "ROLE_USER";
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, UserDtoConverter userDtoConverter, @Lazy PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, @Lazy PasswordEncoder passwordEncoder) {
 
         this.userDao = userDao;
-        this.userDtoConverter = userDtoConverter;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -54,8 +52,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDto read(String username) {
 
-        return userDtoConverter.convertToDto(userDao.read(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username)));
+        return userDao.read(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override
@@ -69,7 +67,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         String codedPassword = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(codedPassword);
-        userDto.setRole(ROLE_USER);
+        userDto.setRoles(Collections.singleton(ROLE_USER));
         return userDao.create(userDto);
     }
 
@@ -79,6 +77,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
 
+        UserDto u=userDao.read(username).get();
         return userDao.read(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
