@@ -36,7 +36,7 @@ public class OrderModelAssembler extends RepresentationModelAssemblerSupport<Ord
         OrderModel orderModel = instantiateModel(entity);
 
         orderModel.add(
-                linkTo(methodOn(OrderController.class).read(entity.getId())).withSelfRel(),
+                linkTo(methodOn(OrderController.class).read(null, entity.getId())).withSelfRel(),
                 linkTo(methodOn(OrderController.class).create(null, null)).withRel("create")
         );
 

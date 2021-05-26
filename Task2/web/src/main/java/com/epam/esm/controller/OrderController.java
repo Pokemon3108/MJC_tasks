@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.OrderService;
 import com.epam.esm.UserService;
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.exception.order.NoOrderException;
 import com.epam.esm.model.OrderModel;
 import com.epam.esm.model.assembler.OrderModelAssembler;
 
@@ -30,7 +32,8 @@ public class OrderController {
 
     private UserService userService;
 
-    public OrderController(OrderService orderService, OrderModelAssembler orderModelAssembler, UserService userService) {
+    public OrderController(OrderService orderService, OrderModelAssembler orderModelAssembler,
+            UserService userService) {
 
         this.orderService = orderService;
         this.orderModelAssembler = orderModelAssembler;
@@ -58,9 +61,14 @@ public class OrderController {
      * @return order model with hateoas links
      */
     @GetMapping("/{id}")
-    public OrderModel read(@PathVariable Long id) {
+    public OrderModel read(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
 
-        return orderModelAssembler.toModel(orderService.read(id));
+        UserDto userDto = userService.read(userDetails.getUsername());
+        OrderDto orderDto = orderService.read(id);
+        if (!orderDto.getUser().getId().equals(userDto.getId())) {
+            throw new NoOrderException(orderDto.getId());
+        }
+        return orderModelAssembler.toModel(orderDto);
     }
 
 }
