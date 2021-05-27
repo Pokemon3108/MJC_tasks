@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,7 @@ public class RefreshToken {
     private String token;
 
     @Column(nullable = false)
-    private LocalDateTime expireDate;
+    private Date expireDate;
 
     public long getId() {
 
@@ -60,12 +61,12 @@ public class RefreshToken {
         this.token = token;
     }
 
-    public LocalDateTime getExpireDate() {
+    public Date getExpireDate() {
 
         return expireDate;
     }
 
-    public void setExpireDate(LocalDateTime expireDate) {
+    public void setExpireDate(Date expireDate) {
 
         this.expireDate = expireDate;
     }

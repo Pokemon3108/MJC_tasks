@@ -9,12 +9,26 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.epam.esm.dao.RefreshTokenDao;
+import com.epam.esm.dto.RefreshTokenDto;
+import com.epam.esm.dto.converter.RefreshTokenDtoConverter;
 import com.epam.esm.entity.RefreshToken;
 
+@Repository
 public class RefreshTokenDaoImpl implements RefreshTokenDao {
 
     private EntityManager em;
+
+    private RefreshTokenDtoConverter tokenDtoConverter;
+
+    @Autowired
+    public RefreshTokenDaoImpl(RefreshTokenDtoConverter tokenDtoConverter) {
+
+        this.tokenDtoConverter = tokenDtoConverter;
+    }
 
     @PersistenceContext
     public void setEm(EntityManager em) {
@@ -23,7 +37,15 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
     }
 
     @Override
-    public Optional<RefreshToken> findByToken(String token) {
+    public RefreshTokenDto save(RefreshTokenDto refreshTokenDto) {
+
+        RefreshToken refreshToken = tokenDtoConverter.convertToEntity(refreshTokenDto);
+        em.persist(refreshToken);
+        return tokenDtoConverter.convertToDto(refreshToken);
+    }
+
+    @Override
+    public Optional<RefreshTokenDto> findByToken(String token) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<RefreshToken> criteriaQuery = criteriaBuilder.createQuery(RefreshToken.class);
@@ -33,6 +55,14 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
         TypedQuery<RefreshToken> query = em.createQuery(criteriaQuery);
         return query.getResultList()
                 .stream()
-                .findFirst();
+                .findFirst()
+                .map(t -> tokenDtoConverter.convertToDto(t));
+    }
+
+    @Override
+    public void delete(RefreshTokenDto refreshTokenDto) {
+
+        RefreshToken refreshToken = em.find(RefreshToken.class, refreshTokenDto.getId());
+        em.remove(refreshToken);
     }
 }
