@@ -9,7 +9,7 @@ public interface RefreshTokenService {
 
     Optional<RefreshTokenDto> findByToken(String token);
 
-    RefreshTokenDto createRefreshToken(Long userId);
+    RefreshTokenDto createRefreshToken(String username);
 
     RefreshTokenDto validateExpiration(RefreshTokenDto token);
 }

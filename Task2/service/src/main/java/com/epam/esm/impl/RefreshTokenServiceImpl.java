@@ -8,28 +8,31 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.esm.RefreshTokenService;
+import com.epam.esm.UserService;
 import com.epam.esm.dao.RefreshTokenDao;
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.RefreshTokenDto;
-import com.epam.esm.exception.user.NoUserWithIdException;
+import com.epam.esm.dto.UserDto;
 
 @Service
+@PropertySource("classpath:application.properties")
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    @Value("${security.refreshToken.expire-length-ms}")
+    @Value("${security.refreshToken.expire-length-min}")
     private Long refreshTokenLifeTime;
 
-    private UserDao userDao;
+    private UserService userService;
 
     private RefreshTokenDao refreshTokenDao;
 
     @Autowired
-    public RefreshTokenServiceImpl(UserDao userDao, RefreshTokenDao refreshTokenDao) {
+    public RefreshTokenServiceImpl(UserService userService, RefreshTokenDao refreshTokenDao) {
 
-        this.userDao = userDao;
+        this.userService = userService;
         this.refreshTokenDao = refreshTokenDao;
     }
 
@@ -39,16 +42,19 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshTokenDao.findByToken(token);
     }
 
+    @Transactional
     @Override
-    public RefreshTokenDto createRefreshToken(Long userId) {
+    public RefreshTokenDto createRefreshToken(String username) {
 
         RefreshTokenDto refreshToken = new RefreshTokenDto();
 
-        refreshToken.setUser(userDao.read(userId).orElseThrow(() -> new NoUserWithIdException(userId)));
+        UserDto userDto = userService.read(username);
+        refreshToken.setUser(userDto);
 
         Date exp = Date.from(LocalDateTime.now().plusMinutes(refreshTokenLifeTime)
                 .atZone(ZoneId.systemDefault()).toInstant());
         refreshToken.setExpireDate(exp);
+
         refreshToken.setToken(UUID.randomUUID().toString());
 
         refreshToken = refreshTokenDao.save(refreshToken);

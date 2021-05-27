@@ -28,7 +28,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @PropertySource("classpath:application.properties")
 public class JwtTokenProvider {
 
-    @Value("${security.jwt.token.expire-length}")
+    @Value("${security.jwt.token.expire-length-min}")
     private int tokenLifeTime;
 
     @Value("${security.jwt.token.secret-key:secret}")
