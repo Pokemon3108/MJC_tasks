@@ -1,4 +1,4 @@
-package com.epam.esm.model;
+package com.epam.esm.security;
 
 public class JwtResponse {
 

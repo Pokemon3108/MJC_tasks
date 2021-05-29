@@ -20,6 +20,7 @@ import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.RefreshTokenException;
 import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
@@ -205,6 +206,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.INVALID_USER.getCode(),
                 localeService.getLocaleMessage(ex.getMessage()));
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleRefreshTokenException(RefreshTokenException ex) {
+
+        return new Error(ErrorCode.EXPIRED_REFRESH_TOKEN.getCode(),
+                localeService.getLocaleMessage(ex.getMessage(), ex.getToken()));
     }
 
     @Override

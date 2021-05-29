@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.epam.esm.RefreshTokenService;
 import com.epam.esm.dto.RefreshTokenDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.model.JwtResponse;
+import com.epam.esm.exception.RefreshTokenException;
+import com.epam.esm.security.JwtResponse;
 import com.epam.esm.security.JwtTokenProvider;
+import com.epam.esm.security.RefreshTokenRequest;
 
 @RestController
 @RequestMapping("/auth")
@@ -70,6 +72,22 @@ public class AuthController {
                 .collect(toList())
         );
         return ResponseEntity.ok(model);
+    }
+
+    @PostMapping("/refreshToken")
+    public JwtResponse refreshToken(@RequestBody RefreshTokenRequest request) {
+
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::validateExpiration)
+                .map(RefreshTokenDto::getUser)
+                .map(user -> {
+                    String username = user.getUsername();
+                    String token = jwtTokenProvider.createToken(username, new ArrayList<>(user.getRoles()));
+                    return new JwtResponse(username, token, requestRefreshToken);
+                })
+                .orElseThrow(() -> new RefreshTokenException("no_refresh_token", requestRefreshToken));
     }
 
 }

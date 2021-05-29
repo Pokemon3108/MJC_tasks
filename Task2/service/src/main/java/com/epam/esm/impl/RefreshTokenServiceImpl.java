@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.epam.esm.RefreshTokenService;
 import com.epam.esm.UserService;
 import com.epam.esm.dao.RefreshTokenDao;
 import com.epam.esm.dto.RefreshTokenDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.exception.RefreshTokenException;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -62,12 +64,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+
     public RefreshTokenDto validateExpiration(RefreshTokenDto token) {
 
         if (token.getExpireDate().before(new Date())) {
             refreshTokenDao.delete(token);
-            throw new RuntimeException("refresh token validation error");
-            //TODO throw custom exception
+            //TransactionAspectSupport.currentTransactionStatus().flush();
+            throw new RefreshTokenException("token_expired", token.getToken());
         }
 
         return token;
