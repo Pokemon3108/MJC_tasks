@@ -10,6 +10,7 @@ public interface RefreshTokenService {
 
     /**
      * Search token by its name
+     *
      * @param token - the name of token
      * @return - found token
      */
@@ -17,6 +18,7 @@ public interface RefreshTokenService {
 
     /**
      * Create refresh token for logged user
+     *
      * @param username - the name of user
      * @return created token
      */
@@ -24,6 +26,7 @@ public interface RefreshTokenService {
 
     /**
      * Validates token
+     *
      * @param token
      * @param userDto - the potential owner of token
      */
@@ -31,6 +34,7 @@ public interface RefreshTokenService {
 
     /**
      * Updates token in storage
+     *
      * @param tokenDto - the token to be updated
      * @return - updated token
      */

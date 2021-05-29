@@ -47,7 +47,8 @@ class GiftCertificateValidatorTest {
     @MethodSource("validateTestData")
     void validateCreateCertificateWithEmptyFields(GiftCertificateDto certificateDto, final String message) {
 
-        Assertions.assertThrows(IllegalCertificatePropertiesException.class, () -> validator.validateCreation(certificateDto),
+        Assertions.assertThrows(IllegalCertificatePropertiesException.class,
+                () -> validator.validateCreation(certificateDto),
                 message);
     }
 

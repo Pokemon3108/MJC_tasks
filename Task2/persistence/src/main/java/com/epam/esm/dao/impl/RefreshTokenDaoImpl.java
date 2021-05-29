@@ -36,6 +36,9 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
         this.em = em;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RefreshTokenDto save(RefreshTokenDto refreshTokenDto) {
 
@@ -44,6 +47,9 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
         return tokenDtoConverter.convertToDto(refreshToken);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<RefreshTokenDto> findByToken(String token) {
 
@@ -59,6 +65,9 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
                 .map(t -> tokenDtoConverter.convertToDto(t));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(RefreshTokenDto refreshTokenDto) {
 
@@ -66,6 +75,9 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
         em.remove(refreshToken);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(RefreshTokenDto refreshTokenDto) {
 

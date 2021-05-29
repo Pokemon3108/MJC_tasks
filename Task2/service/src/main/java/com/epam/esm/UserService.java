@@ -17,6 +17,7 @@ public interface UserService {
 
     /**
      * Read user by name
+     *
      * @param username - the name of user
      * @return user
      */
@@ -24,6 +25,7 @@ public interface UserService {
 
     /**
      * Saves user in storage
+     *
      * @param userDto to be saved in storage
      * @return created user
      */

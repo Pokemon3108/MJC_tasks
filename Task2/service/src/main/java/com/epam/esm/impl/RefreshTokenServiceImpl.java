@@ -41,6 +41,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RefreshTokenDto findByToken(String token) {
 
@@ -48,6 +51,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(() -> new RefreshTokenException("no_refresh_token", token));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public RefreshTokenDto createRefreshToken(String username) {
@@ -67,6 +73,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshToken;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(noRollbackFor = {RefreshTokenException.class})
     public void validateToken(RefreshTokenDto token, UserDto userDto) {
@@ -75,11 +84,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         deleteTokenIfExpires(token);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public RefreshTokenDto updateToken(RefreshTokenDto tokenDto) {
 
-        Date exp = Date.from(LocalDateTime.now().plusMinutes(refreshTokenLifeTime)
+        final Date exp = Date.from(LocalDateTime.now().plusMinutes(refreshTokenLifeTime)
                 .atZone(ZoneId.systemDefault()).toInstant());
         tokenDto.setExpireDate(exp);
 
@@ -90,6 +102,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return findByToken(newToken);
     }
 
+    /**
+     * Checks if token belongs to {@code userDto}
+     *
+     * @param token
+     * @param userDto
+     */
     private void validateUsersToken(String token, UserDto userDto) {
 
         UserDto userFromStorage = userService.read(userDto.getUsername());
@@ -104,6 +122,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
     }
 
+    /**
+     * Delete token if it has been expired
+     *
+     * @param token - to be checked and probably deleted
+     */
     private void deleteTokenIfExpires(RefreshTokenDto token) {
 
         if (token.getExpireDate().before(new Date())) {

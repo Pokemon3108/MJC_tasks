@@ -13,6 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * Filters authentication tokens
+ */
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 

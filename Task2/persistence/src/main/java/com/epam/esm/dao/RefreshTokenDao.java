@@ -11,6 +11,7 @@ public interface RefreshTokenDao {
 
     /**
      * Saves token in storage
+     *
      * @param refreshTokenDto - dto of token to be saved
      * @return - saved dto token
      */
@@ -18,6 +19,7 @@ public interface RefreshTokenDao {
 
     /**
      * Search token by its name
+     *
      * @param token - the name of token
      * @return - found token or {@code Optional.empty()} if it is not found
      */
@@ -25,12 +27,14 @@ public interface RefreshTokenDao {
 
     /**
      * Deletes token from storage
+     *
      * @param refreshTokenDto - dto token to be deleted
      */
     void delete(RefreshTokenDto refreshTokenDto);
 
     /**
      * Updates token
+     *
      * @param refreshTokenDto - token to be updated
      */
     void update(RefreshTokenDto refreshTokenDto);

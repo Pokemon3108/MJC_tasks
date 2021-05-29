@@ -7,6 +7,9 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
+/**
+ * Configures security
+ */
 @Component
 public class JwtConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
@@ -18,6 +21,9 @@ public class JwtConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilt
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(HttpSecurity http) {
 

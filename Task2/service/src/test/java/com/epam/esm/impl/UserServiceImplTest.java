@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 
 import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.exception.user.NoUserWithIdException;
-import com.epam.esm.exception.user.NoUsersException;
 
 class UserServiceImplTest {
 

@@ -24,11 +24,9 @@ import com.epam.esm.exception.user.NoUserWithIdException;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private UserDao userDao;
-
-    private PasswordEncoder passwordEncoder;
-
     private static final String ROLE_USER = "ROLE_USER";
+    private UserDao userDao;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserDao userDao, @Lazy PasswordEncoder passwordEncoder) {
@@ -77,7 +75,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
 
-        UserDto u=userDao.read(username).get();
+        UserDto u = userDao.read(username).get();
         return userDao.read(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
