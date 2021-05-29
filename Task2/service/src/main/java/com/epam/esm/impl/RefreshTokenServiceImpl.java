@@ -69,18 +69,25 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     @Transactional(noRollbackFor = {RefreshTokenException.class})
-    public RefreshTokenDto validateToken(RefreshTokenDto token, UserDto userDto) {
+    public void validateToken(RefreshTokenDto token, UserDto userDto) {
 
         validateUsersToken(token.getToken(), userDto);
         deleteTokenIfExpires(token);
-        return token;
     }
 
     @Override
     @Transactional
     public RefreshTokenDto updateToken(RefreshTokenDto tokenDto) {
 
-        return null;
+        Date exp = Date.from(LocalDateTime.now().plusMinutes(refreshTokenLifeTime)
+                .atZone(ZoneId.systemDefault()).toInstant());
+        tokenDto.setExpireDate(exp);
+
+        final String newToken = UUID.randomUUID().toString();
+        tokenDto.setToken(newToken);
+
+        refreshTokenDao.update(tokenDto);
+        return findByToken(newToken);
     }
 
     private void validateUsersToken(String token, UserDto userDto) {

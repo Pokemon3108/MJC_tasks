@@ -11,8 +11,6 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.epam.esm.dao.RefreshTokenDao;
 import com.epam.esm.dto.RefreshTokenDto;
@@ -66,5 +64,11 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
 
         RefreshToken refreshToken = em.find(RefreshToken.class, refreshTokenDto.getId());
         em.remove(refreshToken);
+    }
+
+    @Override
+    public void update(RefreshTokenDto refreshTokenDto) {
+
+        em.merge(tokenDtoConverter.convertToEntity(refreshTokenDto));
     }
 }

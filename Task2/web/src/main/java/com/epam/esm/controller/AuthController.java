@@ -58,7 +58,7 @@ public class AuthController {
 
         RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(username);
 
-        return new JwtResponse(username, jwt, refreshToken.getToken());
+        return new JwtResponse(username, jwt, refreshToken.getToken(), jwtTokenProvider.getTokenLifeTime());
     }
 
     @GetMapping("/me")
@@ -81,10 +81,11 @@ public class AuthController {
 
         RefreshTokenDto tokenDto = refreshTokenService.findByToken(requestRefreshToken);
         refreshTokenService.validateToken(tokenDto, userDto);
+        RefreshTokenDto newTokenDto = refreshTokenService.updateToken(tokenDto);
 
         String username = tokenDto.getUser().getUsername();
         String token = jwtTokenProvider.createToken(username, new ArrayList<>(tokenDto.getUser().getRoles()));
-        return new JwtResponse(username, token, requestRefreshToken);
+        return new JwtResponse(username, token, newTokenDto.getToken(), jwtTokenProvider.getTokenLifeTime());
     }
 
 }

@@ -29,7 +29,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtTokenProvider {
 
     @Value("${security.jwt.token.expire-length-min}")
-    private int tokenLifeTime;
+    private long tokenLifeTime;
 
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
@@ -50,6 +50,11 @@ public class JwtTokenProvider {
     protected void init() {
 
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+    public long getTokenLifeTime() {
+
+        return tokenLifeTime;
     }
 
     public String createToken(String username, List<String> roles) {

@@ -1,18 +1,24 @@
 package com.epam.esm.security;
 
+/**
+ * Forms response on authentication
+ */
 public class JwtResponse {
 
     private String username;
 
-    private String jwt;
+    private String accessToken;
 
     private String refreshToken;
 
-    public JwtResponse(String username, String jwt, String refreshToken) {
+    private Long expires;
+
+    public JwtResponse(String username, String accessToken, String refreshToken, Long expires) {
 
         this.username = username;
-        this.jwt = jwt;
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.expires = expires;
     }
 
     public String getUsername() {
@@ -25,14 +31,14 @@ public class JwtResponse {
         this.username = username;
     }
 
-    public String getJwt() {
+    public String getAccessToken() {
 
-        return jwt;
+        return accessToken;
     }
 
-    public void setJwt(String jwt) {
+    public void setAccessToken(String accessToken) {
 
-        this.jwt = jwt;
+        this.accessToken = accessToken;
     }
 
     public String getRefreshToken() {
@@ -43,5 +49,10 @@ public class JwtResponse {
     public void setRefreshToken(String refreshToken) {
 
         this.refreshToken = refreshToken;
+    }
+
+    public Long getExpires() {
+
+        return expires;
     }
 }
