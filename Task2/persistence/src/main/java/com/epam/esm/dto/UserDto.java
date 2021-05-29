@@ -2,6 +2,7 @@ package com.epam.esm.dto;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -100,5 +101,26 @@ public class UserDto implements UserDetails {
     public boolean isEnabled() {
 
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) &&
+                Objects.equals(username, userDto.username) &&
+                Objects.equals(password, userDto.password);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, username, password);
     }
 }

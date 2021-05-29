@@ -1,14 +1,15 @@
 package com.epam.esm;
 
-import java.util.Optional;
-
 import com.epam.esm.dto.RefreshTokenDto;
+import com.epam.esm.dto.UserDto;
 
 public interface RefreshTokenService {
 
-    Optional<RefreshTokenDto> findByToken(String token);
+    RefreshTokenDto findByToken(String token);
 
     RefreshTokenDto createRefreshToken(String username);
 
-    RefreshTokenDto validateExpiration(RefreshTokenDto token);
+    RefreshTokenDto validateToken(RefreshTokenDto token, UserDto userDto);
+
+    RefreshTokenDto updateToken(RefreshTokenDto tokenDto);
 }

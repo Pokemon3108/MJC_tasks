@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.epam.esm.RefreshTokenService;
 import com.epam.esm.dto.RefreshTokenDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.exception.RefreshTokenException;
 import com.epam.esm.security.JwtResponse;
 import com.epam.esm.security.JwtTokenProvider;
-import com.epam.esm.security.RefreshTokenRequest;
 
 @RestController
 @RequestMapping("/auth")
@@ -75,19 +75,16 @@ public class AuthController {
     }
 
     @PostMapping("/refreshToken")
-    public JwtResponse refreshToken(@RequestBody RefreshTokenRequest request) {
+    public JwtResponse refreshToken(HttpServletRequest request, @RequestBody UserDto userDto) {
 
-        String requestRefreshToken = request.getRefreshToken();
+        String requestRefreshToken = request.getAttribute("token").toString();
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::validateExpiration)
-                .map(RefreshTokenDto::getUser)
-                .map(user -> {
-                    String username = user.getUsername();
-                    String token = jwtTokenProvider.createToken(username, new ArrayList<>(user.getRoles()));
-                    return new JwtResponse(username, token, requestRefreshToken);
-                })
-                .orElseThrow(() -> new RefreshTokenException("no_refresh_token", requestRefreshToken));
+        RefreshTokenDto tokenDto = refreshTokenService.findByToken(requestRefreshToken);
+        refreshTokenService.validateToken(tokenDto, userDto);
+
+        String username = tokenDto.getUser().getUsername();
+        String token = jwtTokenProvider.createToken(username, new ArrayList<>(tokenDto.getUser().getRoles()));
+        return new JwtResponse(username, token, requestRefreshToken);
     }
 
 }

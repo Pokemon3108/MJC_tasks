@@ -62,7 +62,6 @@ public class RefreshTokenDaoImpl implements RefreshTokenDao {
     }
 
     @Override
-    @Transactional
     public void delete(RefreshTokenDto refreshTokenDto) {
 
         RefreshToken refreshToken = em.find(RefreshToken.class, refreshTokenDto.getId());

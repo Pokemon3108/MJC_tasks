@@ -3,15 +3,14 @@ package com.epam.esm.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.epam.esm.RefreshTokenService;
 import com.epam.esm.UserService;
@@ -31,17 +30,22 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private RefreshTokenDao refreshTokenDao;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public RefreshTokenServiceImpl(UserService userService, RefreshTokenDao refreshTokenDao) {
+    public RefreshTokenServiceImpl(UserService userService, RefreshTokenDao refreshTokenDao,
+            PasswordEncoder passwordEncoder) {
 
         this.userService = userService;
         this.refreshTokenDao = refreshTokenDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public Optional<RefreshTokenDto> findByToken(String token) {
+    public RefreshTokenDto findByToken(String token) {
 
-        return refreshTokenDao.findByToken(token);
+        return refreshTokenDao.findByToken(token)
+                .orElseThrow(() -> new RefreshTokenException("no_refresh_token", token));
     }
 
     @Transactional
@@ -64,15 +68,40 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional(noRollbackFor = {RefreshTokenException.class})
+    public RefreshTokenDto validateToken(RefreshTokenDto token, UserDto userDto) {
 
-    public RefreshTokenDto validateExpiration(RefreshTokenDto token) {
+        validateUsersToken(token.getToken(), userDto);
+        deleteTokenIfExpires(token);
+        return token;
+    }
+
+    @Override
+    @Transactional
+    public RefreshTokenDto updateToken(RefreshTokenDto tokenDto) {
+
+        return null;
+    }
+
+    private void validateUsersToken(String token, UserDto userDto) {
+
+        UserDto userFromStorage = userService.read(userDto.getUsername());
+
+        String codedPassword = passwordEncoder.encode(userDto.getPassword());
+        userDto.setPassword(codedPassword);
+
+        RefreshTokenDto refreshTokenDto = findByToken(token);
+        UserDto tokenUser = refreshTokenDto.getUser();
+        if (!tokenUser.equals(userFromStorage)) {
+            throw new RefreshTokenException("no_refresh_token", token);
+        }
+    }
+
+    private void deleteTokenIfExpires(RefreshTokenDto token) {
 
         if (token.getExpireDate().before(new Date())) {
             refreshTokenDao.delete(token);
-            //TransactionAspectSupport.currentTransactionStatus().flush();
             throw new RefreshTokenException("token_expired", token.getToken());
         }
-
-        return token;
     }
 }

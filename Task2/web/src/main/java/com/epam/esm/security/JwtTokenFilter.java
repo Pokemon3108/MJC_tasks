@@ -29,10 +29,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             throws IOException, ServletException {
 
         String token = jwtTokenProvider.loadToken(request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        request.setAttribute("token", token);
+
+        if (!request.getHeader("grant-type").equals("refresh_token")
+                && token != null
+                && jwtTokenProvider.validateToken(token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         filterChain.doFilter(request, response);
     }
+
 }
+
