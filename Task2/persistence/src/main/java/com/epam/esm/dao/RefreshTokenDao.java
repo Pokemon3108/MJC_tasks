@@ -38,4 +38,11 @@ public interface RefreshTokenDao {
      * @param refreshTokenDto - token to be updated
      */
     void update(RefreshTokenDto refreshTokenDto);
+
+    /**
+     * Get username token
+     * @param userId - the id of user
+     * @return - user's token or {@code Optional.empty()} if user has no token
+     */
+    Optional<RefreshTokenDto> findByUserId(Long userId);
 }

@@ -3,6 +3,7 @@ package com.epam.esm.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,15 +62,21 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshTokenDto refreshToken = new RefreshTokenDto();
 
         UserDto userDto = userService.read(username);
-        refreshToken.setUser(userDto);
+        Optional<RefreshTokenDto> existingToken = refreshTokenDao.findByUserId(userDto.getId());
 
-        Date exp = Date.from(LocalDateTime.now().plusMinutes(refreshTokenLifeTime)
-                .atZone(ZoneId.systemDefault()).toInstant());
-        refreshToken.setExpireDate(exp);
+        if (existingToken.isPresent()) {
+            refreshToken = existingToken.get();
+        } else {
+            refreshToken.setUser(userDto);
 
-        refreshToken.setToken(UUID.randomUUID().toString());
+            Date exp = Date.from(LocalDateTime.now().plusMinutes(refreshTokenLifeTime)
+                    .atZone(ZoneId.systemDefault()).toInstant());
+            refreshToken.setExpireDate(exp);
 
-        refreshToken = refreshTokenDao.save(refreshToken);
+            refreshToken.setToken(UUID.randomUUID().toString());
+
+            refreshToken = refreshTokenDao.save(refreshToken);
+        }
         return refreshToken;
     }
 
