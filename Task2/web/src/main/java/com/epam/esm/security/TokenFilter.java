@@ -17,14 +17,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * Filters authentication tokens
  */
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class TokenFilter extends OncePerRequestFilter {
 
     private JwtTokenProvider jwtTokenProvider;
 
+    private RefreshTokenProvider refreshTokenProvider;
+
     @Autowired
-    public JwtTokenFilter(JwtTokenProvider tokenProvider) {
+    public TokenFilter(JwtTokenProvider tokenProvider, RefreshTokenProvider refreshTokenProvider) {
 
         this.jwtTokenProvider = tokenProvider;
+        this.refreshTokenProvider = refreshTokenProvider;
     }
 
     @Override
@@ -36,12 +39,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         String grantTypeHeader = request.getHeader("grant-type");
 
-        if ((grantTypeHeader == null || !grantTypeHeader.equals("refresh_token"))
-                && token != null
-                && jwtTokenProvider.validateToken(token)) {
+        if ((grantTypeHeader != null && grantTypeHeader.equals("refresh_token"))) {
+
+            Authentication auth = refreshTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } else if (token != null && jwtTokenProvider.validateToken(token)) {
+
             Authentication auth = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
+
         filterChain.doFilter(request, response);
     }
 

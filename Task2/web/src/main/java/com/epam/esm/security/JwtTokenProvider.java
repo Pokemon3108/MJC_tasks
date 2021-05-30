@@ -29,11 +29,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtTokenProvider {
 
     private static final String TOKEN_PREFIX = "Bearer ";
+
     private static final String AUTH_HEADER = "Authorization";
+
     @Value("${security.jwt.token.expire-length-min}")
     private long tokenLifeTime;
+
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
+
     private UserDetailsService userService;
 
     @Autowired
