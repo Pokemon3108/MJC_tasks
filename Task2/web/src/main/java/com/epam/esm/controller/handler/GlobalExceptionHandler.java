@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -160,11 +161,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("max_size_limit", ex.getMaxSize()));
     }
 
-    @ExceptionHandler({AuthenticationException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Error handleAuthenticationException(RuntimeException ex) {
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleAuthenticationException(AuthenticationException ex) {
 
-        return new Error(ErrorCode.NO_AUTHORIZED.getCode(),
+        return new Error(ErrorCode.FORBIDDEN.getCode(),
                 localeService.getLocaleMessage("error.authorization"));
     }
 
@@ -177,7 +178,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Error handleJwtExpiredException(ExpiredJwtException ex) {
 
         return new Error(ErrorCode.JWT_EXPIRED.getCode(),
@@ -188,7 +189,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Error handleBadCredentialsException(BadCredentialsException ex) {
 
-        return new Error(ErrorCode.NO_AUTHORIZED.getCode(),
+        return new Error(ErrorCode.NO_AUTHENTICATION.getCode(),
                 localeService.getLocaleMessage("bad_credentials"));
     }
 
@@ -214,6 +215,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new Error(ErrorCode.EXPIRED_REFRESH_TOKEN.getCode(),
                 localeService.getLocaleMessage(ex.getMessage(), ex.getToken()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleRefreshTokenException(AccessDeniedException ex) {
+
+        return new Error(ErrorCode.FORBIDDEN.getCode(),
+                localeService.getLocaleMessage("error.authorization"));
     }
 
     @Override

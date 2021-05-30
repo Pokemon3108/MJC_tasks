@@ -14,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import com.epam.esm.controller.handler.ExceptionHandlerFilter;
@@ -29,13 +31,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private ExceptionHandlerFilter handlerFilter;
 
+    private AuthenticationEntryPoint authPoint;
+
+    private AccessDeniedHandler accessDeniedHandler;
+
     @Autowired
     public SecurityConfig(JwtConfigurer jwtConfigurer, ExceptionHandlerFilter handlerFilter,
-            @Qualifier("userServiceImpl") UserDetailsService userService) {
+            @Qualifier("userServiceImpl") UserDetailsService userService, AuthenticationEntryPoint authPoint,
+            AccessDeniedHandler accessDeniedHandler) {
 
         this.jwtConfigurer = jwtConfigurer;
         this.userService = userService;
         this.handlerFilter = handlerFilter;
+        this.authPoint = authPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -51,16 +60,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .addFilterBefore(handlerFilter, LogoutFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/auth/login", "/users", "/auth/refreshToken").anonymous()
-                .antMatchers(HttpMethod.GET, "/certificates").anonymous()
+                .antMatchers(HttpMethod.POST, "/auth/login", "/users", "/auth/refreshToken")
+                    .hasAnyRole("ANONYMOUS", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/certificates").permitAll()
                 .antMatchers(HttpMethod.GET).hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/orders").hasAnyRole("USER", "ADMIN")
                 .anyRequest().hasRole("ADMIN")
+
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(authPoint)
+                .accessDeniedHandler(accessDeniedHandler)
+
                 .and()
                 .apply(jwtConfigurer);
-
     }
 
     @Override

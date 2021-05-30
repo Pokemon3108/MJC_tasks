@@ -34,7 +34,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = jwtTokenProvider.loadToken(request);
         request.setAttribute("token", token);
 
-        if (!request.getHeader("grant-type").equals("refresh_token")
+        String grantTypeHeader = request.getHeader("grant-type");
+
+        if ((grantTypeHeader == null || !grantTypeHeader.equals("refresh_token"))
                 && token != null
                 && jwtTokenProvider.validateToken(token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
