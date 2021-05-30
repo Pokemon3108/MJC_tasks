@@ -86,4 +86,10 @@ public class TagController {
         tagService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/mostPopular")
+    public TagModel getMostPopularTag() {
+
+        return tagModelAssembler.toModel(tagService.readMostPopularTag());
+    }
 }

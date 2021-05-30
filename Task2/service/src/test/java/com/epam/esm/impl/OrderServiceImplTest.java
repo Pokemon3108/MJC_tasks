@@ -79,7 +79,7 @@ class OrderServiceImplTest {
         final String userName = "username";
         final String password = "qwert54321zxcvf4d6lk";
         UserDto userDto = new UserDto(userId);
-        userDto.setName(userName);
+        userDto.setUsername(userName);
         userDto.setPassword(password);
 
         final long orderId = 7;

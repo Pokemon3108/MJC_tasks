@@ -16,7 +16,7 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.model.Page;
 
-public class PageServiceImplTest {
+class PageServiceImplTest {
 
     GiftCertificateServiceImpl certificateService;
 
