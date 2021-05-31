@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,7 +66,7 @@ public class OrderController {
 
         UserDto userDto = userService.read(userDetails.getUsername());
         OrderDto orderDto = orderService.read(id);
-        if (!orderDto.getUser().getId().equals(userDto.getId())) {
+        if (!userDto.getRoles().contains("ROLE_ADMIN") && !orderDto.getUser().getId().equals(userDto.getId())) {
             throw new NoOrderException(orderDto.getId());
         }
         return orderModelAssembler.toModel(orderDto);

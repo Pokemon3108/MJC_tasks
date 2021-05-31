@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import com.epam.esm.exception.RefreshTokenException;
+
 import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
@@ -32,7 +34,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException | RefreshTokenException e) {
             resolver.resolveException(request, response, null, e);
         }
     }

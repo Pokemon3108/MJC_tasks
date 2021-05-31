@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +55,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserModel read(@PathVariable long id) {
+    public UserModel read(@PathVariable Long id) {
 
         return userModelAssembler.toModel(userService.read(id));
     }
@@ -74,16 +73,12 @@ public class UserController {
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "5") Integer size) {
 
-        if (userDetails == null && userId == null) {
-            throw new BadCredentialsException("");
-        }
-
         UserDto userDto;
-        if (userDetails != null) {
+        if (userId != null) {
+            userDto = userService.read(userId);
+        } else {
             userDto = userService.read(userDetails.getUsername());
             userId = userDto.getId();
-        } else {
-            userDto = userService.read(userId);
         }
 
         Set<OrderDto> orders = orderService.readUserOrders(userId, page, size);

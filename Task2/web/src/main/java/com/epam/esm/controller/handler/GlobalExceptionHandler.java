@@ -219,7 +219,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Error handleRefreshTokenException(AccessDeniedException ex) {
+    public Error handleAccessDeniedException(AccessDeniedException ex) {
 
         return new Error(ErrorCode.FORBIDDEN.getCode(),
                 localeService.getLocaleMessage("error.authorization"));
