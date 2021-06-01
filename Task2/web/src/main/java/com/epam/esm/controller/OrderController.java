@@ -49,9 +49,9 @@ public class OrderController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderModel create(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long certificateId) {
+    public OrderModel create(@AuthenticationPrincipal String username, @RequestParam Long certificateId) {
 
-        UserDto userDto = userService.read(userDetails.getUsername());
+        UserDto userDto = userService.read(username);
         return orderModelAssembler.toModel(orderService.makeOrder(userDto.getId(), certificateId));
     }
 
@@ -62,9 +62,9 @@ public class OrderController {
      * @return order model with hateoas links
      */
     @GetMapping("/{id}")
-    public OrderModel read(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+    public OrderModel read(@AuthenticationPrincipal String username, @PathVariable Long id) {
 
-        UserDto userDto = userService.read(userDetails.getUsername());
+        UserDto userDto = userService.read(username);
         OrderDto orderDto = orderService.read(id);
         if (!userDto.getRoles().contains("ROLE_ADMIN") && !orderDto.getUser().getId().equals(userDto.getId())) {
             throw new NoOrderException(orderDto.getId());

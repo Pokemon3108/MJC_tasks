@@ -104,6 +104,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
 
         UserDetails userDetails = userService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(),
+                userDetails.getAuthorities());
     }
 }

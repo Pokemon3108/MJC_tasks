@@ -1,9 +1,11 @@
 package com.epam.esm.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +56,12 @@ public class UserController {
         this.userValidator = userValidator;
     }
 
-    @GetMapping("/{id}")
-    public UserModel read(@PathVariable Long id) {
+    @GetMapping(value = {"/{id}", "/**"})
+    public UserModel read(@AuthenticationPrincipal String username, @PathVariable(required = false) Long id) {
 
+        if (id == null) {
+            id = userService.read(username).getId();
+        }
         return userModelAssembler.toModel(userService.read(id));
     }
 
@@ -68,7 +73,7 @@ public class UserController {
     }
 
     @GetMapping(value = {"/{userId}/orders", "/orders"})
-    public PageOrderModel getOrders(@AuthenticationPrincipal UserDetails userDetails,
+    public PageOrderModel getOrders(@AuthenticationPrincipal String username,
             @PathVariable(required = false) Long userId,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "5") Integer size) {
@@ -77,7 +82,7 @@ public class UserController {
         if (userId != null) {
             userDto = userService.read(userId);
         } else {
-            userDto = userService.read(userDetails.getUsername());
+            userDto = userService.read(username);
             userId = userDto.getId();
         }
 

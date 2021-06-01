@@ -10,7 +10,7 @@ import com.epam.esm.exception.user.InvalidUserPropertiesException;
 @Service
 public class UserValidator {
 
-    private static final String PASSWORD_REGEX = "(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}";
+    private static final String PASSWORD_REGEX = "(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,20}";
 
     public void validatePassword(String password) {
 
