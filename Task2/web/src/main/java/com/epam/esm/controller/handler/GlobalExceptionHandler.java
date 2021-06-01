@@ -202,7 +202,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidUserPropertiesException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Error handleInvalidUserPropertiesException(InvalidUserPropertiesException ex) {
 
         return new Error(ErrorCode.INVALID_USER.getCode(),

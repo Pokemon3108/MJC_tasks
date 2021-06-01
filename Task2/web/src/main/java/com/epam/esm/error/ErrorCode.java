@@ -34,7 +34,7 @@ public enum ErrorCode {
     NO_USERNAME(40444),
     DUPLICATE_USERNAME(40044),
     EXPIRED_REFRESH_TOKEN(40341),
-    INVALID_USER(40045);
+    INVALID_USER(40145);
 
     private int code;
 
