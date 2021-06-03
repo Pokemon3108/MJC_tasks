@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -57,9 +58,15 @@ public class JwtTokenProvider {
         return tokenLifeTime;
     }
 
-    public String createToken(String username, List<String> roles) {
+    public String createToken(String username) {
 
         Claims claims = Jwts.claims().setSubject(username);
+        UserDetails userDetails = userService.loadUserByUsername(username);
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());
+
         claims.put("roles", roles);
 
         Date now = new Date();

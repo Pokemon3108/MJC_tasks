@@ -45,7 +45,7 @@ public class AuthController {
         String password = authData.getPassword();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-        String jwt = jwtTokenProvider.createToken(username, new ArrayList<>());
+        String jwt = jwtTokenProvider.createToken(username);
 
         RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(username);
 
@@ -62,7 +62,7 @@ public class AuthController {
         RefreshTokenDto newTokenDto = refreshTokenService.updateToken(tokenDto);
 
         String username = tokenDto.getUser().getUsername();
-        String token = jwtTokenProvider.createToken(username, new ArrayList<>(tokenDto.getUser().getRoles()));
+        String token = jwtTokenProvider.createToken(username);
         return new JwtResponse(username, token, newTokenDto.getToken(), jwtTokenProvider.getTokenLifeTime());
     }
 
