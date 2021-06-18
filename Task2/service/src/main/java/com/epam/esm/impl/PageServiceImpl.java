@@ -13,6 +13,9 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.model.Page;
 
+/**
+ * Implementation of page service
+ */
 @Service
 public class PageServiceImpl implements PageService {
 
@@ -27,6 +30,9 @@ public class PageServiceImpl implements PageService {
         this.orderService = orderService;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page buildPageForCertificateSearch(int pageNumber, int size,
             GiftCertificateDto giftCertificateDto, List<GiftCertificateDto> certificates) {
@@ -39,6 +45,9 @@ public class PageServiceImpl implements PageService {
         return new Page(certificates.size(), totalSize, totalPages, pageNumber);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page buildPageForUserOrderSearch(int pageNumber, int size, UserDto user, List<OrderDto> orders) {
 

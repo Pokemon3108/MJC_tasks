@@ -67,7 +67,7 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateModel create(@RequestBody GiftCertificateDto certificate) {
 
-        certificateValidator.validateCreate(certificate);
+        certificateValidator.validateCreation(certificate);
         return certificateModelAssembler.toModel(certificateService.add(certificate));
     }
 

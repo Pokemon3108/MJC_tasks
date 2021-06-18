@@ -998,3 +998,5 @@ INSERT INTO tag(id,name) VALUES (997,'unique');
 INSERT INTO tag(id,name) VALUES (998,'symptomatic');
 INSERT INTO tag(id,name) VALUES (999,'exchange');
 INSERT INTO tag(id,name) VALUES (1000,'male');
+
+SELECT setval('tag_id_seq', (SELECT MAX(id) from tag));

@@ -24,9 +24,9 @@ import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 
@@ -92,15 +92,15 @@ class GiftCertificateServiceImplTest {
         Set<TagDto> tags = new HashSet<>(Arrays.asList(new TagDto("tag1"), new TagDto("tag2")));
         Set<TagDto> tagsWithIds = new HashSet<>(Arrays.asList(new TagDto(1L, "tag1"), new TagDto("tag2")));
 
-        Mockito.when(certificateDao.readCertificateByName(certificateDto.getName()))
+        Mockito.when(certificateDao.read(certificateDto.getName()))
                 .thenReturn(Optional.empty());
         Mockito.when(tagService.bindTagsWithIds(tags)).thenReturn(tagsWithIds);
-        Mockito.when(certificateDao.insert(certificateDto)).thenReturn(id);
-        Mockito.when(certificateDao.read(id)).thenReturn(Optional.ofNullable(certificateDto));
+        certificateDto.setId(id);
+        Mockito.when(certificateDao.insert(certificateDto)).thenReturn(certificateDto);
 
         Assertions.assertEquals(certificateDto, certificateService.add(certificateDto));
 
-        Mockito.verify(certificateDao, times(1)).readCertificateByName(certificateDto.getName());
+        Mockito.verify(certificateDao, times(1)).read(certificateDto.getName());
         Mockito.verify(tagService, times(1)).bindTagsWithIds(tagsWithIds);
     }
 
@@ -108,7 +108,7 @@ class GiftCertificateServiceImplTest {
     void throwsDuplicateCertificateExceptionReadTest() {
 
         final String name = certificateDto.getName();
-        Mockito.when(certificateDao.readCertificateByName(name)).thenReturn(Optional.of(certificateDto));
+        Mockito.when(certificateDao.read(name)).thenReturn(Optional.of(certificateDto));
         Assertions.assertThrows(DuplicateCertificateException.class, () -> certificateService.add(certificateDto));
     }
 

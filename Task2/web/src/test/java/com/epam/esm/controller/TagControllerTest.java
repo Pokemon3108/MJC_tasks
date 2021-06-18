@@ -13,11 +13,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
 
+@Transactional
 @SpringBootTest
 @ActiveProfiles(value = "dev")
 class TagControllerTest {
@@ -83,5 +85,19 @@ class TagControllerTest {
                 .andExpect(result -> result.getResolvedException().getClass().equals(DuplicateTagException.class));
     }
 
+    @Test
+    void createTagTest() throws Exception {
+
+        String fileName = "newTag.json";
+        final long tagId = 5;
+        final String tagName = "sport";
+        String json = FileReaderHelper.readFile(fileName);
+        mockMvc.perform(post("/tags")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(tagName))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(tagId));
+    }
 
 }

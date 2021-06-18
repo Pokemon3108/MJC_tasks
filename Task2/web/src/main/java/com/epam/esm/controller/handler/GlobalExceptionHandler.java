@@ -1,9 +1,13 @@
-package com.epam.esm.controller;
+package com.epam.esm.controller.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,20 +19,25 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.epam.esm.LocaleService;
 import com.epam.esm.error.Error;
 import com.epam.esm.error.ErrorCode;
-import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.NoIdException;
 import com.epam.esm.exception.NoPageException;
+import com.epam.esm.exception.RefreshTokenException;
+import com.epam.esm.exception.SizeLimitException;
 import com.epam.esm.exception.certificate.CertificateIsOrderedException;
 import com.epam.esm.exception.certificate.DuplicateCertificateException;
-import com.epam.esm.exception.certificate.IllegalCertificateProperties;
+import com.epam.esm.exception.certificate.IllegalCertificatePropertiesException;
 import com.epam.esm.exception.certificate.NoCertificateException;
 import com.epam.esm.exception.order.CreationOrderException;
 import com.epam.esm.exception.order.NoOrderException;
 import com.epam.esm.exception.tag.DuplicateTagException;
 import com.epam.esm.exception.tag.NoTagException;
+import com.epam.esm.exception.user.DuplicateUserException;
+import com.epam.esm.exception.user.InvalidUserPropertiesException;
 import com.epam.esm.exception.user.NoUserWithIdException;
 import com.epam.esm.exception.user.NoUsersException;
 import com.epam.esm.exception.user.UsersOrderHasNoTags;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -57,9 +66,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("no_id"));
     }
 
-    @ExceptionHandler(IllegalCertificateProperties.class)
+    @ExceptionHandler(IllegalCertificatePropertiesException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleNotFullCertificate(IllegalCertificateProperties ex) {
+    public Error handleNotFullCertificate(IllegalCertificatePropertiesException ex) {
 
         return new Error(ErrorCode.NOT_FULL_CERTIFICATE.getCode(),
                 localeService.getLocaleMessage(ex.getMessage()));
@@ -152,6 +161,69 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 localeService.getLocaleMessage("max_size_limit", ex.getMaxSize()));
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleAuthenticationException(AuthenticationException ex) {
+
+        return new Error(ErrorCode.FORBIDDEN.getCode(),
+                localeService.getLocaleMessage("error.authorization"));
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleUsernameNotFoundException(UsernameNotFoundException ex) {
+
+        return new Error(ErrorCode.NO_USERNAME.getCode(),
+                localeService.getLocaleMessage("no_username", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleJwtExpiredException(ExpiredJwtException ex) {
+
+        return new Error(ErrorCode.JWT_EXPIRED.getCode(),
+                localeService.getLocaleMessage("jwt_expired", ex.getClaims().getExpiration()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Error handleBadCredentialsException(BadCredentialsException ex) {
+
+        return new Error(ErrorCode.NO_AUTHENTICATION.getCode(),
+                localeService.getLocaleMessage("bad_credentials"));
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleDuplicateUserException(DuplicateUserException ex) {
+
+        return new Error(ErrorCode.DUPLICATE_USERNAME.getCode(),
+                localeService.getLocaleMessage("duplicate_username", ex.getUsername()));
+    }
+
+    @ExceptionHandler(InvalidUserPropertiesException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Error handleInvalidUserPropertiesException(InvalidUserPropertiesException ex) {
+
+        return new Error(ErrorCode.INVALID_USER.getCode(),
+                localeService.getLocaleMessage(ex.getMessage()));
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleRefreshTokenException(RefreshTokenException ex) {
+
+        return new Error(ErrorCode.EXPIRED_REFRESH_TOKEN.getCode(),
+                localeService.getLocaleMessage(ex.getMessage(), ex.getToken()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Error handleAccessDeniedException(AccessDeniedException ex) {
+
+        return new Error(ErrorCode.FORBIDDEN.getCode(),
+                localeService.getLocaleMessage("error.authorization"));
+    }
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,

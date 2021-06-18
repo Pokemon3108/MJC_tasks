@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.esm.TagService;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.certificate.IllegalCertificateProperties;
+import com.epam.esm.exception.certificate.IllegalCertificatePropertiesException;
 import com.epam.esm.model.TagModel;
 import com.epam.esm.model.assembler.TagModelAssembler;
 
@@ -57,7 +57,7 @@ public class TagController {
         tagValidator.validate(tag, bindingResult);
         if (bindingResult.hasErrors()) {
             ObjectError error = bindingResult.getAllErrors().get(0);
-            throw new IllegalCertificateProperties(error.getCode());
+            throw new IllegalCertificatePropertiesException(error.getCode());
         }
         return tagModelAssembler.toModel(tagService.create(tag));
     }
@@ -85,5 +85,11 @@ public class TagController {
 
         tagService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/mostPopular")
+    public TagModel getMostPopularTag() {
+
+        return tagModelAssembler.toModel(tagService.readMostPopularTag());
     }
 }

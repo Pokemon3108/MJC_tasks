@@ -26,8 +26,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dto.SortDirection;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.SortDirection;
 import com.epam.esm.dto.SortParamsDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.converter.GiftCertificateDtoConverter;
@@ -60,7 +60,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
      * {@inheritDoc}
      */
     @Override
-    public Long insert(GiftCertificateDto certificateDto) {
+    public GiftCertificateDto insert(GiftCertificateDto certificateDto) {
 
         GiftCertificate certificate = converter.convertToEntity(certificateDto);
         certificate.setId(null);
@@ -72,7 +72,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         certificate.setTags(tags);
 
         em.persist(certificate);
-        return certificate.getId();
+        return converter.convertToDto(certificate);
     }
 
     /**
@@ -111,7 +111,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
      * {@inheritDoc}
      */
     @Override
-    public Optional<GiftCertificateDto> readCertificateByName(String certificateName) {
+    public Optional<GiftCertificateDto> read(String certificateName) {
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> criteriaQuery = criteriaBuilder.createQuery(GiftCertificate.class);
@@ -120,7 +120,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         criteriaQuery.select(certificateRoot)
                 .where(criteriaBuilder.equal(certificateRoot.get("name"), certificateName));
         TypedQuery<GiftCertificate> query = em.createQuery(criteriaQuery);
-        return query.getResultStream().findFirst().map(c -> converter.convertToDto(c));
+        return query.getResultStream()
+                .findFirst()
+                .map(c -> converter.convertToDto(c));
     }
 
     /**

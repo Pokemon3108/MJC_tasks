@@ -1,9 +1,12 @@
 package com.epam.esm.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,10 +28,13 @@ public class User {
     private Long id;
 
     @Column
-    private String name;
+    private String username;
 
     @Column
     private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<Order> orders;
@@ -43,14 +49,14 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
+    public String getUsername() {
 
-        return name;
+        return username;
     }
 
-    public void setName(String name) {
+    public void setUsername(String name) {
 
-        this.name = name;
+        this.username = name;
     }
 
     public Set<Order> getOrders() {
@@ -72,4 +78,15 @@ public class User {
 
         this.password = password;
     }
+
+    public Set<String> getRoles() {
+
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+
+        this.roles = roles;
+    }
+
 }

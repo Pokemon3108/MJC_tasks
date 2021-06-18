@@ -14,9 +14,9 @@ public interface GiftCertificateDao {
 
     /**
      * @param certificateDto that will be saved in storage
-     * @return id of {@code certificateDto} from storage
+     * @return created certificate
      */
-    Long insert(GiftCertificateDto certificateDto);
+    GiftCertificateDto insert(GiftCertificateDto certificateDto);
 
     /**
      * @param certificateDto certificate with params for update
@@ -44,7 +44,7 @@ public interface GiftCertificateDao {
      * @param certificateName - the name of certificate
      * @return certificate from storage
      */
-    Optional<GiftCertificateDto> readCertificateByName(String certificateName);
+    Optional<GiftCertificateDto> read(String certificateName);
 
     /**
      * @param certificateDto with filled params, for which the search will be performed

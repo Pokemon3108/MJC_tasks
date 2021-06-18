@@ -1,6 +1,7 @@
 package com.epam.esm.impl;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,8 +41,8 @@ class TagServiceImplTest {
         final long id = 1L;
         TagDto tag = new TagDto(id, "nature");
 
-        Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.empty());
-        Mockito.when(tagDao.insert(tag)).thenReturn(id);
+        Mockito.when(tagDao.read(tag.getName())).thenReturn(Optional.empty());
+        Mockito.when(tagDao.insert(tag)).thenReturn(tag);
         Mockito.when(tagDao.read(id)).thenReturn(Optional.of(tag));
         Assertions.assertEquals(tag, service.create(tag));
     }
@@ -50,7 +51,7 @@ class TagServiceImplTest {
     void throwsExceptionCreateTest() {
 
         TagDto tag = new TagDto("nature");
-        Mockito.when(tagDao.readTagByName(tag.getName())).thenReturn(Optional.of(tag));
+        Mockito.when(tagDao.read(tag.getName())).thenReturn(Optional.of(tag));
         Assertions.assertThrows(DuplicateTagException.class, () -> service.create(tag));
     }
 
@@ -116,10 +117,21 @@ class TagServiceImplTest {
     @Test
     void throwsExceptionReadMostPopularTagTest() {
 
-        UserDto user = new UserDto(1L);
         Mockito.when(tagDao.readTheMostPopularTagOfRichestUser()).thenReturn(Optional.empty());
         Assertions.assertThrows(UsersOrderHasNoTags.class, () -> service.readMostPopularTag());
     }
 
+    @Test
+    void getMostPopularTagOfRichestUserTest() {
 
+        final long tagId = 900;
+        final String tagName = "aquapark";
+        TagDto tagDto = new TagDto(tagId, tagName);
+
+        Mockito.when(tagDao.readTheMostPopularTagOfRichestUser()).thenReturn(Optional.of(tagDto));
+
+        Assertions.assertEquals(tagDto, service.readMostPopularTag());
+
+        Mockito.verify(tagDao, times(1)).readTheMostPopularTagOfRichestUser();
+    }
 }

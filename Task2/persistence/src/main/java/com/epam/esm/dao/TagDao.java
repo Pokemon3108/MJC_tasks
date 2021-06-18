@@ -16,9 +16,9 @@ public interface TagDao {
      * Insert tag.
      *
      * @param tag that will be inserted
-     * @return the id of tag in storage
+     * @return created tag
      */
-    Long insert(TagDto tag);
+    TagDto insert(TagDto tag);
 
     /**
      * Read tag by id.
@@ -41,7 +41,7 @@ public interface TagDao {
      * @param name the name
      * @return tag from storage, or {@code Optional.empty()} if it is not found
      */
-    Optional<TagDto> readTagByName(String name);
+    Optional<TagDto> read(String name);
 
     /**
      * Read tags by their names
